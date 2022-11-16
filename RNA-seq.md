@@ -1,4 +1,4 @@
-![](./pic/RNA-seq_small.jpg)
+![][def]
 
 
 # 目录
@@ -156,11 +156,14 @@ mkdir annotation genome sequence output script
 
 使用`tree`命令看一下我们设置的目录结构
 
+
+
 ```bash
 # 首先进入大鼠的项目文件夹中
 $ cd ~/project/rat
 
-$ tree
+$ tree  ##sudo apt install tree
+        ##sudo apt update
 
 .
 ├── annotation  用于存放大鼠的基因组注释信息(.gff/gtf)
@@ -181,6 +184,8 @@ conda可以很方便的安装和管理生信相关的工具
 ```bash
 # 下载文件
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O ~/miniconda.sh
+## wegt -O 下载并以不同的文件名保存
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
 
 # 安装
 bash miniconda.sh
@@ -2470,3 +2475,6 @@ biocLite("dplyr")
 **Q: RNA-seq analysis- HiSat2 and Cufflinks**
 
   + **A：[Question: RNA-seq analysis- HiSat2 and Cufflinks](https://biostar.usegalaxy.org/p/18308/)** - `samtools view -Sbo alignments.bam alignments.sam`
+
+
+[def]: ./pic/RNA-seq_small.jpg

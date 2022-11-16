@@ -1,0 +1,164 @@
+# 生信学习流程
+
+## 命令行
+
+这里的目的是熟悉 Windows 下的命令行操作.
+
+* 注册 github 账号
+* 理解 https://github.com/wang-q/windows/blob/master/README.md 里的所有内容. 这个是为了得到一个可用的 Windows 10/11, 以及其下的
+  Linux 子系统
+* 理解 https://github.com/wang-q/windows/blob/master/setup/scoop.md 里所有内容. 这是 Windows 下的一个软件包管理器
+
+目标是理解这些内容:
+
+* 命令行通常由 `命令`, `参数`, `输入文件` 和 `输出文件` 几个部分组成
+* 多条命令可以用 `管道`, 也就是 `|` 符号, 连接起来
+* 命令行可以做与图形界面类似的工作, 同时可重复性更好
+* 操作过程可以被完整地记录下来, 这相当于实验过程是的实验记录
+
+
+1.1 Setting-up scripts for Windows 10
+1.1.1 Get ISO
+ISO镜像文件：光盘镜像的存储格式之一
+Build：内部版本号（Version/Release-发布版本号）**.00
+21H2版本：2021年第二次更新
+64-bit:CPU位数（8字节），1Byte(字节)=8bit(位)
+1.1.2 Install, active and update Windows
+BIOS(basic input output system):基本输入输出系统（华为开机或重启时长按F2进入BIOS设置界面，设置Virtualization Technology-Enable状态）
+VMwave虚拟机
+KMS激活工具
+CMD（Windows Command Prompt）：命令提示符（Win+R打开“运行”窗口，输入“cmd”命令，快速执行指定任务）
+Poweshell/CMD：输入命令（winver：windows version；systeminfo:系统信息）
+1.1.3 Enable some optional features of Windows 10
+mount：Windows系统下，挂载文件到一个虚拟盘/虚拟文件夹中，通过访问这个虚拟盘/文件夹使用整个文件。
+.NET：一个开发人员平台，用于生成许多类型的应用程序。
+DISM（Deployment Image Servicing and Management）：部署映像服务和管理工具(DISM.exe) 
+SMB (Server Message Block) ：
+
+# .Net 2.5 and 3
+DISM /Online /Enable-Feature /FeatureName:NetFx3 /All /LimitAccess /Source:D:\sources\sxs
+# Online
+# DISM /Online /Enable-Feature /FeatureName:NetFx3 /All
+# SMB 1
+Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -All
+# Telnet
+DISM /Online /Enable-Feature /FeatureName:TelnetClient
+
+1.1.4 WSL2
+WSL（Windows Subsystem for Linux) 
+
+1.1.5 Ubuntu 20.04
+
+
+1.1.6 Symlinks
+cd(change directory)
+rm 
+-s 软链接
+
+
+
+
+
+尽量在两个星期内完成.
+
+## Linux 与 Bash 基础
+
+Windows 本身在生信领域里没什么用处, 大多数生信软件都是在 Linux 下运行的.
+macOS 可以被认为是一种 Unix, 兼容性还行, 大部分软件可以运行, 但也有很多软件会出 Bug.
+所以在学习阶段可以用, 真正处理数据还得在 Linux 下.
+
+需要做的事情如下:
+
+* 理解 https://github.com/wang-q/ubuntu/blob/master/README.md 里的所有内容, 包括所有的 Bash 命令
+* 里面有些 Bash 命令引用了另一个仓库 (https://github.com/wang-q/dotfiles, 也就是这个文件所在的地方) 里的文件, 也得尽量理解
+* 用 Linuxbrew 安装 faops, https://github.com/wang-q/faops, 搞明白 faops 里的所有子命令以及各自的参数
+* 学习使用一个 "程序员" 用的编辑器, 也就是说, 有代码高亮和修改历史的. 初学时可以用 `VSCode`, 有些心得后, 正式写程序可以跟我一样用 `CLion`.
+* 在 GitHub 上建立一个 repo, 使用 Markdown 格式, 自己把 `faops` 的 `tests/` 目录下的测试还原成可以运行的命令, 写一个关于 faops 的使用说明书. 每完成一段代码或文档, 用 `GitHub Desktop` 将本地的修改同步到 GibHub 上
+* 学习 Bash 时, <https://explainshell.com/> 和 `tldr` 可能会有些帮助
+
+这一步的目的有四点:
+
+* 得到一个可用的 Linux 系统 (可以是独立运行的, 也可以是 Windows 下的子系统);
+* 熟悉 Linux 里最常用的命令行交互界面, 即 Bash. Bash 也可以被看作是一门计算机语言, 它的语法还是比较简单的, 可以作为程序学习的敲门砖;
+* 熟悉 Linuxbrew 软件包管理器, 以及常用生信软件的安装与使用过程;
+* 初步理解这些概念: 代码编辑, 文本文件, 和版本控制系统.
+
+学习的过程中, 经常能看到下面的现象序列:
+
+* 程序不正常
+* 出错提示看不懂
+* 不知道用什么关键词去搜索
+* 卡住了, 我天生不是学信息学的料
+* 看到命令行就恶心
+
+碰到问题时, 尽量简化问题, 减少影响因素, 是找出问题原因的前提.
+在这一阶段, 大部分程序都是单行或少数几行, 会使初学者相对容易地找到问题所在.
+锻炼自己找到问题的能力, 是非常重要的.
+
+网上有篇经典文章, [提问的智慧](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md), 很值得看看.
+
+尽量在一个半月内完成.
+
+## 转录组实例
+
+这个流程是我们实验室已经毕业的研究生宋天强同学写的, 主要是 RNA-seq 的内容, 包含 Bash 和 R 的代码
+
+* 完整的流程与注释都在 https://github.com/eternal-bug/RNA
+* 流程里使用了 Conda 和 Linuxbrew 来安装软件, 尽量只使用 Linuxbrew. 里面 Python 的工具可能要用 pip 装. R studio 可以在 Windows 下安装
+* 按流程走完每一步. 所有的与 Bash 相关的东西都必须理解; R 代码可以暂时当成黑箱, 只用知道输入和输出都是什么就行了
+* 这个流程里涉及了非常多的生信工具, 对于这些工具, 不需要理解内部的实现机制, 只用把它们当成黑箱就可以了
+* 整个流程是包含了需要执行的每一个步骤, 基本不会出现问题. 如果碰到错误提示或没有出现预期结果, 先自己在网上查查, 明白错误信息的意义以为什么会出现错误都是学习的必要过程.
+
+按各人的能力与精力, 需要一至两个月完成这一步.
+
+## 基因组甲基化实例
+
+我们实验室的本科生唐吉宏同学写了一个甲基化分析流程, 目的是为了重复一篇 NBT 的文章,
+https://doi.org/10.1038/nbt.4204
+
+https://github.com/Jihong-Tang/methylation-analysis
+
+要求与上一步类似, 所需的时间应当比上一步要少些.
+
+## 命令行进阶
+
+https://github.com/wang-q/withncbi/blob/master/taxon/plasmid.md
+
+这是一个相对完整的小课题的执行流程, 目标是对质粒进行序列聚类, 得到可聚质粒的共有序列, 以便日后的临床耐药性鉴定.
+
+* 这一阶段, 我们涉及到真实的生信数据处理. 这些数据会占用 WSL 不少硬盘空间, 而 WSL 默认是在 C 盘里的. 我一般是将 `~/data` 和 `~/Scripts` 做成符号链接, 使用 Windows 里的空间.
+    * 学习 `ln -s` 命令来完成这一步
+* 所有出现过两次以上的 Linux 命令行工具都应该熟悉, 包括但不限于:
+    * `cat`, `gzip`
+    * `head`, `tail`, `grep`, `sort`
+    * `find`, `wc`
+    * `cut`, `split`
+    * `xargs`
+    * `rsync`
+* Bash 里的表达式, `if`, `for` 等基本的, 以及 `$()`, `${}`, `[[ ]]`, `(( ))` 之类古怪的, 都要明白
+* 我们实验室的常用脚本语言是 Perl, 它最大的优点是可以嵌入到命令行里, 用起来方便, 没有心理负担. 应该花一个星期看完 Learning Perl (小骆驼) 这本书, 能看懂本流程里的简单
+  Perl 脚本.
+* 其它一些常用工具
+    * 命令行并行化: `parallel`
+    * 处理 csv/tsv: `tsv-*`, `datamash`
+    * `faops` 和 `mash` 这两个生信工具, `egaz` 可以不用管
+
+## 文献管理
+
+走过了以上的流程, 生信技能的学习就告一段落. 但科研不光光是只有技能而已, 如何使用这些技能是研究生培养过程中更为重要的东西. 研究生不是操作人员, 研究生需要在头脑里面构建自己的思维体系.
+
+科研人员之间交流的方法就是发表论文. 一篇论文包含了作者的出发点、材料方法、研究的逻辑和思路, 以及论文对于科学界的贡献. 大量学习和整理别人的文献, 对于研究生来说是必要的工作之一,
+一个研究生最少需要精读 200 篇文献. 经过了读文献的训练, 才有可能构建自己的思维体系.
+
+在读文献的过程中怎么样整理文献也是一个小技能. 最简单的就是建一个文件夹, 把所有的 PDF 放进去. 但是高效一些的方法也得学习. 南大已经买好了正版的 endnote,
+可以去[这个页面](https://itsc.nju.edu.cn/EndNote/list.htm)下载和学习用法. 如果对于效率有更高的追求, 就按[我的用法](zotero/zotero.md)
+使用 zotero, 它与 endnote 各有优劣. Berkeley 有个[教程](https://guides.lib.berkeley.edu/zotero), 高兴了可以去看看.
+
+## 总结
+
+经历整个流程, 你可能会重装十几次操作系统, 遇见几十个从末听说过的命令行工具, 咒骂墙几百次, 面对不知所谓的几千条错误信息, 还有除 Bash 外, Perl, R, Python 等解释语言,
+Rust, C 等编译语言, 偶尔还会碰到 Java, Ruby, Powershell, JavaScript, Mathematica/Matlab 等等异类.
+
+经历了这个学习流程, 就像经历了另一种人生, 艰难险阻, 跌宕起伏, 你将对于生信有更为深刻的理解.
+
+现在你攀上了一座山的山顶, 回头望去, 深深体会到, 打不倒你的终归会使你更强大. 再向前看, 生物学与医学的一些高山, 也向你展示了它们的身形, 人生导师王老师在你身侧说, 未来在你手中.

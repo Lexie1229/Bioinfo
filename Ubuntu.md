@@ -32,15 +32,29 @@ Linux specific scripts were placed in [`prepare/`](prepare).
 
 * Add them to `/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts`
 
-hosts文件是linux系统中负责ip地址与域名快速解析的文件
-raw.githubusercontent.com
-Domain（域）：githubusercontent.com
+
 #GFW(Great Firewall)-防火墙
+hosts文件是linux系统中负责ip地址与域名快速解析的文件
+**raw.githubusercontent.com**github用来存储用户上传文件（不是项目仓库的文件，而是issue里的图片之类的）的服务地址
+Domain（域）：githubusercontent.com
+Domain Label：githubusercontent
+
+1
 vi 文件名 ：进入一般模式
-：wq （保存/退出）
-sudo vim 文件名
-I切换编辑模式
+sudo vim 文件名 （sudo是系统管理指令，允许系统管理员让普通用户执行一些或者全部的root命令的一个工具）
+I切换编辑模式 ； esc退出编辑模式
+：wq（保存/退出）
+：wq！（强制保存退出）
 ip地址 主机名/域名 （主机别名）
+
+
+2
+打开C:\Windows\System32\drivers\etc\hosts文件，
+输入 ip地址 主机名/域名 
+cmd/Powershell中输入 ping 域名
+
+
+
 
 
 ## Install packages needed by Linuxbrew and some others
@@ -49,7 +63,11 @@ ip地址 主机名/域名 （主机别名）
 echo "==> When some packages went wrong, check http://mirrors.ustc.edu.cn/ubuntu/ for updating status."
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/1-apt.sh)"
 
-```
+
+1echo
+
+
+
 
 ## Optional: adjusting Desktop
 

@@ -21,7 +21,7 @@ following steps also work under macOS via [Homebrew](https://brew.sh/).
 Linux specific scripts were placed in [`prepare/`](prepare).
 [This repo](https://github.com/wang-q/dotfiles) contains macOS related codes.
 
-## Bypass GFW blocking
+## 1.Bypass GFW blocking
 
 * Query the IP address on [ipaddress](https://www.ipaddress.com/) for
 
@@ -57,26 +57,28 @@ cmd/Powershell中输入 ping 域名
 
 
 
-## Install packages needed by Linuxbrew and some others
-
+## 2.Install packages needed by Linuxbrew and some others
 ```shell script
 echo "==> When some packages went wrong, check http://mirrors.ustc.edu.cn/ubuntu/ for updating status."
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/1-apt.sh)"
 
+1
+curl： 
+-f, --fail          Fail silently (no output at all) on HTTP errors
+-L, --location      Follow redirects
+-S, --show-error    Show error even when -s is used
+-s, --silent        Silent mode
+bash：
+-c 
 
-1echo
-
-
-
-
-## Optional: adjusting Desktop
+3.Optional: adjusting Desktop
 
 In GUI desktop, disable auto updates: `Software & updates -> Updates`,
 set `Automatically check for updates` to `Never`, untick all checkboxes, click close and click close
 again.
+GUI（Graphics User Interface）：图形用户界面
 
-#GUI（Graphics User Interface）：图形用户界面
-
+1
 ```shell script
 # Removes nautilus bookmarks and disables lock screen
 echo '==> `Ctrl+Alt+T` to start a GUI terminal'
@@ -85,7 +87,7 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/2-gnom
 
 ```
 
-## Install Linuxbrew
+## 4.Install Linuxbrew
 
 使用清华的[镜像](https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/).
 
@@ -124,7 +126,7 @@ source $HOME/.bashrc
 
 ```
 
-## Download
+## 5.Download
 
 Fill `$HOME/bin`, `$HOME/share` and `$HOME/Scripts`.
 
@@ -134,6 +136,9 @@ bash download.sh
 source $HOME/.bashrc
 
 ```
+curl:
+-L, --location      Follow redirects
+-O, --remote-name   Write output to a file named as the remote file
 
 ## Install packages managed by Linuxbrew
 

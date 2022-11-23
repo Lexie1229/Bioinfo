@@ -72,7 +72,6 @@ bash：
 -c 
 
 3.Optional: adjusting Desktop
-
 In GUI desktop, disable auto updates: `Software & updates -> Updates`,
 set `Automatically check for updates` to `Never`, untick all checkboxes, click close and click close
 again.
@@ -134,13 +133,13 @@ Fill `$HOME/bin`, `$HOME/share` and `$HOME/Scripts`.
 curl -LO https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh
 bash download.sh
 source $HOME/.bashrc
-
 ```
+
 curl:
 -L, --location      Follow redirects
 -O, --remote-name   Write output to a file named as the remote file
 
-## Install packages managed by Linuxbrew
+## 6.Install packages managed by Linuxbrew
 
 Packages include:
 
@@ -150,8 +149,13 @@ Packages include:
 ```shell script
 bash $HOME/Scripts/dotfiles/brew.sh
 source $HOME/.bashrc
-
 ```
+
+cd ~/Scripts
+git clone https://github.com/wang-q/dotfiles
+bash $HOME/Scripts/dotfiles/brew.sh
+source $HOME/.bashrc
+
 
 Attentions:
 
@@ -159,7 +163,7 @@ Attentions:
 
 * Sometimes there are no binary packages; compiling from source codes may take extra time.
 
-## Packages of each language
+## 7.Packages of each language
 
 ```shell script
 bash $HOME/Scripts/dotfiles/perl/install.sh
@@ -173,7 +177,7 @@ bash $HOME/Scripts/dotfiles/r/install.sh
 
 ```
 
-## Bioinformatics Apps
+## 8.Bioinformatics Apps
 
 ```shell script
 bash $HOME/Scripts/dotfiles/genomics.sh
@@ -185,7 +189,7 @@ bash $HOME/Scripts/dotfiles/perl/ensembl.sh
 
 ```
 
-## Optional: MySQL
+## 9.Optional: MySQL
 
 ```shell script
 bash $HOME/Scripts/dotfiles/mysql.sh
@@ -194,7 +198,7 @@ bash $HOME/Scripts/dotfiles/mysql.sh
 
 ```
 
-## Optional: dotfiles
+## 10.Optional: dotfiles
 
 ```shell script
 bash $HOME/Scripts/dotfiles/install.sh
@@ -207,7 +211,7 @@ vim +PluginInstall +qall
 
 Edit `.gitconfig` to your own manually.
 
-## Directory Organization
+## 11.Directory Organization
 
 * [`packer/`](packer): Scripts for building an Ubuntu base box
 

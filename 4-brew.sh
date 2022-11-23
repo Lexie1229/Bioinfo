@@ -76,6 +76,25 @@ hash R 2>/dev/null || {
 
 cpanm --mirror-only --mirror http://mirrors.ustc.edu.cn/CPAN/ --notest Statistics::R
 
+
+报错：
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+        LANGUAGE = (unset),
+        LC_ALL = (unset),
+        LANG = "C.UTF-8"
+    are supported and installed on your system.
+perl: warning: Falling back to the standard locale ("C").
+Statistics::R is up to date. (0.34)
+解决：
+cd ~
+vim .bashrc
+在文件尾加入 export LC_ALL=C
+保存后执行 source .bashrc
+
+
+
+
 # java
 echo "==> Install Java"
 if [[ "$OSTYPE" == "darwin"* ]]; then

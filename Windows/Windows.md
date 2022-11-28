@@ -106,11 +106,10 @@ Restart then set WSL 2 as default.
 wsl --set-default-version 2
 ```
 
-> * VirtualMachinePlatform(虚拟机平台):
+> * VirtualMachinePlatform(虚拟机平台)
 > * Microsoft-Hyper-V:Hyper-V是Microsoft的硬件虚拟化产品.它允许你创建和运行一个称为虚拟机的计算机的软件版本.每个虚拟机都充当运行操作系统和程序的完整计算机。当需要计算资源时，虚拟机可让你更灵活、有助于节省时间和资金，并且比在物理硬件上运行一个操作系统更高效地使用硬件.Hyper-V 在其自己的独立空间中运行每个虚拟机，这意味着你可以在同一硬件上同时运行多个虚拟机。你可能希望这样做以避免诸如影响其他工作负荷的崩溃等问题，或者为不同的人员、组或服务提供对不同系统的访问权限.家庭版不可用.
 > * WSL（Windows Subsystem for Linux) 
 > * kernel(内核):Linux内核是Linux操作系统（OS）的主要组件，也是计算机硬件与其进程之间的核心接口.它负责两者之间的通信，还要尽可能高效地管理资源.
-
 
 ## Ubuntu 20.04
 Search `bash` in Microsoft Store or use the following command lines.

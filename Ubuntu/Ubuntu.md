@@ -90,19 +90,29 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/2-gnom
 
 使用清华的[镜像](https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/).
 
+1 设置环境变量
 ```shell script
 echo "==> Tuna mirrors of Homebrew/Linuxbrew"
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
 export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
 
+2 安装 Homebrew
 git clone --depth=1 https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/install.git brew-install
 /bin/bash brew-install/install.sh
+**安装成功后需将 brew 程序的相关路径加入到环境变量中
 
 rm -rf brew-install
 
+3
 test -d ~/.linuxbrew && PATH="$HOME/.linuxbrew/bin:$HOME/.linuxbrew/sbin:$PATH"
 test -d /home/linuxbrew/.linuxbrew && PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
+
+4 替换现有仓库上游
+替换 brew 程序本身的源
+export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
+brew update
+
 
 if grep -q -i Homebrew $HOME/.bashrc; then
     echo "==> .bashrc already contains Homebrew"

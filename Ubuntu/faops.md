@@ -28,34 +28,46 @@ Usage:     faops <command> [options] <arguments>
 Version:   0.8.21
 
 Commands:
-    help           print this message
-    count          count base statistics in FA file(s)
-    size           count total bases in FA file(s)
-    masked         masked (or gaps) regions in FA file(s)
-    frag           extract sub-sequences from a FA file
-    rc             reverse complement a FA file
-    one            extract one fa record
-    some           extract some fa records
-    order          extract some fa records by the given order
-    replace        replace headers from a FA file
-    filter         filter fa records
-    split-name     splitting by sequence names
-    split-about    splitting to chunks about specified size
-    n50            compute N50 and other statistics
-    dazz           rename records for dazz_db
-    interleave     interleave two PE files
-    region         extract regions from a FA file
+    help          print this message
+    count         count base statistics in FA file(s)
+    size          count total bases in FA file(s)
+    masked        masked (or gaps) regions in FA file(s)
+    frag          extract sub-sequences from a FA file
+    rc            reverse complement a FA file
+    one           extract one fa record
+    some          extract some fa records
+    order         extract some fa records by the given order
+    replace       replace headers from a FA file
+    filter        filter fa records
+    split-name    splitting by sequence names
+    split-about   splitting to chunks about specified size
+    n50           compute N50 and other statistics
+    dazz          rename records for dazz_db
+    interleave    interleave two PE files
+    region        extract regions from a FA file
 
 Options:
     There're no global options.
     Type "faops command-name" for detailed options of each command.
     Options *MUST* be placed just after command.
 
+1 faops rc [options] <in.fa> <out.fa> 反补
+    -n         keep name identical (don't prepend RC_)
+    -r         just Reverse, prepends R_
+    -c         just Complement, prepends C_
+    -f STR     only RC sequences in this list.file
+    -l INT     sequence line length [80]
+2 faops some [options] <in.fa> <list.file> <out.fa> 提取
+    -i         Invert, output sequences not in the list
+    -l INT     sequence line length [80]
+3  faops order [options] <in.fa> <list.file> <out.fa> 提取
+    -l INT     sequence line length [80]
+
 ```
 
 ## Examples
 
-* Reverse complement
+* Reverse complement 反补
 
         faops rc test/ufasta.fa out.fa       # prepend RC_ to names
         faops rc -n test/ufasta.fa out.fa    # keep original names
@@ -104,10 +116,9 @@ Options:
 
         faops n50 -N 90 -S -A -g 10000 test/ufasta.fa
 
-## Compiling
+## Compiling 编译
 
-`faops` can be compiled under Linux, macOS (gcc or clang) and Windows
-(MinGW).
+`faops` can be compiled under Linux, macOS (gcc or clang) and Windows (MinGW).
 
 ```shell
 git clone https://github.com/wang-q/faops

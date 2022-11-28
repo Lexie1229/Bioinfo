@@ -1,12 +1,10 @@
 # 生信学习流程
-
 ## 命令行
 
 这里的目的是熟悉 Windows 下的命令行操作.
 
 * 注册 github 账号
-* 理解 https://github.com/wang-q/windows/blob/master/README.md 里的所有内容. 这个是为了得到一个可用的 Windows 10/11, 以及其下的
-  Linux 子系统
+* 理解 https://github.com/wang-q/windows/blob/master/README.md 里的所有内容. 这个是为了得到一个可用的 Windows 10/11, 以及其下的 Linux 子系统
 * 理解 https://github.com/wang-q/windows/blob/master/setup/scoop.md 里所有内容. 这是 Windows 下的一个软件包管理器
 
 目标是理解这些内容:
@@ -15,49 +13,6 @@
 * 多条命令可以用 `管道`, 也就是 `|` 符号, 连接起来
 * 命令行可以做与图形界面类似的工作, 同时可重复性更好
 * 操作过程可以被完整地记录下来, 这相当于实验过程是的实验记录
-
-
-1.1 Setting-up scripts for Windows 10
-1.1.1 Get ISO
-ISO镜像文件：光盘镜像的存储格式之一
-Build：内部版本号（Version/Release-发布版本号）**.00
-21H2版本：2021年第二次更新
-64-bit:CPU位数（8字节），1Byte(字节)=8bit(位)
-1.1.2 Install, active and update Windows
-BIOS(basic input output system):基本输入输出系统（华为开机或重启时长按F2进入BIOS设置界面，设置Virtualization Technology-Enable状态）
-VMwave虚拟机
-KMS激活工具
-CMD（Windows Command Prompt）：命令提示符（Win+R打开“运行”窗口，输入“cmd”命令，快速执行指定任务）
-Poweshell/CMD：输入命令（winver：windows version；systeminfo:系统信息）
-1.1.3 Enable some optional features of Windows 10
-mount：Windows系统下，挂载文件到一个虚拟盘/虚拟文件夹中，通过访问这个虚拟盘/文件夹使用整个文件。
-.NET：一个开发人员平台，用于生成许多类型的应用程序。
-DISM（Deployment Image Servicing and Management）：部署映像服务和管理工具(DISM.exe) 
-SMB (Server Message Block) ：
-
-# .Net 2.5 and 3
-DISM /Online /Enable-Feature /FeatureName:NetFx3 /All /LimitAccess /Source:D:\sources\sxs
-# Online
-# DISM /Online /Enable-Feature /FeatureName:NetFx3 /All
-# SMB 1
-Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -All
-# Telnet
-DISM /Online /Enable-Feature /FeatureName:TelnetClient
-
-1.1.4 WSL2
-WSL（Windows Subsystem for Linux) 
-
-1.1.5 Ubuntu 20.04
-
-
-1.1.6 Symlinks
-cd(change directory)
-rm 
--s 软链接
-
-
-
-
 
 尽量在两个星期内完成.
 

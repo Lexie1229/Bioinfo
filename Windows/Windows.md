@@ -9,6 +9,7 @@
   - [Install `winget` and `Windows Terminal`](#install-winget-and-windows-terminal)
   - [Optional: Adjusting Windows](#optional-adjusting-windows)
   - [Optional: winget-pkgs](#optional-winget-pkgs)
+- [\\sshfs\\REMUSER@HOST\[\\PATH\]](#sshfsremuserhostpath)
   - [Optional: Windows 7 games](#optional-windows-7-games)
   - [Optional: Packages Managements](#optional-packages-managements)
   - [Optional: Rust and C/C++](#optional-rust-and-cc)
@@ -127,6 +128,12 @@ The following command verifies the status of WSL:
 wsl -l -v
 ```
 
+> * Test-Path命令：检查文件、文件夹、HKLM路径、环境变量env：路径路径是否存在（Test-Path <路径>）
+> * Invoke-WebRequest命令：
+> * Add-AppxPackage
+> * leaf/tree
+> 
+
 ***Symlinks 软链接***
 * WSL: reduce the space occupied by virtual disks
 ```shell
@@ -138,46 +145,45 @@ ln -s /mnt/d/data/ ~/data
 * Windows: second disk
     * Open `cmd.exe` as an Administrator
 ```cmd
-cd c:\Users\wangq\
+cd c:\Users\19065\
 mklink /D c:\Users\wangq\data d:\data
 ```
 
-> * cd(change directory)
-rm 
--s 软链接
+> * 磁盘（disk）：利用磁记录技术存储数据的存储器。
+> * cd(change directory)：用于切换当前工作目录。
+> * rm（Remove):rm [OPTION] [FILE],用于删除一个文件或目录。
+>> * rm filename:删除指定文件。
+>> * rm -f(force)：忽略不存在的文件和参数，从不提示。
+>> * rm -r(recursive，递归)：删除当前目录下的所有文件及目录。
+> * mklink命令：将文件或目录建立双向连接
+> * -s 软链接
 
 ## Install `winget` and `Windows Terminal`
 ```powershell
 if (!(Test-Path Microsoft.WindowsTerminal.msixbundle -PathType Leaf))
 {
     Invoke-WebRequest `
-        'https://github.com/microsoft/winget-cli/releases/download/v1.2.10271/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle' `
+        'https://github.com/microsoft/winget-cli/releases/download/v1.3.2691/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle' `
         -OutFile 'Microsoft.DesktopAppInstaller.msixbundle'
 }
 Add-AppxPackage -path .\Microsoft.DesktopAppInstaller.msixbundle
 
 winget --version
-
 winget install -e --id Microsoft.WindowsTerminal
-
 winget install -e --id Microsoft.PowerShell
-
 winget install -e --id Git.Git
-
 ```
 
 Open `Windows Terminal`
-
 * Set `Settings` -> `Startup` -> `Default profile` to `PowerShell`, not `Windows PowerShell`.
-
 * Set `Default terminal application` to `Windows Terminal`.
-
 * Hide unneeded `Profiles`.
 
+> * profile：配置文件。
+> * Windows PowerShell 和 PowerShell 的 PowerShell 语言有一些不同。 最明显的差异在于 Windows 和非 Windows 平台上 PowerShell cmdlet 的可用性和行为以及因 .NET Framework 和 .NET Core 之间的差异所引起的变化。
+
 ## Optional: Adjusting Windows
-
 Works with Windows 10 or 11.
-
 ```powershell
 mkdir -p ~/Scripts
 cd ~/Scripts
@@ -193,8 +199,12 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass `
 
 Log in to the Microsoft Store and get updates from there.
 
-## Optional: winget-pkgs
 
+
+
+
+
+## Optional: winget-pkgs
 ```powershell
 # programming
 # winget install -s winget -e --id AdoptOpenJDK.OpenJDK
@@ -231,7 +241,7 @@ winget install -s msstore Rufus # need v3.18 or higher
 winget install -s winget -e --id QL-Win.QuickLook
 winget install -s winget -e --id AntibodySoftware.WizTree
 winget install -s winget -e --id HandBrake.HandBrake
-# winget install -s winget -e --id Microsoft.PowerToys
+winget install -s winget -e --id Microsoft.PowerToys
 winget install -s winget -e --id qBittorrent.qBittorrent
 winget install -s winget -e --id IrfanSkiljan.IrfanView
 
@@ -240,25 +250,105 @@ winget install -s winget -e --id Mozilla.Firefox
 winget install -s winget -e --id Tencent.WeChat
 winget install -s winget -e --id Tencent.TencentMeeting
 winget install -s winget -e --id Tencent.QQ
+winget install -s winget -e --id Alibaba.DingTalk
 winget install -s winget -e --id NetEase.CloudMusic
 winget install -s winget -e --id Youdao.YoudaoDict
-winget install -s winget -e --id Baidu.BaiduNetdisk
-winget install -s winget -e --id stax76.mpvdotnet
+winget install -s winget -e --id Baidu.BaiduNetdiskwinget 
 winget install -s winget -e --id Zotero.Zotero
-
+winget install -s msstore mpv.net
+winget install -s msstore "iQIYI Windows client app"
 # winget install -e --id Adobe.AdobeAcrobatReaderDC
-# winget install -e --id Alibaba.DingTalk
 
 ```
 
-## Optional: Windows 7 games
+> * winget-pkgs:Windows程序包管理器，WinGet命令行实用工具可从命令行安装应用程序和其他程序包。
+> * winget [<命令>] [<选项>]
+>> * winget install：安装给定的程序包。
+>>> * winget install -s(--source): 使用指定的源查找程序包,必须后跟源名称。
+>>> * winget install -e(--exact): 使用精确匹配查找程序包.
+>>> * winget install --id:将安装限制为应用程序的ID.
+>>> * winget install -v(--version):允许你指定要安装的确切版本.  如果此项未指定，则使用 latest 会安装最高版本的应用程序.
+>>> * winget install -s winget -e --id Git.Git:将所选内容限制为一个文件的最佳方式是结合使用应用程序的 ID 与 Exact 查询选项;如果配置了多个源，则可能会有重复的条目,需要指定源才能进一步消除歧义.
+>> * winget source：管理程序包的来源。
+>>> * msstore - Microsoft Store 目录。
+winget - Windows 程序包管理器应用存储库。
 
+> * programming 编程
+>> * JDK:是Java语言的软件开发工具包，它包含了Java的运行环境（JVM）、Java基础类库和Java工具.
+>> * AdoptOpenJDK:对OpenJDK的代码进行打包和测试，最后形成的二进制可执行文件。
+>> * AdoptOpenJDK.OpenJDK
+>> * Oracle.JavaRuntimeEnvironment
+>> * Oracle.JDK.18
+>> * Microsoft.dotnet
+>> * StrawberryPerl.StrawberryPerl：Strawberry Perl是一个用于MS Windows的perl环境，包含所有需要运行和开发Perl的应用程序。
+>> * Python.Python：
+>> * RProject.R
+>> * RProject.Rtools
+>> * OpenJS.NodeJS.LTS
+>> * RStudio.RStudio.OpenSource
+>> * Kitware.CMake
+
+> * development 开发
+>> * GitHub.GitHubDesktop：
+>> * WinSCP.WinSCP
+>> * VisualStudioCode
+>> * ScooterSoftware.BeyondCompare4
+>> * JetBrains.Toolbox
+>> * Clement.bottom
+>> * WinFsp.WinFsp
+>> * SSHFS-Win.SSHFS-Win
+# \\sshfs\REMUSER@HOST[\PATH]
+
+>> * Docker.DockerDesktop
+>> * VMware.WorkstationPlayer
+>> * Canonical.Multipass
+
+
+
+
+> * utils 实用工具
+>> * voidtools.Everything:Everything 是一个文件搜索工具，可基于名称快速定位文件和文件夹。
+>> * Bandisoft.Bandizip：Bandizip是一个解压缩软件，快速、整洁。
+>> * Rufus:用于USB系统安装启动盘制作。
+>> * QL-Win.QuickLook:QuickLook是一款让用户在 Windows系统下单击空格键就能实现文件预览的功能，支持大多数常用文件格式图片、视频、PDF/Office文档、markdown甚至是PSD文件。
+>> * AntibodySoftware.WizTree:WizTree是一个硬盘空间分析器，其最大的特点是速度快，可用于清理硬盘。
+>> * HandBrake.HandBrake：HandBrake是一个免费的开源的视频转换、压缩软件，几乎支持所有视频格式，并支持电脑硬件压缩。
+>> * Microsoft.PowerToys:Microsoft PowerToys是一组用于自定义Windows的实用工具，可帮助高级用户调整和简化其Windows体验，从而提高工作效率。
+>> * qBittorrent.qBittorrent:qBittorrent是一个开源免费的种子和磁力链接下载工具。
+>> * IrfanSkiljan.IrfanView:IrfanView是一个运行速度快、小巧、功能强大的免费图像查看程序。
+> * apps 应用程序（ID）
+>> * Mozilla.Firefox：火狐浏览器
+>> * Tencent.WeChat：微信
+>> * Tencent.TencentMeeting：腾讯会议
+>> * Tencent.QQ：腾讯QQ
+>> * Alibaba.DingTalk:钉钉
+>> * NetEase.CloudMusic：网易云音乐
+>> * Youdao.YoudaoDict：网易有道词典
+>> * Baidu.BaiduNetdisk：百度网盘
+>> * Zotero.Zotero：（DigitalScholar.Zotero）文献管理软件
+>> * mpv.net：基于libmpv的Windows媒体播放器，外观和工作方式类似于mpv，并且与mpv共享相同的设置，因此mpv文档适用；mpv是一个开源的视频播放器。
+>> * Adobe.AdobeAcrobatReaderDC：PDF阅读器
+>> * "iQIYI Windows client app":爱奇艺windows客户端
+
+
+
+
+
+
+
+
+
+
+
+## Optional: Windows 7 games
 <https://winaero.com/download.php?view.1836>
 
 ## Optional: Packages Managements
-
 * [`scoop.md`](setup/scoop.md)
 * [`msys2.md`](setup/msys2.md)
+
+> * scoop:软件（包）管理器
+> * msys2:
 
 ## Optional: Rust and C/C++
 

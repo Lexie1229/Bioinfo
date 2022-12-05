@@ -10,7 +10,8 @@ scoop install aria2 dark innounp
 Scoop can utilize aria2 to use multi-connection downloads.
 Close the powershell window and start a new one to refresh the environment variables.
 
-> * 
+> * set-executionpolicy:
+> 
 
 
 
@@ -70,8 +71,8 @@ scoop list
 > * ripgrep
 > * tokei
 > * hyperfine
-> * sqlite
-> * sqlitestudio
+> * sqlite：SQLite是一个C语言库，是一个小型、快速、自包含、高可靠性、全功能的SQL数据库引擎。
+> * sqlitestudio：
 > * proxychains
 
 

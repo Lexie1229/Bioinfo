@@ -3,17 +3,17 @@
 [TOC levels=1-3]: # ""
 
 - [Setting-up scripts for Ubuntu 20.04](#setting-up-scripts-for-ubuntu-2004)
-    - [Bypass GFW blocking](#bypass-gfw-blocking)
-    - [Install packages needed by Linuxbrew and some others](#install-packages-needed-by-linuxbrew-and-some-others)
-    - [Optional: adjusting Desktop](#optional-adjusting-desktop)
-    - [Install Linuxbrew](#install-linuxbrew)
-    - [Download](#download)
-    - [Install packages managed by Linuxbrew](#install-packages-managed-by-linuxbrew)
-    - [Packages of each language](#packages-of-each-language)
-    - [Bioinformatics Apps](#bioinformatics-apps)
-    - [MySQL](#mysql)
-    - [Optional: dotfiles](#optional-dotfiles)
-    - [Directory Organization](#directory-organization)
+  - [1.Bypass GFW blocking](#1bypass-gfw-blocking)
+  - [2.Install packages needed by Linuxbrew and some others](#2install-packages-needed-by-linuxbrew-and-some-others)
+  - [3.Optional: adjusting Desktop](#3optional-adjusting-desktop)
+  - [4.Install Linuxbrew](#4install-linuxbrew)
+  - [5.Download](#5download)
+  - [6.Install packages managed by Linuxbrew](#6install-packages-managed-by-linuxbrew)
+  - [7.Packages of each language](#7packages-of-each-language)
+  - [8.Bioinformatics Apps](#8bioinformatics-apps)
+  - [9.Optional: MySQL](#9optional-mysql)
+  - [10.Optional: dotfiles](#10optional-dotfiles)
+  - [11.Directory Organization](#11directory-organization)
 
 The whole developing environment is based on [Linuxbrew](http:s//linuxbrew.sh/). Many of the
 following steps also work under macOS via [Homebrew](https://brew.sh/).
@@ -22,85 +22,73 @@ Linux specific scripts were placed in [`prepare/`](prepare).
 [This repo](https://github.com/wang-q/dotfiles) contains macOS related codes.
 
 ## 1.Bypass GFW blocking
-
 * Query the IP address on [ipaddress](https://www.ipaddress.com/) for
-
     * `raw.githubusercontent.com`
     * `gist.githubusercontent.com` 
     * `camo.githubusercontent.com`
     * `user-images.githubusercontent.com`
-
 * Add them to `/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts`
 
 
-#GFW(Great Firewall)-防火墙
-hosts文件是linux系统中负责ip地址与域名快速解析的文件
-**raw.githubusercontent.com**github用来存储用户上传文件（不是项目仓库的文件，而是issue里的图片之类的）的服务地址
-Domain（域）：githubusercontent.com
-Domain Label：githubusercontent
-
-1
-vi 文件名 ：进入一般模式
-sudo vim 文件名 （sudo是系统管理指令，允许系统管理员让普通用户执行一些或者全部的root命令的一个工具）
-I切换编辑模式 ； esc退出编辑模式
-：wq（保存/退出）
-：wq！（强制保存退出）
-ip地址 主机名/域名 （主机别名）
-
-
-2
-打开C:\Windows\System32\drivers\etc\hosts文件，
-输入 ip地址 主机名/域名 
-cmd/Powershell中输入 ping 域名
-
-
-
-
+> * GFW(Great Firewall)-防火墙
+> * hosts文件是linux系统中负责ip地址与域名快速解析的文件
+> * **raw.githubusercontent.com**github用来存储用户上传文件（不是项目仓库的文件，而是issue里的图片之类的）的服务地址
+> * Domain（域）：githubusercontent.com
+> * Domain Label：githubusercontent
+> * vi 文件名 ：进入一般模式
+> * sudo vim 文件名 （sudo是系统管理指令，允许系统管理员让普通用户执行一些或者全部的root命令的一个工具）
+> * I切换编辑模式 ； esc退出编辑模式
+> * ：wq（保存/退出）
+> * ：wq！（强制保存退出）
+> * ip地址 主机名/域名 （主机别名）
+> * 打开C:\Windows\System32\drivers\etc\hosts文件，输入 ip地址 主机名/域名 
+> * cmd/Powershell中输入 ping 域名
 
 ## 2.Install packages needed by Linuxbrew and some others
 ```shell script
 echo "==> When some packages went wrong, check http://mirrors.ustc.edu.cn/ubuntu/ for updating status."
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/1-apt.sh)"
+```
 
-1
-curl： 
--f, --fail          Fail silently (no output at all) on HTTP errors
--L, --location      Follow redirects
--S, --show-error    Show error even when -s is used
--s, --silent        Silent mode
-bash：
--c 
+> * curl:下载工具
+>> * -f, --fail          Fail silently (no output at all) on HTTP errors 连接失败不显示http错误
+>> * -L, --location      Follow redirects 让HTTP 请求跟随服务器的重定向
+>> * -S, --show-error    Show error even when -s is used 只输出错误信息
+>> * -s, --silent        Silent mode 不输出错误和进度信息
+>> * -o, --output <file> Write to file instead of stdout 将服务器的回应保存成文件
+>> * -O, --remote-name   Write output to a file named as the remote file 将服务器回应保存成文件，并将 URL 的最后部分当作文件名
+> * bash：
+>> * -c:从字符串中读入命令
+>> * -x:输出执行过程
+>> * -n:检测脚本语法是否正确 
+> * $():``(反引号），命令替换，用来重组命令行，先完成引号里的命令行，然后将其结果替换出来，再重组成新的命令行。
+> * ${}:变量替换。
 
-3.Optional: adjusting Desktop
+## 3.Optional: adjusting Desktop
 In GUI desktop, disable auto updates: `Software & updates -> Updates`,
-set `Automatically check for updates` to `Never`, untick all checkboxes, click close and click close
-again.
-GUI（Graphics User Interface）：图形用户界面
+set `Automatically check for updates` to `Never`, untick all checkboxes, click close and click close again.
 
-1
 ```shell script
 # Removes nautilus bookmarks and disables lock screen
 echo '==> `Ctrl+Alt+T` to start a GUI terminal'
 curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/2-gnome.sh |
     bash
-
 ```
+> * GUI（Graphics User Interface）：图形用户界面
+> * 管道命令：管道是一种通信机制，通常用于进程间的通信，它将前面每一个进程的输出（stdout）直接作为下一个进程的输入（stdin）。管道命令使用|作为界定符号，仅能处理standard output(stdout,标准输出),而忽略standard error output(stderr，标准输入)。
+> * stdout redirection（输出重定向)：使用符号直接把程序输出转向到某个文件或某个程序。
 
 ## 4.Install Linuxbrew
-
 使用清华的[镜像](https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/).
 
-1 设置环境变量
 ```shell script
 echo "==> Tuna mirrors of Homebrew/Linuxbrew"
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
 export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
 
-2 安装 Homebrew
 git clone --depth=1 https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/install.git brew-install
 /bin/bash brew-install/install.sh
-**安装成功后需将 brew 程序的相关路径加入到环境变量中
 
 rm -rf brew-install
 
@@ -132,8 +120,18 @@ else
 fi
 
 source $HOME/.bashrc
-
 ```
+
+> * 设置环境变量（临时替换）
+>
+> * 安装Homebrew
+>> * git clone：将存储库克隆到新目录中。
+--depth=1
+> * 安装成功后需将 brew 程序的相关路径加入到环境变量中
+
+> * test：用于检查某个条件是否成立，可以进行数值、字符串和文件的检测。
+>> * -e(expression):判断文件是否存在(当 test 判断 expression 成立时，退出状态为 0，否则为非 0 值).
+>> [ expression ]:test 命令也可以简写为[],左右两边的空格是必须的。
 
 ## 5.Download
 

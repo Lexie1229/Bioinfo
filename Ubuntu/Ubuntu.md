@@ -92,14 +92,69 @@ git clone --depth=1 https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/install.gi
 
 rm -rf brew-install
 
-3
 test -d ~/.linuxbrew && PATH="$HOME/.linuxbrew/bin:$HOME/.linuxbrew/sbin:$PATH"
 test -d /home/linuxbrew/.linuxbrew && PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
 
-4 替换现有仓库上游
-替换 brew 程序本身的源
+
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 brew update
+
+> * 安装步骤:
+>> * 设置环境变量（临时替换）
+>> * 安装Linuxbrew
+>>> * Linuxbrew：软件包管理工具，拥有安装、卸载、更新、查看、搜索等很多实用的功能。
+> * 安装成功后需将 brew 程序的相关路径加入到环境变量中
+4 替换现有仓库上游
+替换 brew 程序本身的源
+
+> * git clone：拷贝Git仓库到本地，即将存储库克隆到新目录中。
+>> * git clone [url] <rename>:拷贝至本地并重命名存储库。
+>> * --depth=1:用于指定克隆深度，为1即表示只克隆最近一次的commit（提交）。限制克隆深度，不会下载历史记录，加快克隆速度。
+> * rm(remove):用于删除一个文件或者目录。
+>> * rm [option] [file]
+>> * rm filename:删除指定文件。
+>> * -r(-R,--recursive,递归):remove directories and their contents recursively（删除当前目录下的所有文件及目录。）。
+>> * -f(--force): ignore nonexistent files and arguments, never prompt(忽略不存在的文件和参数，从不提示).
+> * test：用于检查某个条件是否成立和比较值，可以进行数值、字符串和文件的检测。
+>> * test expression:判断文件是否存在(当 test 判断 expression 成立时，退出状态为 0，否则为非 0 值).
+>> * [ expression ]:test 命令也可以简写为[],左右两边的空格是必须的。
+>> * test -e file: 判断文件是否存在。
+>> * test -d file: 判断文件是否存在并且是目录。
+>> * if test  (表达式为真)
+>> * if test !（表达式为假）
+> * 逻辑运算符：&&(与)、||(或)、!(非)
+> * $HOME：表示环境变量。Linux中变量调用，在变量名前加一个$符号，一般全部大写作为规范。HOME指定当前用户的主目录。
+> * $PATH:表示环境变量。查找路径。
+> * Linux文件夹：
+>> * bin（binary，二进制）：存放可执行的二进制文件。
+> * sbin：存放管理员使用的存储二进制系统程序文件。
+
+> * Linux ctrl快捷键：
+>> * ctrl+c:退出一个命令。
+>> * ctrl+d:退出一个终端；删除光标后一个字符。
+>> * ctrl+a:退出一个终端。
+ctrl+a: 光标跳到行首。
+ctrl+b: 光标左移一个字母。
+ctrl+c: 杀死当前进程。
+ctrl+d: 删除光标后一个字符或exit、logout。
+ctrl+e: 光标移到行尾。
+ctrl+f：向后移一个字符。
+ctrl+h: 删除光标前一个字符，同backspace键相同。
+ctrl+k: 剪切光标后至行尾的内容。
+ctrl+l: 清屏，相当于clear。
+Ctrl+p：重复上一次命令。
+ctrl+r: 搜索之前的命令历史。多次ctrl+r 会一直向上搜索。
+ctrl+u: 剪切光标前至行首间的所有内容。
+ctrl+w: 剪切前面的字符至上一个空格处。
+ctrl+t: 交换光标位置前的两个字符。
+ctrl+y: 粘贴或者恢复上次的删除。
+ctrl+z: 把当前进程转到后台运行，使用fg命令恢复。
+Ctrl+x: 跳回之前移动的原位置。
+ctrl+m: 等同于回车键
+ctrl+o: 等同于回车键
+ctrl+s: 暂时冻结当前shell的输入
+ctrl+q: 解冻
+
 
 
 if grep -q -i Homebrew $HOME/.bashrc; then
@@ -122,19 +177,9 @@ fi
 source $HOME/.bashrc
 ```
 
-> * 设置环境变量（临时替换）
->
-> * 安装Homebrew
->> * git clone：将存储库克隆到新目录中。
---depth=1
-> * 安装成功后需将 brew 程序的相关路径加入到环境变量中
 
-> * test：用于检查某个条件是否成立，可以进行数值、字符串和文件的检测。
->> * -e(expression):判断文件是否存在(当 test 判断 expression 成立时，退出状态为 0，否则为非 0 值).
->> [ expression ]:test 命令也可以简写为[],左右两边的空格是必须的。
 
 ## 5.Download
-
 Fill `$HOME/bin`, `$HOME/share` and `$HOME/Scripts`.
 
 ```shell script
@@ -143,14 +188,16 @@ bash download.sh
 source $HOME/.bashrc
 ```
 
-curl:
--L, --location      Follow redirects
--O, --remote-name   Write output to a file named as the remote file
+> * 
+
+
+
+
+
+
 
 ## 6.Install packages managed by Linuxbrew
-
 Packages include:
-
 * Programming languages: Perl, Python, R, Java, Lua and Node.js
 * Some generalized tools
 

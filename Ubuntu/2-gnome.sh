@@ -1,3 +1,4 @@
+```
 #!/usr/bin/env bash
 
 # http://superuser.com/questions/244189/bashrc-how-to-know-x-window-is-available-or-not
@@ -38,3 +39,4 @@ if [ -n "$DISPLAY" ]; then
 else
     echo "This script should be execute inside a GUI terminal"
 fi
+```

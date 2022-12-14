@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-
-#!/usr/bin/env bash 声明命令解释器，指明使用什么shell（命令解释器）程序来解释脚本
-#符号在shell脚本语言中单独使用代表注释标识符，会被脚本解释器自动忽略
-#!字符序列（Shebang或Hashbang），出现在文本文件的第一行的前两个字符
-文件中存在Shebang的情况下，会分析Shebang后的内容，作为解释器指令并调用
+> * #!/usr/bin/env bash 声明命令解释器，指明使用什么shell（命令解释器）程序来解释脚本
+> * #符号在shell脚本语言中单独使用代表注释标识符，会被脚本解释器自动忽略
+> * #!字符序列（Shebang或Hashbang），出现在文本文件的第一行的前两个字符
+> * 文件中存在Shebang的情况下，会分析Shebang后的内容，作为解释器指令并调用
 
 1
 echo "====> Install softwares via apt-get <===="
@@ -34,9 +33,6 @@ echo "==> Switch to an adjacent mirror"
 # https://lug.ustc.edu.cn/wiki/mirrors/help/ubuntu
 cat <<EOF > list.tmp
 
-cat <<EOF,以EOF输入字符为标准输入结束
-
-
 deb https://mirrors.ustc.edu.cn/ubuntu/ focal main restricted universe multiverse
 deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal main restricted universe multiverse
 
@@ -54,6 +50,14 @@ deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-backports main restricted univ
 # deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
 
 EOF
+
+> * cat <<EOF > 文件名
+EOF 表示结束
+> * 文件/etc/apt/sources.list是一个普通可编辑的文本文件，保存了ubuntu软件更新的源服务器的地址
+> * deb:Debian软件包格式,文件扩展名为.deb。
+> * deb开头表示直接通过.deb二进制文件进行安装。
+> * deb-src开头表示分别表示通过源文件进行安装。
+
 
 if [ ! -e /etc/apt/sources.list.bak ]; then
     sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -79,8 +83,16 @@ sudo apt-get -y install build-essential curl file git
 sudo apt-get -y install pkg-config libbz2-dev zlib1g-dev libzstd-dev libexpat1-dev
 # sudo apt-get -y install libcurl4-openssl-dev libncurses-dev
 
+> * -y
+
 echo "==> Install other software"
 sudo apt-get -y install aptitude parallel vim screen xsltproc numactl
+
+> * parallel
+> develop libraries
+> libdb-dev libxml2-dev libssl-dev libncurses5-dev libgd-dev
+> alignDB
+> gtk3
 
 echo "==> Install develop libraries"
 # sudo apt-get -y install libreadline-dev libedit-dev

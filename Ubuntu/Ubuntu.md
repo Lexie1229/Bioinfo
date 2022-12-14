@@ -50,6 +50,9 @@ echo "==> When some packages went wrong, check http://mirrors.ustc.edu.cn/ubuntu
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/1-apt.sh)"
 ```
 
+> count
+> chomd
+
 > * curl:下载工具
 >> * -f, --fail          Fail silently (no output at all) on HTTP errors 连接失败不显示http错误
 >> * -L, --location      Follow redirects 让HTTP 请求跟随服务器的重定向
@@ -75,8 +78,10 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/2-gnom
     bash
 ```
 > * GUI（Graphics User Interface）：图形用户界面
-> * 管道命令：管道是一种通信机制，通常用于进程间的通信，它将前面每一个进程的输出（stdout）直接作为下一个进程的输入（stdin）。管道命令使用|作为界定符号，仅能处理standard output(stdout,标准输出),而忽略standard error output(stderr，标准输入)。
+> * 管道命令：管道是一种通信机制，通常用于进程间的通信，它将前面每一个进程的输出（stdout,标准输出，1）直接作为下一个进程的输入（stdin，标准输入，0）。管道命令使用|作为界定符号，仅能处理standard output(stdout),而忽略standard error output(stderr，标准错误，2)。
 > * stdout redirection（输出重定向)：使用符号直接把程序输出转向到某个文件或某个程序。
+> * 文字描述符：0（stdin，标准输入）、1（stdout，标准输出）、2（stderr，标准错误）.
+> * 重定向符号：> 或 >> (前者先清空文件，然后再写入内容；后者将重定向的内容追加到现有文件的尾部)。
 
 ## 4.Install Linuxbrew
 使用清华的[镜像](https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/).
@@ -94,7 +99,6 @@ rm -rf brew-install
 
 test -d ~/.linuxbrew && PATH="$HOME/.linuxbrew/bin:$HOME/.linuxbrew/sbin:$PATH"
 test -d /home/linuxbrew/.linuxbrew && PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
-
 
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 brew update
@@ -123,37 +127,36 @@ brew update
 >> * if test  (表达式为真)
 >> * if test !（表达式为假）
 > * 逻辑运算符：&&(与)、||(或)、!(非)
+>> * 优先级：！> && > ||
 > * $HOME：表示环境变量。Linux中变量调用，在变量名前加一个$符号，一般全部大写作为规范。HOME指定当前用户的主目录。
 > * $PATH:表示环境变量。查找路径。
 > * Linux文件夹：
 >> * bin（binary，二进制）：存放可执行的二进制文件。
 > * sbin：存放管理员使用的存储二进制系统程序文件。
+> * .bashrc:home目录下的一个shell文件，用于储存用户的个性化设置，在bash每次启动时都会加载.bashrc文件中的内容，并根据内容定制当前bash的配置和环境。
+>> * 功能：个性化指令、设置环境路径、设置提示符。
+
+
+> * grep：用于查找文件里符合条件的字符串。
+>> * grep [OPTION] PATTERNS [FILE]
+>> * -i(--ignore-case):ignore case distinctions in patterns and data(忽略字符大小写的差别)。
+>> * -q(--quiet, --silent): suppress(抑制) all normal output(不显示任何信息)。
+> * alias:定义命令别名。
+> * source:用于从当前shell会话中的文件读取和执行命令,通常用于保留、更改当前shell中的环境变量.
+>> * source:
+>> * source可以用.代替。
+
 
 > * Linux ctrl快捷键：
 >> * ctrl+c:退出一个命令。
 >> * ctrl+d:退出一个终端；删除光标后一个字符。
->> * ctrl+a:退出一个终端。
-ctrl+a: 光标跳到行首。
-ctrl+b: 光标左移一个字母。
-ctrl+c: 杀死当前进程。
-ctrl+d: 删除光标后一个字符或exit、logout。
-ctrl+e: 光标移到行尾。
-ctrl+f：向后移一个字符。
-ctrl+h: 删除光标前一个字符，同backspace键相同。
-ctrl+k: 剪切光标后至行尾的内容。
-ctrl+l: 清屏，相当于clear。
-Ctrl+p：重复上一次命令。
-ctrl+r: 搜索之前的命令历史。多次ctrl+r 会一直向上搜索。
-ctrl+u: 剪切光标前至行首间的所有内容。
-ctrl+w: 剪切前面的字符至上一个空格处。
-ctrl+t: 交换光标位置前的两个字符。
-ctrl+y: 粘贴或者恢复上次的删除。
-ctrl+z: 把当前进程转到后台运行，使用fg命令恢复。
-Ctrl+x: 跳回之前移动的原位置。
-ctrl+m: 等同于回车键
-ctrl+o: 等同于回车键
-ctrl+s: 暂时冻结当前shell的输入
-ctrl+q: 解冻
+>> * ctrl+h:删除光标前一个字符。
+>> * ctrl+a:光标跳转行首。
+>> * ctrl+e:光标移到行尾。
+>> * ctrl+b:光标左移一个字符。
+>> * ctrl+f:光标右移一个字符。
+
+
 
 
 
@@ -229,8 +232,20 @@ bash $HOME/Scripts/dotfiles/r/install.sh
 
 # Optional
 # bash $HOME/Scripts/dotfiles/rust/install.sh
-
 ```
+> * 问题：
+> perl：GraphViz 安装失败（Finding xxx on mirror https://mirrors.aliyun.com/CPAN failed.Couldn't find module or a distribution xxx）
+>> 解决：GraphViz2
+
+> * CPAM(Comprehensive Perl Archive Network,Perl综合档案网)
+> cpanm：
+>> * cpanm:一个新型的perl包管理器.
+>> * cpanm [options] Module:
+>> * --mirror-only:Use the mirror's index file instead of the CPAN Meta DB 
+>> * -n(--notest):Do not run unit tests
+>> * -q(--quiet):Turns off the most output
+
+
 
 ## 8.Bioinformatics Apps
 

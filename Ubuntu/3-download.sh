@@ -7,6 +7,8 @@ mkdir -p $HOME/.local/bin
 mkdir -p $HOME/share
 mkdir -p $HOME/Scripts
 
+> . :隐藏文件
+
 # make sure $HOME/bin in your $PATH
 if grep -q -i homebin $HOME/.bashrc; then
     echo "==> .bashrc already contains homebin"
@@ -20,6 +22,8 @@ else
 
     eval $HOME_PATH
 fi
+
+> * eval:首先扫描命令行进行所有的替换,然后再执行命令.
 
 # Clone or pull other repos
 for OP in dotfiles withncbi; do
@@ -37,6 +41,9 @@ for OP in dotfiles withncbi; do
         popd > /dev/null
     fi
 done
+
+> * -d/-e
+> * pushd popd
 
 # alignDB
 # chmod +x $HOME/Scripts/alignDB/alignDB.pl

@@ -1,5 +1,3 @@
-![Build](https://github.com/wang-q/faops/workflows/Build/badge.svg)
-
 # `faops` operates fasta files
 
 `faops` is a lightweight tool for operating sequences in the fasta format.
@@ -51,17 +49,6 @@ Options:
     Type "faops command-name" for detailed options of each command.
     Options *MUST* be placed just after command.
 
-1 faops rc [options] <in.fa> <out.fa> 反补
-    -n         keep name identical (don't prepend RC_)
-    -r         just Reverse, prepends R_
-    -c         just Complement, prepends C_
-    -f STR     only RC sequences in this list.file
-    -l INT     sequence line length [80]
-2 faops some [options] <in.fa> <list.file> <out.fa> 提取
-    -i         Invert, output sequences not in the list
-    -l INT     sequence line length [80]
-3  faops order [options] <in.fa> <list.file> <out.fa> 提取
-    -l INT     sequence line length [80]
 
 ```
 
@@ -160,3 +147,22 @@ This software is copyright (c) 2014 by Qiang Wang.
 
 This is free software; you can redistribute it and/or modify it under the same terms as the Perl 5
 programming language system itself.
+
+
+> * 1 faops rc [options] <in.fa> <out.fa> 反补  
+    -n         keep name identical (don't prepend RC_)  
+    -r         just Reverse, prepends R_  
+    -c         just Complement, prepends C_  
+    -f STR     only RC sequences in this list.file  
+    -l INT     sequence line length [80]  
+> * 2 faops some [options] <in.fa> <list.file> <out.fa> 提取  
+    -i         Invert, output sequences not in the list  
+    -l INT     sequence line length [80]  
+> * 3  faops order [options] <in.fa> <list.file> <out.fa> 提取  
+    -l INT     sequence line length [80]  
+
+
+
+> * cut:显示每个文件
+>> * cut OPTION [FILE]
+>> * -f(--fields=LIST):select only these fields.

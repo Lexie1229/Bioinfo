@@ -132,7 +132,6 @@ wsl -l -v
 > * Invoke-WebRequest命令：
 > * Add-AppxPackage
 > * leaf/tree
-> 
 
 ***Symlinks 软链接***
 * WSL: reduce the space occupied by virtual disks

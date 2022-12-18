@@ -149,17 +149,32 @@ This is free software; you can redistribute it and/or modify it under the same t
 programming language system itself.
 
 
-> * 1 faops rc [options] <in.fa> <out.fa> 反补  
-    -n         keep name identical (don't prepend RC_)  
-    -r         just Reverse, prepends R_  
-    -c         just Complement, prepends C_  
-    -f STR     only RC sequences in this list.file  
-    -l INT     sequence line length [80]  
-> * 2 faops some [options] <in.fa> <list.file> <out.fa> 提取  
-    -i         Invert, output sequences not in the list  
-    -l INT     sequence line length [80]  
-> * 3  faops order [options] <in.fa> <list.file> <out.fa> 提取  
-    -l INT     sequence line length [80]  
+> * faops rc [options] <in.fa> <out.fa> 反补序列
+>> * -n(name) : keep name identical (don't prepend RC_) 
+>> * -r(reverse) : just Reverse, prepends R_  
+>> * -c(complement) : just Complement, prepends C_  
+>> * -f STR : only RC sequences in this list.file  
+>> * -l INT : sequence line length [80]
+> * faops some [options] <in.fa> <list.file> <out.fa> 提取多个序列  
+>> * -i(invert) : Invert, output sequences not in the list  
+>> * -l INT : sequence line length [80]  
+> * faops order [options] <in.fa> <list.file> <out.fa> 按给定顺序提取多个序列  
+>> * -l INT     sequence line length [80]  
+> * faops size <in.fa> [more_files.fa] 计算总碱基数
+
+
+> * touch:
+
+
+> * sort:用于对文本文件的内容排序.
+>> * sort [OPTION] [FILE]:读取文件内容，进行排序。
+>> * sort [OPTION]:读取标准输入，进行排序。
+>> * -n(--numeric-sort):compare according to string numerical value（根据字符串数值进行排序,从小到大）。
+>> * -r(--reverse):reverse the result of comparisons（以相反的顺序排序,从大到小）。
+>> * -k(--key=KEYDEF):sort via a key; KEYDEF gives location and type.KEYDEF is F[.C][OPTS][,F[.C][OPTS]] for start and stop position, where F is a field number and C a character position in the field; both are origin 1, and the stop position defaults to the line's end.（按指定的列进行排序)
+>> * 例如：-k 1.2，3.3  表示从第一个字段的第二个字符开始，到第三个字段的第三个字符结束进行排序。
+>> * -t(--field-separator=SEP):use SEP instead of non-blank to blank transition
+
 
 
 

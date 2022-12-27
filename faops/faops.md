@@ -149,7 +149,7 @@ This is free software; you can redistribute it and/or modify it under the same t
 programming language system itself.
 
 
-
+# NOTE
 > * faops rc [options] <in.fa> <out.fa> 反补序列
 >> * -n(name) : keep name identical (don't prepend RC_) 
 >> * -r(reverse) : just Reverse, prepends R_  
@@ -186,10 +186,6 @@ programming language system itself.
 > * ( )：指令群组（command group).
 > * < ：读入。
 > * \ ：换行。
-
-
-
-> * touch:
 
 
 > * sort:用于对文本文件的内容排序.

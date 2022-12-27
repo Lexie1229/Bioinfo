@@ -149,6 +149,7 @@ This is free software; you can redistribute it and/or modify it under the same t
 programming language system itself.
 
 
+
 > * faops rc [options] <in.fa> <out.fa> 反补序列
 >> * -n(name) : keep name identical (don't prepend RC_) 
 >> * -r(reverse) : just Reverse, prepends R_  
@@ -159,8 +160,33 @@ programming language system itself.
 >> * -i(invert) : Invert, output sequences not in the list  
 >> * -l INT : sequence line length [80]  
 > * faops order [options] <in.fa> <list.file> <out.fa> 按给定顺序提取多个序列  
->> * -l INT     sequence line length [80]  
-> * faops size <in.fa> [more_files.fa] 计算总碱基数
+>> * -l INT：sequence line length [80]  
+> * faops size <in.fa> [more_files.fa] 计算每一个reads的总碱基数
+>> * faops filter [options] <in.fa> <out.fa> 按照条件对序列进行筛选
+>> * -a INT：pass sequences at least this big ('a'-smallest)
+>> * -z INT：pass sequences this size or smaller ('z'-biggest)
+>> * -n INT：pass sequences with fewer than this number of N's
+>> * -u：Unique, removes duplicated ids, keeping the first(删除重复序列)。
+>> * -U：Upper case, converts all sequences to upper cases(将所有序列转换为大写)。
+>> * -b：pretend to be a blocked fasta file
+>> * -N：convert IUPAC ambiguous codes to 'N'
+>> * -d：remove dashes '-'
+>> * -s：simplify sequence names(简化序列名称)。
+>> * -l INT：sequence line length [INT]
+>>> * 例如：faops filter -l 0 <in.fq> <out.fa>，将所有内容写在一行上，并将fastq格式转变为fasta格式。
+> * faops n50 [options] <in.fa> [more_files.fa] 计算n50和其他数据
+>> * -H：do not display header（不显示标题-N50）。
+>> * -N INT：compute Nx statistic [INT] (计算N[INT])。
+>> * -S：compute sum of size of all entries（计算所有序列的总碱基数）。
+>> * -A：compute average length of all entries（计算序列的平均碱基数）。
+>> * -E：compute the E-size (from GAGE)
+>> * -C：count entries（计算序列条数）。
+>> * -g INT：size of genome, instead of total size in files（基于组装的基因组大小进行N[INT]预测）。
+
+> * ( )：指令群组（command group).
+> * < ：读入。
+> * \ ：换行。
+
 
 
 > * touch:
@@ -173,11 +199,10 @@ programming language system itself.
 >> * -r(--reverse):reverse the result of comparisons（以相反的顺序排序,从大到小）。
 >> * -k(--key=KEYDEF):sort via a key; KEYDEF gives location and type.KEYDEF is F[.C][OPTS][,F[.C][OPTS]] for start and stop position, where F is a field number and C a character position in the field; both are origin 1, and the stop position defaults to the line's end.（按指定的列进行排序)
 >> * 例如：-k 1.2，3.3  表示从第一个字段的第二个字符开始，到第三个字段的第三个字符结束进行排序。
->> * -t(--field-separator=SEP):use SEP instead of non-blank to blank transition
+>> * -t(--field-separator=SEP):use SEP instead of non-blank to blank transition（指定排序时所用的栏位分隔字符）
 
-
-
-
-> * cut:显示每个文件
+> * cut:剪切文件中选定的行写至标准输出。
 >> * cut OPTION [FILE]
->> * -f(--fields=LIST):select only these fields.
+>> * -f(--fields=LIST):select only these fields(以区域为单位进行分割，仅显示选定的区域).
+>> * -b(--bytes=LIST):select only these bytes(以字节为单位进行分割，仅显示选定的字节).
+>> * -c(--characters=LIST):select only these characters(以字符为单位进行分割，仅显示选定的字符).

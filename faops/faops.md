@@ -186,19 +186,3 @@ programming language system itself.
 > * ( )：指令群组（command group).
 > * < ：读入。
 > * \ ：换行。
-
-
-> * sort:用于对文本文件的内容排序.
->> * sort [OPTION] [FILE]:读取文件内容，进行排序。
->> * sort [OPTION]:读取标准输入，进行排序。
->> * -n(--numeric-sort):compare according to string numerical value（根据字符串数值进行排序,从小到大）。
->> * -r(--reverse):reverse the result of comparisons（以相反的顺序排序,从大到小）。
->> * -k(--key=KEYDEF):sort via a key; KEYDEF gives location and type.KEYDEF is F[.C][OPTS][,F[.C][OPTS]] for start and stop position, where F is a field number and C a character position in the field; both are origin 1, and the stop position defaults to the line's end.（按指定的列进行排序)
->> * 例如：-k 1.2，3.3  表示从第一个字段的第二个字符开始，到第三个字段的第三个字符结束进行排序。
->> * -t(--field-separator=SEP):use SEP instead of non-blank to blank transition（指定排序时所用的栏位分隔字符）
-
-> * cut:剪切文件中选定的行写至标准输出。
->> * cut OPTION [FILE]
->> * -f(--fields=LIST):select only these fields(以区域为单位进行分割，仅显示选定的区域).
->> * -b(--bytes=LIST):select only these bytes(以字节为单位进行分割，仅显示选定的字节).
->> * -c(--characters=LIST):select only these characters(以字符为单位进行分割，仅显示选定的字符).

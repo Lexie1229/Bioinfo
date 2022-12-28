@@ -114,11 +114,6 @@ brew update
 > * git clone：拷贝Git仓库到本地，即将存储库克隆到新目录中。
 >> * git clone [url] <rename>:拷贝至本地并重命名存储库。
 >> * --depth=1:用于指定克隆深度，为1即表示只克隆最近一次的commit（提交）。限制克隆深度，不会下载历史记录，加快克隆速度。
-> * rm(remove):用于删除一个文件或者目录。
->> * rm [option] [file]
->> * rm filename:删除指定文件。
->> * -r(-R,--recursive,递归):remove directories and their contents recursively（删除当前目录下的所有文件及目录。）。
->> * -f(--force): ignore nonexistent files and arguments, never prompt(忽略不存在的文件和参数，从不提示).
 > * test：用于检查某个条件是否成立和比较值，可以进行数值、字符串和文件的检测。
 >> * test expression:判断文件是否存在(当 test 判断 expression 成立时，退出状态为 0，否则为非 0 值).
 >> * [ expression ]:test 命令也可以简写为[],左右两边的空格是必须的。
@@ -137,10 +132,6 @@ brew update
 >> * 功能：个性化指令、设置环境路径、设置提示符。
 
 
-> * grep：用于查找文件里符合条件的字符串。
->> * grep [OPTION] PATTERNS [FILE]
->> * -i(--ignore-case):ignore case distinctions in patterns and data(忽略字符大小写的差别)。
->> * -q(--quiet, --silent): suppress(抑制) all normal output(不显示任何信息)。
 > * alias:定义命令别名。
 > * source:用于从当前shell会话中的文件读取和执行命令,通常用于保留、更改当前shell中的环境变量.
 >> * source:

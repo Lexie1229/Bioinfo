@@ -13,7 +13,6 @@ RNA-seq 的功能：
 ② 分析SNP、新颖的转录本、可变剪接、RNA编辑等。
 
 * 分析流程的结构仿照[`Tom Battaglia`](https://github.com/twbattaglia)
-
 ```bash
       database                   Workflow                        tools
 ======================================================================================
@@ -47,7 +46,7 @@ RNA-seq 的功能：
                         +-------------------------+
 ```
 
-## 1 文件夹创建
+## 1 目录创建
 进行数据处理之前，先生成整体的目录结构，便于数据存放及查找文件，并且程序运行时能明确地填写文件路径。  
 
 ```bash
@@ -66,7 +65,6 @@ cd project/rat
 # 新建多个文件夹存放各类文件
 mkdir annotation genome sequence output script
 ```
-
 | 文件夹名 | 说明 |
 | ---| --- |
 | annotation | 存放注释文件(.gff .bed .gff3) |
@@ -76,7 +74,6 @@ mkdir annotation genome sequence output script
 | script | 存放脚本的位置 |
 
 使用`tree`命令查看设置的目录结构
-
 ```bash
 # 进入rat目录
 cd ~/project/rat
@@ -102,7 +99,6 @@ tree
 ### 2.0 生信管理工具
 
 * Linuxbrew
-
 ```bash
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
@@ -127,7 +123,6 @@ source $HOME/.bashrc
 ```
 
 * conda：用于安装和管理生信相关的工具。    
-
 ```bash
 # 下载脚本
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
@@ -145,49 +140,34 @@ conda config --add channels bioconda
 conda create --name python36 python=3.6
 ```
 
-
-
-
-
-
-
-
+NOTE   
+conda：管理和部署应用程序、环境和软件包的工具。
+* conda command
+     * config：修改.condarc文件中的配置值。
+       * --add channels conda-canary：添加软件源，具有优先级。
+     * create：创建新的conda环境。
+       * -n ENVIRONMET (--name ENVIRONMENT) Name of environment
+    * info：显示当前conda安装的信息。
 
 ### 2.1 sratoolkit
-
-sra是NCBI的用于下载数据以及转化数据使用
+SRA Toolkit：NCBI提供的用于下载数据(.sra)及转换数据格式（.fastq.gz)的工具，整合了prefetch、fastq-dump、sam-dump工具.
 
 ```bash
 # 使用brew安装
 brew install sratoolkit
 ```
 
-
-+ 本地安装
-
-```bash
-$ cd ~/biosoft
-# mac
-$ wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.6-1/sratoolkit.2.9.6-1-mac64.tar.gz
-$ tar -xzvf sratoolkit.2.9.6-1-mac64.tar.gz
-$ mv sratoolkit.2.9.6-1-mac64 sratoolkit.2.9.6
-$ cd sratoolkit.2.9.6/bin
-
-# 导入临时环境变量
-$ export PATH="$(pwd):$PATH"
-$ prefetch --help
-```
-
-
+|      | 站点 |
+| --- | --- |
+| 官网 | https://www.ncbi.nlm.nih.gov/sra/ |
 
 ### 2.2 fastqc
-用于Quality Analysis，对测序文件质量控制
+FastQC：用于测序数据的质量控制。
 
 ```bash
 # 使用brew安装
 brew install fastqc
 ```
-
 
 |     | 站点 |
 | --- | --- |
@@ -195,54 +175,34 @@ brew install fastqc
 | 手册 | http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/ |
 | 中文解释 | https://www.plob.org/article/5987.html |
 
-
-+ 本地安装
+### 2.3 multiqc
+MultiQC:将测序数据的fastqc统计结果整合成一个HTLM可视化文件，并可以导出pdf文件，便于查看测序数据的质控结果。
 
 ```bash
-cd ~/biosoft
-wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.7.zip
-unzip fastqc_v0.11.7.zip
-cd FastQC
-
-# 导入临时环境变量
-export PATH="$(pwd):$PATH"
-
-# 测试是否能运行
-fastqc --help
+# 使用Python的安装器安装
+pip install multiqc
 ```
-
-
-### 2.3 multiqc
-
-将fastqc的统计结果汇聚成一个网页可视化文件，便于查看
 
 |      | 站点 |
 | --- | --- |
 | 官网 |  https://multiqc.info/ |
 | 文档 | https://multiqc.info/docs/ |
-| 中文解读 | http://fbb84b26.wiz03.com/share/s/3XK4IC0cm4CL22pU-r1HPcQQ1iRTvV2GwkwL2AaxYi2fXHP7 |
-
-```bash
-# 使用python的安装器安装
-pip install multiqc
-```
 
 ### 2.4 cutadapt
+cutadapt：用于去除任意指定的接头和序列，同时可以用于质量过滤。
 
-用于去除测序接头
+```bash
+# 使用Python的安装器安装
+pip install cutadapt
+```
 
 |      | 站点 |
 | --- | --- |
 | 手册 | https://cutadapt.readthedocs.io/en/stable/guide.html |
 
-```bash
-pip install cutadapt
-```
-
 ### 2.5 质量修剪
-
-+ Trim Galore
-
+* Trim Galore
+Trim Galore：
 使用perl脚本编写的工具，是对`cutapater`和`fastqc`命令的封装。可以自动检测接头并调用`cutapater`进行
 
 | Trim Galore | 站点                                                         |
@@ -258,10 +218,9 @@ wget https://github.com/FelixKrueger/TrimGalore/archive/0.6.3.tar.gz -O TrimGalo
 gzip -d TrimGalore.gz
 ```
 
-+ fastp
+* fastp
 
-+ trimmomatic
-
+* trimmomatic
 trimmomatic是一款多线程命令行工具，可以用来修剪Illumina (FASTQ)数据以及删除接头，是目前使用最多的高通量测序数据清洗的工具。
 
 |   | 站点 |
@@ -318,7 +277,7 @@ Kim D, Langmead B and Salzberg SL. [**HISAT: a fast spliced aligner with low mem
 $ cd ~/biosoft/
 $ wget http://ccb.jhu.edu/software/hisat2/dl/hisat2-2.1.0-OSX_x86_64.zip
 
-# 解压缩
+# 解压
 $ unzip hisat2-2.1.0-OSX_x86_64.zip
 $ cd hisat2-2.1.0
 
@@ -388,8 +347,9 @@ $ indexdb_rna --ref $data
 ```
 
 ### 2.7 samtools
-
-比对得到的sam或者bam文件的各种操作
+samtools：对比对后得到的文件
+进行二进制查看、格式转换、排序、合并等操作的工具。
+比对得到的sam或bam文件的各种操作
 
 |   |  站点 |
 | --- | --- |
@@ -397,11 +357,9 @@ $ indexdb_rna --ref $data
 | 手册 | http://quinlanlab.org/tutorials/samtools/samtools.html |
 | 中文解读 | https://www.jianshu.com/p/6b7a442d293f |
 
-samtools是对比对后得到的文件进行格式转化处理合并等操作的工具。
+
 
 ```bash
-$ cd ~/biosoft
-
 # 下载
 $ wget -c https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2
 
@@ -419,9 +377,10 @@ $ make -j 4
 $ export PATH="$(pwd):$PATH"
 ```
 
-+ 使用brew安装
+
 
 ```bash
+# 使用brew安装
 brew install samtools
 ```
 
@@ -431,6 +390,7 @@ brew install samtools
 对比对后的文件进行read计数
 
 ```bash
+# 使用Python的安装器安装
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple HTseq
 ```
 
@@ -462,10 +422,10 @@ brew install r
 **注意**：安装完成`R`之后再安装`Rstudio`
 
 ### 2.11 parallel
-
-parallel是进行多线程运行的工具，并行运行可以提升效率，节省时间
+parallel：进行多线程运行的工具，并行运行可以提升效率，节省时间.
 
 ```bash
+# 使用brew安装
 brew install parallel
 ```
 
@@ -505,6 +465,35 @@ source("http://bioconductor.org/biocLite.R")
 biocLite("Ballgown")
 ```
 
+
+
+
+$ wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.6-1/sratoolkit.2.9.6-1-mac64.tar.gz
+$ tar -xzvf sratoolkit.2.9.6-1-mac64.tar.gz
+$ mv sratoolkit.2.9.6-1-mac64 sratoolkit.2.9.6
+$ cd sratoolkit.2.9.6/bin
+
+# 导入临时环境变量
+$ export PATH="$(pwd):$PATH"
+$ prefetch --help
+
+
++ 本地安装
+
+```bash
+cd ~/biosoft
+wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.7.zip
+unzip fastqc_v0.11.7.zip
+cd FastQC
+
+# 导入临时环境变量
+export PATH="$(pwd):$PATH"
+
+# 测试是否能运行
+fastqc --help
+
+
+
 ## 3 数据下载
 使用大鼠的测序数据进行测试。大鼠又叫大白鼠（Rat，Rattus norvegicus），是非常重要的模式生物之一，因其与人类存在高度的同源性及其优良的品系资源，被广泛应用于毒理学、神经病学，细胞培养等研究。在`ENSEMBL`和`UCSC`中均有其基因组数据。
 
@@ -524,13 +513,13 @@ biocLite("Ballgown")
 **下载**
 
 ```bash
-$ cd ~/project/rat/genome
-$ wget ftp://ftp.ensembl.org/pub/release-97/fasta/rattus_norvegicus/dna/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa.gz
-$ gzip -d Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa.gz
+cd ~/project/rat/genome
+wget ftp://ftp.ensembl.org/pub/release-97/fasta/rattus_norvegicus/dna/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa.gz
+gzip -d Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa.gz
 ```
 目前大鼠的基因组测序版本到了`6`，这里为了后面方便操作，改名为`rn6`
 ```
-# 改名（方便后面使用，名字太长一来不方便输入，二来可能会输错）
+# 改名（方便使用，避免输错）
 $ mv Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa rn6.fa
 ```
 下载得到的基因组文件可以查看一下包含哪些染色体，确认文件是否下载正确。
@@ -700,19 +689,18 @@ $ head rn6.gff
 >
 > gff文件开头描述了这个注释数据的基本信息，比如版本号，更新时间，组装的NCBI的Assembly编号等等，后面每一行表示描述信息，说明了在哪条染色体的什么位置是什么东西。比如第6行的表示在1号染色体正链上 396700-409750 这个范围内有一个基因编号为ENSRNOG00000046319的基因
 
-### 3.2 测试数据（实验数据）
+### 3.2 实验数据
+下载NCBI的`RNA-seq`数据，GEO数据库编号`GSE72960`，SRP数据编号`SRP063345`，文献来源：[肝硬化分子肝癌的器官转录组分析和溶血磷脂酸途径抑制 - 《Molecular Liver Cancer Prevention in Cirrhosis by Organ Transcriptome Analysis and Lysophosphatidic Acid Pathway Inhibition》](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5161110/)
 
-为了进行演示，从NCBI上查找相关的`RNA-seq`数据进行下载，在GEO数据库中找了一个数据`GSE72960`，对应的SRP数据为`SRP063345`，对应的文献是：
+* 数据下载流程：  
+  * 进入[NCBI-GEO](https://www.ncbi.nlm.nih.gov/geo)页面，`GEO accession`搜索框中输入`GSE72960`，显示该基因表达数据集的描述信息。例如：`Relations SPR SRP063345`表示测序文件的SRA编号
+  * 点击页面下方
 
-[肝硬化分子肝癌的器官转录组分析和溶血磷脂酸途径抑制 - 《Molecular Liver Cancer Prevention in Cirrhosis by Organ Transcriptome Analysis and Lysophosphatidic Acid Pathway Inhibition》](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5161110/)
 
-+ 首先进入站点[NCBI - GEO](https://www.ncbi.nlm.nih.gov/geo)，然后在搜索框中输入`GSE72960`，之后在下方出现了这个基因表达数据集的描述信息，比如样本提交日期，样本文献来源，数据提交人的信息，样本测序样本数量，对应的编号等等。
-
-![](./pic/GEO.png)
 
 + 我们直接点击最下面的`SRA Run selector`这个里面包含了这8个测序样本的测序信息以及文件`SRA编号`，通过这个编号就可以下载测序数据。
 
-![](./pic/Run_selector.png)
+
 
 + 将刚才在`Run selector`中查找到的数据的编号复制下来，之后下载测序数据，下载脚本如下，这里是采用`SRAtoolkit`工具包中的`prefetch`工具，如果部分数据下载失败，那么再次执行下面的代码。
 

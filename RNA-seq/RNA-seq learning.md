@@ -693,65 +693,69 @@ $ head rn6.gff
 下载NCBI的`RNA-seq`数据，GEO数据库编号`GSE72960`，SRP数据编号`SRP063345`，文献来源：[肝硬化分子肝癌的器官转录组分析和溶血磷脂酸途径抑制 - 《Molecular Liver Cancer Prevention in Cirrhosis by Organ Transcriptome Analysis and Lysophosphatidic Acid Pathway Inhibition》](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5161110/)
 
 * 数据下载流程：  
-  * 进入[NCBI-GEO](https://www.ncbi.nlm.nih.gov/geo)页面，`GEO accession`搜索框中输入`GSE72960`，显示该基因表达数据集的描述信息。例如：`Relations SPR SRP063345`表示测序文件的SRA编号
-  * 点击页面下方
-
-
-
-+ 我们直接点击最下面的`SRA Run selector`这个里面包含了这8个测序样本的测序信息以及文件`SRA编号`，通过这个编号就可以下载测序数据。
-
-
-
-+ 将刚才在`Run selector`中查找到的数据的编号复制下来，之后下载测序数据，下载脚本如下，这里是采用`SRAtoolkit`工具包中的`prefetch`工具，如果部分数据下载失败，那么再次执行下面的代码。
+  * 进入[NCBI-GEO](https://www.ncbi.nlm.nih.gov/geo)页面，`GEO accession`搜索框中输入`GSE72960`，显示该基因表达数据集的描述信息。例如：`SPR SRP063345`表示测序文件的SRA编号；`PMID:27960085`表示PubMed标识码，链接文献。
+  * 点击页面下方`SRA Run selector`，显示8个样本的测序信息及对应的`SRA编号`（6个实验组样本+2个对照组样本），通过编号下载测序数据（或点击`Accession List`下载`SRR_Acc_List.txt`文件，包含所有的`SRA编号`）。
+  * 根据`SRA编号`或`SRR_Acc_List.txt`文件，使用`SRAToolkit`工具包中的`prefetch`工具下载测序数据，若部分下载失败则重新执行代码。
+  * 使用`SRAToolkit`工具包中的`fastq-dump`工具，将下载的数据`.sra`转换为`.fastq.gz`格式。
 
 ```bash
-# 后台下载
-$ nohup prefetch SRR2190795 SRR224018{2..7} SRR2240228 -o . &
-```
-+ 下载完成之后并不是之前说的`.fastq.gz`格式的文件，而是`.sra`文件，这里进行格式转换，这里还是使用`SRAtoolkit`工具包，但是是里面的`fastq-dump`工具，使用它来进行格式转化
+# 进入~/project/rat/sequence目录
+cd ~/project/rat/sequence
 
-```bash
-# 将sra文件转化为fastq文件之后压缩为gz文件
+# 直接下载到当前目录(.)
+prefetch SRR2190795 SRR224018{2..7} SRR2240228 -O .
+# 后台不挂断下载
+nohup prefetch SRR2190795 SRR224018{2..7} SRR2240228 -O . &
+# 查看下载进度
+jobs
+# 利用list.txt文件批量下载
+prefetch --option-file list.txt
 
-# --gzip 把生成的fastq文件压缩为gz格式，节省内存
-$ parallel -j 4 "
+# 将sra格式转换为fastq格式后压缩为gz文件,节省内存
+parallel -j 4 "
     fastq-dump --split-3 --gzip {1}
 " ::: $(ls *.sra)
 
 # 删除sra文件
-$ rm *.sra
+rm *.sra
 ```
-> **fastq格式介绍**
+
+NOTE   
+prefetch：用于从NCBI下载SRA文件。
+* prefetch [options] [accessions(s)]
+  * -o(--output-file) <file>:write file to <file> when downloading
+single file. 
+  * -O(--output-directory) <directory>:save files to <directory>/.
+  * --option-file file：read more options and parameters from the file.
+  * -p(--progress):show progress.
+
+fastq-dump：
+* fastq-dump [options] [accessions(s)]
+  * --split-3:3-way splitting for mate-pairs.
+  * --gzip：compress output using gzip.
+
+parallel:用于构建并行运行命令。
+* parallel [options] [command [arguments]] (::: arguments|:::: argfile(s))
+  * -j(--jobs) n：run n jobs in parallel.
+  * -k：keep same order.
+  * --pipe：split stidn to multiple jobs.
+
+
+
+
+> **fastq格式**
 > ```bash
->    $ cd ~/project/rat/sequence
->    $ gzip -d -c SRR2190795.fastq.gz | head -n 20
+> cd ~/project/rat/sequence
+> gzip -d -c SRR2190795.fastq.gz | head -n 4
 > ```
-> 
 > @SRR2190795.1 HWI-ST1147:240:C5NY7ACXX:1:1101:1320:2244 length=100
 > ATGCTGGGGGCATTAGCATTGGGTACTGAATTATTTTCAGTAAGAGGGAAAGAATCCATCTCCNNNNNNNNNNNNNNNNNNNNNNAAANAAAAATAAAAT
 > +SRR2190795.1 HWI-ST1147:240:C5NY7ACXX:1:1101:1320:2244 length=100
 > CCCFFFFFHHHHHJIJJJJJJJJDHHJJJIJJJJJIJJJJJJJJJJJJJJJJJJJJJJJJJHH#####################################
 > @SRR2190795.2 HWI-ST1147:240:C5NY7ACXX:1:1101:1598:2247 length=100
-> AACTTCGGTTCTCTACTAGGAGTATGCCTCATAGTACAAATCCTCACAGGCTTATTCCTAGCANNNNNNNNNNNNNNNNNNNNNNTAACAGCATTTTCAT
-> +SRR2190795.2 HWI-ST1147:240:C5NY7ACXX:1:1101:1598:2247 length=100
-> @@@7D8+@A:1CFG<C:23<:E<;FF<BHIIEHG:?:??CDF<9DCGGG?1?FEG@@<@CA#######################################
-> @SRR2190795.3 HWI-ST1147:240:C5NY7ACXX:1:1101:1641:2250 length=100
-> AGAAGGTCTTAGATCAGAAGGAGCACAGACTGGATGGTCGTGTCATTGACCCTAAAAAGGCTANNNNNNNNNNNNNNNNNNNNNTGAAGAAAATCTTTGT
-> +SRR2190795.3 HWI-ST1147:240:C5NY7ACXX:1:1101:1641:2250 length=100
-> BC@FFFDDHHHHHJJJJJJJJJJJJJJJJJJJJIJJJFHGHHEGHIIIHJIJJIJJIJIJJID#####################################
-> @SRR2190795.4 HWI-ST1147:240:C5NY7ACXX:1:1101:1851:2233 length=100
-> GGGATTTCATGGCCTCCACGTAATTATTGGCTCAACTTTCCTAATTGTCTGTCTACTACGACANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNTNNCNNN
-> +SRR2190795.4 HWI-ST1147:240:C5NY7ACXX:1:1101:1851:2233 length=100
-> @@?DDBDDFFDDDGHGGGGI?B;FFHGHA@FEHGHDDGHEGGFGHIGEHIIHIGGBGACD6AH#####################################
-> @SRR2190795.5 HWI-ST1147:240:C5NY7ACXX:1:1101:1957:2243 length=100
-> CAGCCATTGTGGCTCCCGATGGCTTTGACATCATTGACATGACAGCCGGAGGTCAGATAAACTNNNNNNNNNNNNNNNNNNNNNNATCNGTGGCAAAGGT
-> +SRR2190795.5 HWI-ST1147:240:C5NY7ACXX:1:1101:1957:2243 length=100
-> @CCFFFFFHHHHAHJJJIJJJJJJIJJIGGGIFIJIIHIIGGJJJJJJJFHIGIJHHHHHHFC#####################################
->
 
 ## 4 质量控制
 ### 4.1 质量评估
-
 拿到测序数据文件，在序列比对之前需要对测序文件的测序质量进行查看，因为不同测序数据来源测序质量也不一样，为了保证后续分析的有效性和可靠性，需要对质量进行评估，如果数据很差那么在后续分析的时候就需要注意了。这里使用`fastqc`进行质量评估
 
 + 用法
@@ -762,7 +766,7 @@ fastqc [选项] [测序文件]
 + 实际使用
 
 ```bash
-$ cd ~/project/rat/sequence
+cd ~/project/rat/sequence
 
 # 因为程序不会自动新建目录，这里新建一个目录
 $ mkdir -p ../output/fastqc
@@ -789,7 +793,7 @@ SRR2240183_fastqc.zip  SRR2240186_fastqc.zip
 
 可以看到这个测序质量不是特别好，
 
-有关fastq的报告解读，这里有一篇文章写的可以[用FastQC检查二代测序原始数据的质量](https://www.plob.org/article/5987.html)
+有关fastq的报告解读，可以参考[用FastQC检查二代测序原始数据的质量](https://www.plob.org/article/5987.html)
 
 > 绿色表示通过，红色表示未通过，黄色表示不太好。一般而言RNA-Seq数据在sequence deplication levels 未通过是比较正常的。毕竟一个基因会大量表达，会测到很多遍。
 
@@ -804,30 +808,23 @@ $ multiqc .
 
 + 平均GC含量
 
-![](./pic/multiqc-GC.png)
+
 
 大体上查看一下测序的总的GC含量，GC含量说明了当前测序是否有很大问题，如果偏差较大，那么可能出现偏测序偏好性（绿色线是理论值，黄色线是实际的情况），因为是转录组，所以可能出现部分序列偏多的情况，这里没有特别大的差异。
 
-+ 所有的测序文件的质量
-
-![](./pic/multiqc-Histogram.png)
+* 所有的测序文件的质量
 
 在开头10bp之内和70bp之后，出现了质量值低于30的情况，这个时候说明测序的序列两端的部分序列质量可能一般，需要进行剔除。
 
-+ 查看平均质量值的read的数量
-
-![](./pic/multiqc-Per_Scores.png)
+* 查看平均质量值的read的数量
 
 在平均质量低于20的read处可以看到有曲线存在，这个说明其中存在质量很低的read，后续需要进行剔除
 
-+ 查看接头情况
-
-![](./pic/multiqc-adapter.png)
+* 查看接头情况
 
 显示为通过，但是有部分可能包含有几个碱基的接头序列，为了保险也进行一步接头剔除。
 
 ### 4.2 剔除接头以及测序质量差的碱基
-
 上面看到，在接头那里是显示的通过，但是可以看到有部分是有4个碱基与接头序列匹配的，属于Illumina的通用接头。另外也可以看到，除了可能存在接头的情况，在测序质量那里也可以看到在`5'`端存在低质量的测序区域，所以像两端这种低质量的区域也是要去除的的，这一步采用`trimmomatic`进行。
 
 ```bash
@@ -879,7 +876,7 @@ $ multiqc .
 ```
 相对于上面的情况，现在好多了
 
-## 5. 去除rRNA序列[可不做]
+## 5 去除rRNA序列[可不做]
 
 如果在提取RNA过程中没有对RNA进行筛选的情况下，那么得到的大部分将会是`rRNA`，这个对于后续的分析可能会存在影响，另外也会让比对的时间变长。
 
@@ -979,10 +976,9 @@ hisat2 [选项] -x [索引文件] [ -1 1测序文件 -2 2测序文件 -U 未成�
 + 实际使用
 
 ```bash
-$ cd ~/project/rat/output
-
-$ mkdir align
-$ cd rRNA
+cd ~/project/rat/output
+mkdir align
+cd rRNA
 
 $ parallel -k -j 4 "
     hisat2 -t -x ../../genome/index/rn6.chr1 \
@@ -1048,24 +1044,24 @@ do
 done
 ```
 
-+ 格式转化与排序
+* 格式转化与排序
 
 SAM格式是目前用来存放大量核酸比对结果信息的通用格式，也是人类能够“直接”阅读的格式类型，而BAM和CRAM是为了方便传输，降低存储压力将SAM进行压缩得到的格式形式。
 
 
 ```bash
-$ cd ~/project/rat/output/align
-$ parallel -k -j 4 "
+cd ~/project/rat/output/align
+parallel -k -j 4 "
     samtools sort -@ 4 {1}.sam > {1}.sort.bam
     samtools index {1}.sort.bam
 " ::: $(ls *.sam | perl -p -e 's/\.sam$//')
 
-$ rm *.sam
+rm *.sam
 
-$ ls
+ls
 ```
 
-```
+```bash
 SRR2190795.log          SRR2240185.log
 SRR2190795.sort.bam     SRR2240185.sort.bam
 SRR2190795.sort.bam.bai SRR2240185.sort.bam.bai
@@ -1081,21 +1077,17 @@ SRR2240184.sort.bam.bai SRR2240228.sort.bam.bai
 ```
 
 ## 7. 表达量统计
-
 使用HTSEQ-count - [htseq的使用方法和计算原理](https://htseq.readthedocs.io/en/master/count.html#)
 
 如何判断一个 reads 属于某个基因， htseq-count 提供了 union, intersection_strict,intersection_nonempty 3 种模型，如图（大多数情况下作者推荐用 union 模型），它描述了在多种情况下，比对到基因组上的read分配的问题，在这些问题中，最难分配的就是一条read在两个基因相交的地方比对上了之后的情况。一般情况下作者推荐使用`union`的方式。当然，除此之外
 
-
-![](./pic/HTSeq.png)
-
-+ 用法
+* 用法
 
 ```bash
 htseq-count [options] <alignment_files> <gff_file>
 ```
 
-+ 参数说明
+* 参数说明
 
 | 参数 | 说明 |
 | --- | --- |
@@ -1143,8 +1135,7 @@ ENSRNOG00000000024	843
 ENSRNOG00000000033	27
 ```
 
-## 8. 合并表达矩阵与标准化
-
+## 8 合并表达矩阵与标准化
 ### 8.1 合并
 
 这里就是将下面的这种表合并为一张表，作为一个整体输入到后续分析的程序中

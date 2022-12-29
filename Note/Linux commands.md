@@ -29,9 +29,27 @@ rm(remove):用于删除一个文件或者目录.
   * -r(-R,--recursive,递归):remove directories and their contents recursively（删除当前目录下的所有文件及目录).
   * -f(--force): ignore nonexistent files and arguments, never prompt(忽略不存在的文件和参数，从不提示).
 
+### Linux nohup
+nohup(no hang up):用于不挂断地运行命令，退出终端不影响运行。
+* nohup COMMAND [ARG]
+* 区别：
+  * &：后台运行，关闭终端，任务终止，`Ctrl+C`，任务继续；前台接收标准输入，终止会丢失标准输出和标准错误信息；忽略SIGINT信号。
+  * nohup：不挂断运行，关闭终端，任务继续，`Ctrl+C`，任务终止；关闭标准输入，重定向标准输出和标准错误到当前目录的nohup.out文件；忽略SIGHUP信号。
+  * nohup &：永久在后台执行，接受标准输入，重定向标准输出和标准错误到当前目录的nohup.out文件。
 
+### Linux gzip
+gzip：用于压缩或解压文件,扩展名为.gz.
+* gzip [OPTION] [FILE]
+  * -d(--decompress)：decompress.
+  * -c(--stdout):write on standard output, keep original files unchanged.
 
-
+## Linux head
+head:用于查看文件开头部分的内容。
+* head [OPTION] [FILE]
+  * -n(--lines=[-] NuM):print the first NUM lines instead of the first 10（显示前NUM行的内容）；with the leading '-', print all but the last NUM lines of each file(显示所有的内容，除后NUM行).
+  * -c(--bytes=[-] NUM):print the first NUM bytes of each file(显示前NUM字节的内容);with the leading '-', print all but the last NUM bytes of each file.
+  * -q(--quiet,--silent):never print headers giving file names(隐藏文件名).
+  * -v(--verbose):always print headers giving file names(显示文件名).
 
 
 
@@ -46,10 +64,6 @@ jxvf
 
 
 
-### Linux gzip
-gzip：
-* gzip [OPTION] [FILE]
-  * -d：
 
 
 

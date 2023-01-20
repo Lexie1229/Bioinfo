@@ -202,13 +202,7 @@ pip install cutadapt
 
 ### 2.5 质量修剪
 * Trim Galore
-Trim Galore：
-使用perl脚本编写的工具，是对`cutapater`和`fastqc`命令的封装。可以自动检测接头并调用`cutapater`进行
-
-| Trim Galore | 站点                                                         |
-| ----------- | ------------------------------------------------------------ |
-| 官网        | https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md |
-| 手册        | https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md |
+Trim Galore：使用perl脚本编写的工具，是对`cutapat`和`fastqc`命令的封装，可以自动检测接头并调用`cutapat`去除。
 
 ```bash
 cd ~/biosoft
@@ -218,23 +212,19 @@ wget https://github.com/FelixKrueger/TrimGalore/archive/0.6.3.tar.gz -O TrimGalo
 gzip -d TrimGalore.gz
 ```
 
-* fastp
+| Trim Galore | 站点                                                         |
+| ----------- | ------------------------------------------------------------ |
+| 官网        | https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md |
+| 手册        | https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md |
 
 * trimmomatic
-trimmomatic是一款多线程命令行工具，可以用来修剪Illumina (FASTQ)数据以及删除接头，是目前使用最多的高通量测序数据清洗的工具。
-
-|   | 站点 |
-| --- | --- |
-| 官网 |  http://www.usadellab.org/cms/index.php?page=trimmomatic |
-| 手册 | http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf |
-| 中文解读 |  |
-
-
-本地安装
+trimmomatic：是多线程命令行工具，用来修剪Illumina (FASTQ)数据以及删除接头，是目前使用最多的高通量测序数据清洗的工具。
 
 ```bash
 cd ~/biosoft
+
 wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.38.zip
+
 unzip Trimmomatic-0.38.zip
 
 cd Trimmomatic-0.38
@@ -243,91 +233,72 @@ cd Trimmomatic-0.38
 export PATH="$(pwd):$PATH"
 ```
 
-### 2.6 hisat2
+|   | 站点 |
+| --- | --- |
+| 官网 |  http://www.usadellab.org/cms/index.php?page=trimmomatic |
+| 手册 | http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf |
 
-作为bowtie2和tophat的继任者，它在RNA-seq中使用较多。
+* fastp
+
+### 2.6 hisat2
+hisat2：取代bowtie2和tophat程序，能够将RNA-Seq的读取与基因组进行快速比对，在RNA-seq中使用较多。
+
+* 安装
+  * 浏览器进入`hisat2`[官网](https://ccb.jhu.edu/software/hisat2/index.shtml)，根据系统版本选择对应的安装版本；
+  * 选择[Linux_x86_64 HISAT2 2.2.1](https://cloud.biohpc.swmed.edu/index.php/s/oTtGWbWjaxsQ2Ho/download)，右键复制链接。
+  * 参考文献：Kim D, Langmead B and Salzberg SL. [**HISAT: a fast spliced aligner with low memory requirements**](http://www.nature.com/nmeth/journal/vaop/ncurrent/full/nmeth.3317.html). _[Nature Methods](http://www.nature.com/nmeth)_2015
+
+```bash
+# 下载
+cd ~/biosoft/
+wget https://cloud.biohpc.swmed.edu/index.php/s/oTtGWbWjaxsQ2Ho/download
+
+# 解压
+unzip downlosd
+cd hisat2-2.2.1
+
+# 导入临时环境变量
+export PATH="~/biosoft/hisat2-2.2.1:$PATH"
+
+# 测试是否可用
+hisat2 -h
+```
 
 |        | 站点 |
 | --- | --- |
 | 官网 | https://ccb.jhu.edu/software/hisat2/index.shtml |
 | 手册 | https://ccb.jhu.edu/software/hisat2/manual.shtml |
 
-+ 首先用浏览器进入`hisat2`[官网](https://ccb.jhu.edu/software/hisat2/index.shtml)
-
-+ 在右侧有对应的不同系统的安装版本，根据自己的系统进行选择
-
-| version 2.1.0 | 6/8/2017 |
-| --- | --- |
-| [   Source code](http://ccb.jhu.edu/software/hisat2/dl/hisat2-2.1.0-source.zip) |
-| [   Linux x86_64 binary](http://ccb.jhu.edu/software/hisat2/dl/hisat2-2.1.0-Linux_x86_64.zip) |
-| [   Mac OS X x86_64 binary](http://ccb.jhu.edu/software/hisat2/dl/hisat2-2.1.0-OSX_x86_64.zip) |
-| [   Windows binary](http://www.di.fc.ul.pt/~afalcao/hisat2_windows.html) |
-
-另外是参考文献
-
-Kim D, Langmead B and Salzberg SL. [**HISAT: a fast spliced aligner with low memory requirements**](http://www.nature.com/nmeth/journal/vaop/ncurrent/full/nmeth.3317.html). _[Nature Methods](http://www.nature.com/nmeth)_2015
-
-
-+ 这里我们选择`Mac OS X`的，对着[Mac OS X x86_64 binary](http://ccb.jhu.edu/software/hisat2/dl/hisat2-2.1.0-OSX_x86_64.zip)右键，复制链接地址目
-
-+ 回到终端上来：
+### sortmerna [选做]
+sortmerna：RNA测序中有很多是rRNA，sortmerna是将高通量的测序中的rRNA进行剔除的软件。
 
 ```bash
 # 下载
-$ cd ~/biosoft/
-$ wget http://ccb.jhu.edu/software/hisat2/dl/hisat2-2.1.0-OSX_x86_64.zip
+cd ~/biosoft/
+wget https://github.com/biocore/sortmerna/archive/2.1.tar.gz -O sortmerna-2.1.tar.gz
 
 # 解压
-$ unzip hisat2-2.1.0-OSX_x86_64.zip
-$ cd hisat2-2.1.0
-
-# 导入临时环境变量
-$ export PATH="~/biosoft/hisat2-2.1.0:$PATH"
-
-# 测试是否可用
-$ hisat2 -h
-```
-
-### sortmerna [选做]
-
-在RNA测序中有很多是rRNA，sortmerna是一款将高通量的测序中的rRNA进行剔除的软件
-
-|   |  站点 |
-| --- | --- |
-| 官网 | https://bioinfo.lifl.fr/RNA/sortmerna/ |
-| 手册 | https://bioinfo.lifl.fr/RNA/sortmerna/code/SortMeRNA-user-manual-v2.1.pdf |
-| github | https://github.com/biocore/sortmerna/blob/master/README.md |
-| 中文解读 | https://www.jianshu.com/p/6b7a442d293f |
-
-
-```bash
-$ cd ~/biosoft/
-
-# 下载软件
-$ wget https://github.com/biocore/sortmerna/archive/2.1.tar.gz -O sortmerna-2.1.tar.gz
-
-# 解压
-$ tar -xzvf sortmerna-2.1.tar.gz
-$ cd sortmerna-2.1
+tar -xzvf sortmerna-2.1.tar.gz
+cd sortmerna-2.1
 
 # 配置相关信息
-$ ./configure --prefix=$PWD
+./configure --prefix=$PWD
 
 # 编译
-$ make -j 4
+make -j 4
 
 # 查看是否成功
-$ ./sortmerna --help
+./sortmerna --help
 
 # 导入到环境变量
-$ export PATH="$(pwd):$PATH"
+export PATH="$(pwd):$PATH"
 
-# 把数据库文件移动到能找到的地方
-$ mv ./rRNA_databases/ ~/database/sortmerna_db/rRNA_databases
+# 将数据库文件移动到方便寻找的位置
+mv ./rRNA_databases/ ~/database/sortmerna_db/rRNA_databases
 
 # 相关库文件
-$ cd ~/database/rRNA_databases
-$ sortmerna_ref_data=$(pwd)/rRNA_databases/silva-bac-16s-id90.fasta,$(pwd)/index/silva-bac-16s-db:\
+cd ~/database/rRNA_databases
+sortmerna_ref_data=$(pwd)/rRNA_databases/silva-bac-16s-id90.fasta,$(pwd)/index/silva-bac-16s-db:\
 $(pwd)/rRNA_databases/silva-bac-23s-id98.fasta,$(pwd)/index/silva-bac-23s-db:\
 $(pwd)/rRNA_databases/silva-arc-16s-id95.fasta,$(pwd)/index/silva-arc-16s-db:\
 $(pwd)/rRNA_databases/silva-arc-23s-id98.fasta,$(pwd)/index/silva-arc-23s-db:\
@@ -337,19 +308,28 @@ $(pwd)/rRNA_databases/rfam-5s-database-id98.fasta,$(pwd)/index/rfam-5s-db:\
 $(pwd)/rRNA_databases/rfam-5.8s-database-id98.fasta,$(pwd)/index/rfam-5.8s-db
 
 # 真核生物的rRNA不需要那么多(5s, 5.8s, 18s, 28s)
-$ euk_rNRA_ref_data=$(pwd)/rRNA_databases/silva-euk-18s-id95.fasta,$(pwd)/index/silva-euk-18s-db:\
+euk_rNRA_ref_data=$(pwd)/rRNA_databases/silva-euk-18s-id95.fasta,$(pwd)/index/silva-euk-18s-db:\
 $(pwd)/rRNA_databases/silva-euk-28s-id98.fasta,$(pwd)/index/silva-euk-28s-db:\
 $(pwd)/rRNA_databases/rfam-5s-database-id98.fasta,$(pwd)/index/rfam-5s-db:\
 $(pwd)/rRNA_databases/rfam-5.8s-database-id98.fasta,$(pwd)/index/rfam-5.8s-db
 
 # 建立数据库索引
-$ indexdb_rna --ref $data
+indexdb_rna --ref $data
 ```
+|   |  站点 |
+| --- | --- |
+| 官网 | https://bioinfo.lifl.fr/RNA/sortmerna/ |
+| 手册 | https://bioinfo.lifl.fr/RNA/sortmerna/code/SortMeRNA-user-manual-v2.1.pdf |
+| github | https://github.com/biocore/sortmerna/blob/master/README.md |
+| 中文解读 | https://www.jianshu.com/p/6b7a442d293f |
 
 ### 2.7 samtools
-samtools：对比对后得到的文件
-进行二进制查看、格式转换、排序、合并等操作的工具。
-比对得到的sam或bam文件的各种操作
+samtools：对比对后得到的文件（sam或bam文件）进行二进制查看、格式转换、排序、合并等操作的工具。
+
+```bash
+# 使用brew安装
+brew install samtools
+```
 
 |   |  站点 |
 | --- | --- |
@@ -357,69 +337,32 @@ samtools：对比对后得到的文件
 | 手册 | http://quinlanlab.org/tutorials/samtools/samtools.html |
 | 中文解读 | https://www.jianshu.com/p/6b7a442d293f |
 
-
-
-```bash
-# 下载
-$ wget -c https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2
-
-# 解压
-$ tar jxvf samtools-1.9.tar.bz2
-$ cd samtools-1.9
-
-# 配置信息
-$ ./configure --prefix=$(pwd)
-
-# 开始编译
-$ make -j 4
-
-# 导入临时环境变量
-$ export PATH="$(pwd):$PATH"
-```
-
-
-
-```bash
-# 使用brew安装
-brew install samtools
-```
-
-
 ### 2.8 HTseq
-
-对比对后的文件进行read计数
+HTseq：对比对后的文件进行reads计数。
 
 ```bash
 # 使用Python的安装器安装
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple HTseq
 ```
 
-
 ### 2.9 R
+R语言集合了多种生物信息学的分析工具，其中RNA-seq分析的工具更是丰富，R语言最擅长统计学分析，用于后续的基因表达量分析、差异分析以及作图等。
 
-- 官网：https://www.r-project.org
+* 安装
+  * 进入[R](https://www.r-project.org)官网，点击`CRAN`，找到`china`站点，点击[清华的站点](https://mirrors.tuna.tsinghua.edu.cn/CRAN/)，下载对应系统版本的安装包，然后双击安装包安装。
 
-R语言中集合了多种生物信息学的分析工具，其中RNA-seq分析的工具更是丰富，R语言最擅长统计学分析，这里在后续的基因表达量分析，差异分析以及作图时候会用到
-
-- 下载
-
-点击左上角`CRAN`，往下拉找到`china`的站点，就选第一个[清华的站点](https://mirrors.tuna.tsinghua.edu.cn/CRAN/)，点击进去，之后最上面有三个对应系统的安装包，按照自己的系统下载，这里点击[Mac OS](https://mirrors.tuna.tsinghua.edu.cn/CRAN/bin/macosx/)，点击[R-3.6.1.pkg](https://mirrors.tuna.tsinghua.edu.cn/CRAN/bin/macosx/R-3.6.1.pkg)就开始下载了，下载之后双击安装包安装。
-
-+ brew
-
-```
+```bash
+# 使用brew安装
 brew install r
 ```
 
 ### 2.10 Rstudio
+因为R自身的界面使用不方便、不美观，因此使用Rstudio提升R的显示效果以及发挥其他功能。
 
-因为R自身带的界面使用起来不是特别方便和美观，这里使用Rstudio来对R的显示效果进行提升，除此之外还有其他功能。
+* 安装
+  * 进入[官网](https://www.rstudio.com/products/rstudio/download/),下载对应系统版本的安装包，然后双击安装包安装。
 
-进入网站：https://www.rstudio.com/products/rstudio/download/
-
-点击`RStudio Desktop Open Source License` 下面的`DOWNLOAD`，之后选择对应的版本的，这里选择`MAC OS`版本[RStudio 1.2.1335 - Mac OS X 10.12+ (64-bit)](https://download1.rstudio.org/desktop/macos/RStudio-1.2.1335.dmg) 下载完成之后双击安装。
-
-**注意**：安装完成`R`之后再安装`Rstudio`
+**Tips**：完成`R`的安装后再安装`Rstudio`
 
 ### 2.11 parallel
 parallel：进行多线程运行的工具，并行运行可以提升效率，节省时间.
@@ -430,8 +373,24 @@ brew install parallel
 ```
 
 ### StringTie[可选]
+Stringtie:能够应用流神经网络算法和可选的de novo组装进行转录本组装并预计表达水平，与Cufflinks等程序相比，StringTie实现了更完整、更准确的基因重建，并更好地预测了表达水平。
 
-能够应用流神经网络算法和可选的de novo组装进行转录本组装并预计表达水平。与Cufflinks等程序相比，StringTie实现了更完整、更准确的基因重建，并更好地预测了表达水平。
+```bash
+# 下载
+cd ~/biosoft
+wget http://ccb.jhu.edu/software/stringtie/dl/stringtie-2.2.1.Linux_x86_64.tar.gz
+
+# 解压
+tar -xzvf stringtie-2.2.1.Linux_x86_64.tar.gz
+mv stringtie-2.2.1.Linux_x86_64 stringtie-2.2.1
+cd stringtie-2.2.1
+
+# 导入环境变量
+export PATH="$(pwd):$PATH"
+
+# 测试是否可用
+stringtie --help
+```
 
 |  | 站点 |
 | --- | --- |
@@ -439,140 +398,80 @@ brew install parallel
 | 手册 | http://ccb.jhu.edu/software/stringtie/index.shtml?t=manual |
 | 中文解读 | https://www.plob.org/article/12865.html |
 
-+ 安装
-
-```bash
-$ cd ~/biosoft
-
-$ wget http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.6.OSX_x86_64.tar.gz
-
-$ tar -xzvf stringtie-1.3.6.OSX_x86_64.tar.gz
-$ mv stringtie-1.3.6.OSX_x86_64 stringtie-1.3.6
-$ cd stringtie-1.3.6
-
-$ export PATH="$(pwd):$PATH"
-
-$ stringtie --help
-```
 ### Ballgown[可选]
-
-是R语言中基因差异表达分析的工具，能利用RNA-Seq实验的数据(StringTie, RSEM, Cufflinks)的结果预测基因、转录本的差异表达。
-
-+ 安装
+Ballgown:R语言中基因差异表达分析的工具，能利用RNA-Seq实验的数据(StringTie, RSEM, Cufflinks)的结果预测基因、转录本的差异表达。
 
 ```R
+# R<3.5.0
 source("http://bioconductor.org/biocLite.R")
 biocLite("Ballgown")
+# R>3.5.0
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("ballgown")
 ```
-
-
-
-
-$ wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.6-1/sratoolkit.2.9.6-1-mac64.tar.gz
-$ tar -xzvf sratoolkit.2.9.6-1-mac64.tar.gz
-$ mv sratoolkit.2.9.6-1-mac64 sratoolkit.2.9.6
-$ cd sratoolkit.2.9.6/bin
-
-# 导入临时环境变量
-$ export PATH="$(pwd):$PATH"
-$ prefetch --help
-
-
-+ 本地安装
-
-```bash
-cd ~/biosoft
-wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.7.zip
-unzip fastqc_v0.11.7.zip
-cd FastQC
-
-# 导入临时环境变量
-export PATH="$(pwd):$PATH"
-
-# 测试是否能运行
-fastqc --help
-
-
 
 ## 3 数据下载
 使用大鼠的测序数据进行测试。大鼠又叫大白鼠（Rat，Rattus norvegicus），是非常重要的模式生物之一，因其与人类存在高度的同源性及其优良的品系资源，被广泛应用于毒理学、神经病学，细胞培养等研究。在`ENSEMBL`和`UCSC`中均有其基因组数据。
 
 ### 3.1 参考数据
-基因组序列下载，`ENSEMBL`和`UCSC`有大鼠的基因组数据。
-
-#### Ensembl
-
-+ 1. 首先下载基因组数据
-
-进入ENSEMBL网站，在左侧`All genomes`中，选择物种`Rat`，之后页面会自动跳转到大鼠的页面，首先点击左侧[Download DNA sequence (FASTA)](ftp://ftp.ensembl.org/pub/release-97/fasta/rattus_norvegicus/dna/) 进入基因组序列数据的下载地址，其次点击右侧的[Download GTF](ftp://ftp.ensembl.org/pub/release-97/gtf/rattus_norvegicus/) or [GFF3](ftp://ftp.ensembl.org/pub/release-97/gff3/rattus_norvegicus/) files for genes, cDNAs, ncRNA, proteins，这里就点击`GTF`的
-
-![](./pic/ENSEMBL_rat.png)
-
-下面是具体的命令行下载代码：
-
-**下载**
+基于`ENSEMBL`平台，下载参考基因组序列及基因组注释文件。
+  * 进入[ENSEMBL](https://www.ensembl.org/index.html)网站，在`All genomes`中选择物种`Rat`；
+  * 点击[Download DNA sequence (FASTA)](https://ftp.ensembl.org/pub/release-108/fasta/rattus_norvegicus/dna/)，进入基因组序列数据列表，下载[完整的基因组序列](https://ftp.ensembl.org/pub/release-108/fasta/rattus_norvegicus/dna/Rattus_norvegicus.mRatBN7.2.dna.toplevel.fa.gz)；
+  * 点击[Download GTF](https://ftp.ensembl.org/pub/release-108/gtf/rattus_norvegicus/) files for genes, cDNAs, ncRNA, proteins，下载[基因组注释文件](https://ftp.ensembl.org/pub/release-108/gtf/rattus_norvegicus/Rattus_norvegicus.mRatBN7.2.108.gtf.gz)。
 
 ```bash
+# 下载参考基因组序列
 cd ~/project/rat/genome
-wget ftp://ftp.ensembl.org/pub/release-97/fasta/rattus_norvegicus/dna/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa.gz
-gzip -d Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa.gz
+wget https://ftp.ensembl.org/pub/release-108/fasta/rattus_norvegicus/dna/Rattus_norvegicus.mRatBN7.2.dna.toplevel.fa.gz
+gzip -d Rattus_norvegicus.mRatBN7.2.dna.toplevel.fa.gz
+## 改名（方便使用，避免输错）
+mv Rattus_norvegicus.mRatBN7.2.dna.toplevel.fa genome.fa
+
+# 下载基因组注释文件
+cd ~/project/rat/annotation
+wget https://ftp.ensembl.org/pub/release-108/gtf/rattus_norvegicus/Rattus_norvegicus.mRatBN7.2.108.gtf.gz
+gzip -d Rattus_norvegicus.mRatBN7.2.108.gtf.gz
+## 改名
+mv Rattus_norvegicus.mRatBN7.2.108.gtf annotation.gtf
 ```
-目前大鼠的基因组测序版本到了`6`，这里为了后面方便操作，改名为`rn6`
-```
-# 改名（方便使用，避免输错）
-$ mv Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa rn6.fa
-```
-下载得到的基因组文件可以查看一下包含哪些染色体，确认文件是否下载正确。
+
+* 查看基因组文件(包含的染色体），确认文件是否下载正确。除`1-20`+`X`+`Y`+`MT`之外还有很多别的ID名，均为`scaffold`。
 
 ```bash
-cat rn6.fa | grep "^>" 
-```
-可以看到除了`1-20`号+`X`+`Y`+`MT`之外还有很多别的ID名。这些都是`scaffold`
-```
->1 dna:chromosome chromosome:Rnor_6.0:1:1:282763074:1 REF
->2 dna:chromosome chromosome:Rnor_6.0:2:1:266435125:1 REF
->3 dna:chromosome chromosome:Rnor_6.0:3:1:177699992:1 REF
->4 dna:chromosome chromosome:Rnor_6.0:4:1:184226339:1 REF
->5 dna:chromosome chromosome:Rnor_6.0:5:1:173707219:1 REF
->6 dna:chromosome chromosome:Rnor_6.0:6:1:147991367:1 REF
->7 dna:chromosome chromosome:Rnor_6.0:7:1:145729302:1 REF
->8 dna:chromosome chromosome:Rnor_6.0:8:1:133307652:1 REF
->9 dna:chromosome chromosome:Rnor_6.0:9:1:122095297:1 REF
->10 dna:chromosome chromosome:Rnor_6.0:10:1:112626471:1 REF
->11 dna:chromosome chromosome:Rnor_6.0:11:1:90463843:1 REF
->12 dna:chromosome chromosome:Rnor_6.0:12:1:52716770:1 REF
->13 dna:chromosome chromosome:Rnor_6.0:13:1:114033958:1 REF
->14 dna:chromosome chromosome:Rnor_6.0:14:1:115493446:1 REF
->15 dna:chromosome chromosome:Rnor_6.0:15:1:111246239:1 REF
->16 dna:chromosome chromosome:Rnor_6.0:16:1:90668790:1 REF
->17 dna:chromosome chromosome:Rnor_6.0:17:1:90843779:1 REF
->18 dna:chromosome chromosome:Rnor_6.0:18:1:88201929:1 REF
->19 dna:chromosome chromosome:Rnor_6.0:19:1:62275575:1 REF
->20 dna:chromosome chromosome:Rnor_6.0:20:1:56205956:1 REF
->X dna:chromosome chromosome:Rnor_6.0:X:1:159970021:1 REF
->Y dna:chromosome chromosome:Rnor_6.0:Y:1:3310458:1 REF
->MT dna:chromosome chromosome:Rnor_6.0:MT:1:16313:1 REF
->KL568162.1 dna:scaffold scaffold:Rnor_6.0:KL568162.1:1:10937627:1 REF
->KL568139.1 dna:scaffold scaffold:Rnor_6.0:KL568139.1:1:9752924:1 REF
->KL568161.1 dna:scaffold scaffold:Rnor_6.0:KL568161.1:1:7627431:1 REF
+cat genome.fa | grep "^>" 
+
+>1 dna:primary_assembly primary_assembly:mRatBN7.2:1:1:260522016:1 REF
+>2 dna:primary_assembly primary_assembly:mRatBN7.2:2:1:249053267:1 REF
+...
+>20 dna:primary_assembly primary_assembly:mRatBN7.2:20:1:54435887:1 REF
+>X dna:primary_assembly primary_assembly:mRatBN7.2:X:1:152453651:1 REF
+>Y dna:primary_assembly primary_assembly:mRatBN7.2:Y:1:18315841:1 REF
+>MT dna:primary_assembly primary_assembly:mRatBN7.2:MT:1:16313:1 REF
+>MU150191.1 dna:primary_assembly primary_assembly:mRatBN7.2:MU150191.1:1:1794995:1 REF
+>MU150189.1 dna:primary_assembly primary_assembly:mRatBN7.2:MU150189.1:1:1402623:1 REF
+>MU150194.1 dna:primary_assembly primary_assembly:mRatBN7.2:MU150194.1:1:648519:1 REF
 ...
 ```
-这里看到每一条染色体的名称后面还跟了一些描述信息，这些描述信息就是当前组装版本，长度等等信息，但是这个信息会妨碍后面写脚本统计或者一些分析，所以这里最好去掉
+
+* 每条染色体名称后的描述信息是当前的组装版本、长度等，但这些信息会妨碍后续使用脚本进行统计或分析，因此最好去掉这些信息。
 
 ```bash
-# 首先将之前的名称更改一下
-$ mv rn6.fa rn6.raw.fa
+# 更改文件名称
+cd ~/project/rat/genome
+mv genome.fa genome.raw.fa
 
-# 然后去除染色体编号后的描述信息
-$ cat rn6.raw.fa | perl -n -e 'if(m/^>(.+?)(?:\s|$)/){ print ">$1\n";}else{print}' > rn6.fa
+# 去除染色体名称后的描述信息
+cat genome.raw.fa | perl -n -e 'if(m/^>(.+?)(?:\s|$)/){ print ">$1\n";}else{print}' > genome.fa
 
 # 删除
-$ rm rn6.raw.fa
+rm genome.raw.fa
 ```
-+ 可以使用脚本统计每一条染色体的长度
+
+* 使用脚本统计每条染色体的长度
 
 ```bash
-$ cat rn6.fa | perl -n -e '
+cat genome.fa | perl -n -e '
     s/\r?\n//;
     if(m/^>(.+?)\s*$/){
         $title = $1;
@@ -647,26 +546,17 @@ $ cat rn6.fa | perl -n -e '
 > ```
 > 文件中以`>`开头的是序列的名称，下面接着的`ATGC`是这条序列信息，基因组`fasta`文件记录大鼠的所有的被测得的染色体的序列信息，目前已经更新到`version 6` ，目前一般简称为`rn6`。
 
-![大鼠染色体](./pic/Rat_genome.png)
 
 + 下载基因组索引文件 - [**可选**]
 
 在`hisat2` 官网上可以找到现成的已经建立好索引的大鼠基因组文件，如果电脑配置一般建议直接下载好索引文件，可以直接下载这个索引文件（因为建立索引文件时间较长1个小时以上），这个索引文件是可以自己用命令基于之前下载的基因组文件自行建立的。
 
 ```bash
-$ cd ~/project/rat/genome
-$ wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/rn6.tar.gz
-$ gzip -d rn6.tar.gz
+cd ~/project/rat/genome
+wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/rn6.tar.gz
+gzip -d rn6.tar.gz
 ```
-+ 下载注释信息
 
-```bash
-$ cd ~/project/rat/annotation
-$ wget ftp://ftp.ensembl.org/pub/release-97/gff3/rattus_norvegicus/Rattus_norvegicus.Rnor_6.0.97.gff3.gz
-$ gzip -d Rattus_norvegicus.Rnor_6.0.97.gff3.gz
-
-# 同样的也改名
-$ mv Rattus_norvegicus.Rnor_6.0.97.gff3 rn6.gff
 
 # 使用head查看部分
 $ head rn6.gff
@@ -769,7 +659,7 @@ fastqc [选项] [测序文件]
 cd ~/project/rat/sequence
 
 # 因为程序不会自动新建目录，这里新建一个目录
-$ mkdir -p ../output/fastqc
+mkdir -p ../output/fastqc
 
 # -t 指定线程数
 # -o 指定输出文件夹
@@ -779,8 +669,8 @@ $ fastqc -t 6 -o ../output/fastqc *.gz
 运行过程中会出现分析的进程，在分析完成之后会有分析报告生成。
 
 ```bash
-$ cd ~/project/rat/output/fastqc
-$ ls
+cd ~/project/rat/output/fastqc
+ls
 
 SRR2190795_fastqc.html SRR2240184_fastqc.html SRR2240187_fastqc.html
 SRR2190795_fastqc.zip  SRR2240184_fastqc.zip  SRR2240187_fastqc.zip
@@ -800,15 +690,13 @@ SRR2240183_fastqc.zip  SRR2240186_fastqc.zip
 这里因为有多份报告，有时候查看不是特别方便，这里有一个将所有的fastqc的检测报告合并到一个文件上的程序`multiqc`
 
 ```bash
-$ cd ~/project/rat/output/fastqc
+cd ~/project/rat/output/fastqc
 
-$ multiqc .
+multiqc .
 ```
 主要看几个图
 
 + 平均GC含量
-
-
 
 大体上查看一下测序的总的GC含量，GC含量说明了当前测序是否有很大问题，如果偏差较大，那么可能出现偏测序偏好性（绿色线是理论值，黄色线是实际的情况），因为是转录组，所以可能出现部分序列偏多的情况，这里没有特别大的差异。
 
@@ -828,12 +716,12 @@ $ multiqc .
 上面看到，在接头那里是显示的通过，但是可以看到有部分是有4个碱基与接头序列匹配的，属于Illumina的通用接头。另外也可以看到，除了可能存在接头的情况，在测序质量那里也可以看到在`5'`端存在低质量的测序区域，所以像两端这种低质量的区域也是要去除的的，这一步采用`trimmomatic`进行。
 
 ```bash
-$ cd ~/project/rat/sequence
+cd ~/project/rat/sequence
 # 新建文件夹
-$ mkdir -p ../output/adapter/
+mkdir -p ../output/adapter/
 
 # 循环处理文件夹下的
-$ for i in $(ls *.fastq.gz);
+for i in $(ls *.fastq.gz);
 do
     # --minimum-length 如果剔除接头后read长度低于30，这条read将会被丢弃
     # --overlap        如果两端的序列与接头有4个碱基的匹配将会被剔除
@@ -843,15 +731,13 @@ do
     -o ../output/adapter/${i}  ${i}
 done
 ```
-![](./pic/Adapter.png)
 
 ### 4.4 再次去除低质量区域
-
 ```bash
-$ cd ~/project/rat/output/adapter/
-$ mkdir ../trim
+cd ~/project/rat/output/adapter/
+mkdir ../trim
 
-$ parallel -j 4 "
+parallel -j 4 "
   # LEADING:20，从序列的开头开始去掉质量值小于 20 的碱基
   # TRAILING:20，从序列的末尾开始去掉质量值小于 20 的碱基
   # SLIDINGWINDOW:5:15，从 5' 端开始以 5bp 的窗口计算碱基平均质量，如果此平均值低于 15，则从这个位置截断read
@@ -862,17 +748,16 @@ $ parallel -j 4 "
 " ::: $( ls *.gz)
 ```
 ### 4.3 再次查看质量情况
-
 ```bash
-$ cd ~/project/rat/output/trim
+cd ~/project/rat/output/trim
 
-$ mkdir ../fastqc_trim
-$ parallel -j 4 "
+mkdir ../fastqc_trim
+parallel -j 4 "
     fastqc -t 4 -o ../fastqc_trim {1}
 " ::: $(ls *.gz)
 
-$ cd ../fastqc_trim
-$ multiqc .
+cd ../fastqc_trim
+multiqc .
 ```
 相对于上面的情况，现在好多了
 
@@ -883,12 +768,12 @@ $ multiqc .
 > **注意**：在使用`sortmerna`的时候需要确保测序文件是**未压缩的文件**
 
 ```bash
-$ cd ~/project/rat/output
-$ mkdir -p ./rRNA/discard
+cd ~/project/rat/output
+mkdir -p ./rRNA/discard
 
-$ cd trim
+cd trim
 
-$ parallel -j 4 "
+parallel -j 4 "
   # 解压测序文件
   gzip -d {1}*.fq.gz
   

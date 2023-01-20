@@ -51,7 +51,10 @@ head:用于查看文件开头部分的内容。
   * -q(--quiet,--silent):never print headers giving file names(隐藏文件名).
   * -v(--verbose):always print headers giving file names(显示文件名).
 
-
+### Linux pwd
+pwd(print work directory):用于显示当前工作目录。
+* pwd [OPTION]
+  * -P：显示物理路径，而不带任何软链接。
 
 ### Linux tar
 tar：
@@ -59,6 +62,7 @@ tar：
   * -x, --extract, --get       extract files from an archive
   * -f, --file=ARCHIVE         use archive file or device ARCHIVE
 jxvf
+xzvf
 
 
 
@@ -67,9 +71,12 @@ jxvf
 
 
 
-### Linux pwd
-pwd
 
 
 ### Linux mkdir
+
+
+
+
+
 

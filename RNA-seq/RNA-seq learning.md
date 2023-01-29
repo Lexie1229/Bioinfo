@@ -458,7 +458,6 @@ cat genome.fa | grep "^>"
 
 ```bash
 # 更改文件名称
-cd ~/project/rat/genome
 mv genome.fa genome.raw.fa
 
 # 去除染色体名称后的描述信息

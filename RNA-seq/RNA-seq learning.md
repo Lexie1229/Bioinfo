@@ -463,7 +463,7 @@ mv genome.fa genome.raw.fa
 # 去除染色体名称后的描述信息
 cat genome.raw.fa | perl -n -e 'if(m/^>(.+?)(?:\s|$)/){ print ">$1\n";}else{print}' > genome.fa
 
-# 删除
+# 删除原文件
 rm genome.raw.fa
 ```
 
@@ -484,43 +484,24 @@ cat genome.fa | perl -n -e '
         }
     }
 '
-```
-长度
 
-```
-1	282763074
-2	266435125
-3	177699992
-4	184226339
-5	173707219
-6	147991367
-7	145729302
-8	133307652
-9	122095297
-10	112626471
-11	90463843
-12	52716770
-13	114033958
-14	115493446
-15	111246239
-16	90668790
-17	90843779
-18	88201929
-19	62275575
-20	56205956
-X	159970021
-Y	3310458
-MT	16313
-KL568162.1	10937627
-KL568139.1	9752924
-KL568161.1	7627431
+1       260522016
+2       249053267
+...
+20      54435887
+X       152453651
+Y       18315841
+MT      16313
+MU150191.1      1794995
+MU150189.1      1402623
+MU150194.1      648519
 ...
 ```
 
-这里为了方便演示，直接用1号染色体的基因组作为后续比对。
+* 因数据较大，后续则以1号染色体的基因组数据为例，进行比对。
 
 ```bash
-$ cat rn6.fa | perl -n -e '
+cat genome.fa | perl -n -e '
   if(m/^>/){
     if(m/>1$/){
       $title = 1;
@@ -533,39 +514,28 @@ $ cat rn6.fa | perl -n -e '
   END{
     printf ">1\n%s", join("", @s);
   }
-' > rn6.chr1.fa
+' > genome.chr1.fa
 ```
-> **基因组数据说明**
-> 
-> 基因组数据的格式为`.fasta`，这个格式是一种简单明了的格式，格式为：
-> ```
-> >seq_id
-> AGCTGAGCTAGCTACGGAGCTGAC
-> ACGACTGATCTGACGTTGATCGTT
-> ```
-> 文件中以`>`开头的是序列的名称，下面接着的`ATGC`是这条序列信息，基因组`fasta`文件记录大鼠的所有的被测得的染色体的序列信息，目前已经更新到`version 6` ，目前一般简称为`rn6`。
 
-
-+ 下载基因组索引文件 - [**可选**]
-
-在`hisat2` 官网上可以找到现成的已经建立好索引的大鼠基因组文件，如果电脑配置一般建议直接下载好索引文件，可以直接下载这个索引文件（因为建立索引文件时间较长1个小时以上），这个索引文件是可以自己用命令基于之前下载的基因组文件自行建立的。
+* 基因组数据说明
 
 ```bash
-cd ~/project/rat/genome
-wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/rn6.tar.gz
-gzip -d rn6.tar.gz
+#  基因组数据的格式为`.fasta`，简单明了，具体为：
+>seq_id
+AGCTGAGCTAGCTACGGAGCTGAC
+ACGACTGATCTGACGTTGATCGTT
+# 以 > 开头的为序列名称，接着的ATGC... 为序列信息，基因组`fasta`文件记录大鼠的所有的被测得的染色体的序列信息，目前已经更新到`version 6` ，目前一般简称为`rn6`。
 ```
 
-
-# 使用head查看部分
-$ head rn6.gff
+* 使用head查看部分
+head rn6.gff
 ```
 
-> **注释数据说明**
-> 
+* 注释数据说明
+
 > 注释`gff`文件的样例：
-> 
-> ```
+
+```
 > #!genome-build Rnor_6.0
 > #!genome-version Rnor_6.0
 > #!genome-date 2014-07
@@ -577,6 +547,19 @@ $ head rn6.gff
 > ```
 >
 > gff文件开头描述了这个注释数据的基本信息，比如版本号，更新时间，组装的NCBI的Assembly编号等等，后面每一行表示描述信息，说明了在哪条染色体的什么位置是什么东西。比如第6行的表示在1号染色体正链上 396700-409750 这个范围内有一个基因编号为ENSRNOG00000046319的基因
+
+
+
+* 下载基因组索引文件 [**可选**]
+
+在`hisat2` 官网上可以找到现成的已经建立好索引的大鼠基因组文件，如果电脑配置一般建议直接下载好索引文件，可以直接下载这个索引文件（因为建立索引文件时间较长1个小时以上），这个索引文件是可以自己用命令基于之前下载的基因组文件自行建立的。
+
+```bash
+cd ~/project/rat/genome
+wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/rn6.tar.gz
+gzip -d rn6.tar.gz
+```
+
 
 ### 3.2 实验数据
 下载NCBI的`RNA-seq`数据，GEO数据库编号`GSE72960`，SRP数据编号`SRP063345`，文献来源：[肝硬化分子肝癌的器官转录组分析和溶血磷脂酸途径抑制 - 《Molecular Liver Cancer Prevention in Cirrhosis by Organ Transcriptome Analysis and Lysophosphatidic Acid Pathway Inhibition》](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5161110/)
@@ -609,6 +592,18 @@ parallel -j 4 "
 rm *.sra
 ```
 
+* fastq格式说明
+
+```bash
+cd ~/project/rat/sequence
+gzip -d -c SRR2190795.fastq.gz | head -n 4
+
+@SRR2190795.1 HWI-ST1147:240:C5NY7ACXX:1:1101:1320:2244 length=100
+ATGCTGGGGGCATTAGCATTGGGTACTGAATTATTTTCAGTAAGAGGGAAAGAATCCATCTCCNNNNNNNNNNNNNNNNNNNNNNAAANAAAAATAAAAT
++SRR2190795.1 HWI-ST1147:240:C5NY7ACXX:1:1101:1320:2244 length=100
+CCCFFFFFHHHHHJIJJJJJJJJDHHJJJIJJJJJIJJJJJJJJJJJJJJJJJJJJJJJJJHH#####################################
+```
+
 NOTE   
 prefetch：用于从NCBI下载SRA文件。
 * prefetch [options] [accessions(s)]
@@ -628,20 +623,6 @@ parallel:用于构建并行运行命令。
   * -j(--jobs) n：run n jobs in parallel.
   * -k：keep same order.
   * --pipe：split stidn to multiple jobs.
-
-
-
-
-> **fastq格式**
-> ```bash
-> cd ~/project/rat/sequence
-> gzip -d -c SRR2190795.fastq.gz | head -n 4
-> ```
-> @SRR2190795.1 HWI-ST1147:240:C5NY7ACXX:1:1101:1320:2244 length=100
-> ATGCTGGGGGCATTAGCATTGGGTACTGAATTATTTTCAGTAAGAGGGAAAGAATCCATCTCCNNNNNNNNNNNNNNNNNNNNNNAAANAAAAATAAAAT
-> +SRR2190795.1 HWI-ST1147:240:C5NY7ACXX:1:1101:1320:2244 length=100
-> CCCFFFFFHHHHHJIJJJJJJJJDHHJJJIJJJJJIJJJJJJJJJJJJJJJJJJJJJJJJJHH#####################################
-> @SRR2190795.2 HWI-ST1147:240:C5NY7ACXX:1:1101:1598:2247 length=100
 
 ## 4 质量控制
 ### 4.1 质量评估

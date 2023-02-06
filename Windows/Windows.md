@@ -1,25 +1,4 @@
 # Setting-up scripts for Windows 10
-[TOC level=2]: # ""
-- [Setting-up scripts for Windows 10](#setting-up-scripts-for-windows-10)
-  - [Get ISO](#get-iso)
-  - [Install, active and update Windows](#install-active-and-update-windows)
-  - [Enable some optional features of Windows 10](#enable-some-optional-features-of-windows-10)
-  - [WSL 2](#wsl-2)
-  - [Ubuntu 20.04](#ubuntu-2004)
-  - [Install `winget` and `Windows Terminal`](#install-winget-and-windows-terminal)
-  - [Optional: Adjusting Windows](#optional-adjusting-windows)
-  - [Optional: winget-pkgs](#optional-winget-pkgs)
-- [\\sshfs\\REMUSER@HOST\[\\PATH\]](#sshfsremuserhostpath)
-  - [Optional: Windows 7 games](#optional-windows-7-games)
-  - [Optional: Packages Managements](#optional-packages-managements)
-  - [Optional: Rust and C/C++](#optional-rust-and-cc)
-  - [Optional: sysinternals](#optional-sysinternals)
-  - [Optional: QuickLook Plugins](#optional-quicklook-plugins)
-  - [Directory Organization](#directory-organization)
-
-> * Table of Contents, TOC
-
-
 ## Get ISO
 Some features of Windows 10 20H1/2004 are needed here.
 * Build 19041.84 or later

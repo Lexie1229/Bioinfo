@@ -294,10 +294,11 @@ make -j 4
 export PATH="$(pwd):$PATH"
 
 # 将数据库文件移动到方便寻找的位置
-mv ./rRNA_databases/ ~/database/sortmerna_db/rRNA_databases
+mkdir -p ~/project/rat/database/sortmerna_db/rRNA_databases
+mv ./rRNA_databases/ ~/project/rat/database/sortmerna_db/rRNA_databases
 
 # 相关库文件
-cd ~/database/rRNA_databases
+cd ~/project/rat/database/sortmerna_db
 sortmerna_ref_data=$(pwd)/rRNA_databases/silva-bac-16s-id90.fasta,$(pwd)/index/silva-bac-16s-db:\
 $(pwd)/rRNA_databases/silva-bac-23s-id98.fasta,$(pwd)/index/silva-bac-23s-db:\
 $(pwd)/rRNA_databases/silva-arc-16s-id95.fasta,$(pwd)/index/silva-arc-16s-db:\
@@ -524,42 +525,37 @@ cat genome.fa | perl -n -e '
 >seq_id
 AGCTGAGCTAGCTACGGAGCTGAC
 ACGACTGATCTGACGTTGATCGTT
-# 以 > 开头的为序列名称，接着的ATGC... 为序列信息，基因组`fasta`文件记录大鼠的所有的被测得的染色体的序列信息，目前已经更新到`version 6` ，目前一般简称为`rn6`。
-```
-
-* 使用head查看部分
-head rn6.gff
+# 以 > 开头的为序列名称，接着的AGCT... 为序列信息
+# 基因组`fasta`文件记录大鼠所有被测得的染色体序列信息，目前已经更新到`version 6` ，目前一般简称为`rn6`。
 ```
 
 * 注释数据说明
 
-> 注释`gff`文件的样例：
+```bash
+# 使用head查看部分基因组注释文件
+head -7 annotatin.gtf
 
+#!genome-build mRatBN7.2  
+#!genome-version mRatBN7.2  
+#!genome-date 2020-11  
+#!genome-build-accession GCA_015227675.2  
+#!genebuild-last-updated 2021-02  
+1       ensembl gene    36112690        36122387        .       -       .       gene_id "ENSRNOG00000066169"; gene_version "1"; gene_source "ensembl"; gene_biotype "protein_coding";  
+1       ensembl transcript      36112690        36122387        .       -       .    gene_id "ENSRNOG00000066169"; gene_version "1"; transcript_id "ENSRNOT00000101581"; transcript_version "1"; gene_source "ensembl"; gene_biotype "protein_coding"; transcript_source "ensembl"; transcript_biotype "protein_coding"; tag "Ensembl_canonical";
+# 开头描述注释数据的基本信息，如版本号、更新时间，组装的NCBI的Assembly编号等
+# 后面每行表示描述信息，说明了在哪条染色体的什么位置是什么东西。例如，第6行表示1号染色体反义链的36112690-36122387位置存在基因编号为ENSRNOG00000066169的基因
 ```
-> #!genome-build Rnor_6.0
-> #!genome-version Rnor_6.0
-> #!genome-date 2014-07
-> #!genome-build-accession NCBI:GCA_000001895.4
-> #!genebuild-last-updated 2017-01
-> 1	ensembl_havana	gene	396700	409750	.	+	.	gene_id "ENSRNOG00000046319"; gene_version "4"; gene_name "AABR07000046.1"; gene_source "ensembl_havana"; gene_biotype "processed_transcript";
-> 1	ensembl	transcript	396700	409676	.	+	.	gene_id "ENSRNOG00000046319"; gene_version "4"; transcript_id "ENSRNOT00000044187"; transcript_version "4"; gene_name "AABR07000046.1"; gene_source "ensembl_havana"; gene_biotype "processed_transcript"; transcript_name "AABR07000046.1-202"; transcript_source "ensembl"; transcript_biotype "processed_transcript";
-> 1	ensembl	exon	396700	396905	.	+	.	gene_id "ENSRNOG00000046319"; gene_version "4"; transcript_id "ENSRNOT00000044187"; transcript_version "4"; exon_number "1"; gene_name "AABR07000046.1"; gene_source "ensembl_havana"; gene_biotype "processed_transcript"; transcript_name "AABR07000046.1-202"; transcript_source "ensembl"; transcript_biotype "processed_transcript"; exon_id "ENSRNOE00000493937"; exon_version "1";
-> ```
->
-> gff文件开头描述了这个注释数据的基本信息，比如版本号，更新时间，组装的NCBI的Assembly编号等等，后面每一行表示描述信息，说明了在哪条染色体的什么位置是什么东西。比如第6行的表示在1号染色体正链上 396700-409750 这个范围内有一个基因编号为ENSRNOG00000046319的基因
 
 
+* 下载基因组索引文件 [**可选**]  
 
-* 下载基因组索引文件 [**可选**]
-
-在`hisat2` 官网上可以找到现成的已经建立好索引的大鼠基因组文件，如果电脑配置一般建议直接下载好索引文件，可以直接下载这个索引文件（因为建立索引文件时间较长1个小时以上），这个索引文件是可以自己用命令基于之前下载的基因组文件自行建立的。
+在[`hisat2`](http://daehwankimlab.github.io/hisat2/) 官网可以找到已经建立好索引的大鼠基因组文件，可以直接下载索引文件。
 
 ```bash
 cd ~/project/rat/genome
 wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/rn6.tar.gz
 gzip -d rn6.tar.gz
 ```
-
 
 ### 3.2 实验数据
 下载NCBI的`RNA-seq`数据，GEO数据库编号`GSE72960`，SRP数据编号`SRP063345`，文献来源：[肝硬化分子肝癌的器官转录组分析和溶血磷脂酸途径抑制 - 《Molecular Liver Cancer Prevention in Cirrhosis by Organ Transcriptome Analysis and Lysophosphatidic Acid Pathway Inhibition》](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5161110/)
@@ -626,111 +622,95 @@ parallel:用于构建并行运行命令。
 
 ## 4 质量控制
 ### 4.1 质量评估
-拿到测序数据文件，在序列比对之前需要对测序文件的测序质量进行查看，因为不同测序数据来源测序质量也不一样，为了保证后续分析的有效性和可靠性，需要对质量进行评估，如果数据很差那么在后续分析的时候就需要注意了。这里使用`fastqc`进行质量评估
-
-+ 用法
-
-```bash
-fastqc [选项] [测序文件]
-```
-+ 实际使用
+在序列比对之前需要查看测序数据的测序质量，因为不同来源的测序数据的测序质量不同，为保证后续分析的有效性和可靠性，需要进行质量评估，使用`fastqc`进行质量评估。
 
 ```bash
 cd ~/project/rat/sequence
 
-# 因为程序不会自动新建目录，这里新建一个目录
+# 新建目录，用于存放评估结果
 mkdir -p ../output/fastqc
 
+# 质量评估
+fastqc -t 4 -o ../output/fastqc *.gz
 # -t 指定线程数
 # -o 指定输出文件夹
 # *.gz 表示这个目录下以 .gz 的所有文件
-$ fastqc -t 6 -o ../output/fastqc *.gz
 ```
-运行过程中会出现分析的进程，在分析完成之后会有分析报告生成。
+
+* 运行过程中会先显示分析进程，完成之后会生成分析报告。
 
 ```bash
 cd ~/project/rat/output/fastqc
 ls
 
+# 结果
 SRR2190795_fastqc.html SRR2240184_fastqc.html SRR2240187_fastqc.html
 SRR2190795_fastqc.zip  SRR2240184_fastqc.zip  SRR2240187_fastqc.zip
-SRR2240182_fastqc.html SRR2240185_fastqc.html SRR2240228_fastqc.html
-SRR2240182_fastqc.zip  SRR2240185_fastqc.zip  SRR2240228_fastqc.zip
-SRR2240183_fastqc.html SRR2240186_fastqc.html
-SRR2240183_fastqc.zip  SRR2240186_fastqc.zip
+...
+
+# .html文件使用浏览器打开，查看质量评估结果
+firefox SRR2190795_fastqc.html
 ```
-这里的`.html`用浏览器打开，查看一下情况，
 
-可以看到这个测序质量不是特别好，
-
-有关fastq的报告解读，可以参考[用FastQC检查二代测序原始数据的质量](https://www.plob.org/article/5987.html)
-
-> 绿色表示通过，红色表示未通过，黄色表示不太好。一般而言RNA-Seq数据在sequence deplication levels 未通过是比较正常的。毕竟一个基因会大量表达，会测到很多遍。
-
-这里因为有多份报告，有时候查看不是特别方便，这里有一个将所有的fastqc的检测报告合并到一个文件上的程序`multiqc`
+* 因为有多份报告，查看不方便，使用`multiqc`将所有的fastqc检测报告合并为一个文件。
 
 ```bash
 cd ~/project/rat/output/fastqc
-
 multiqc .
+firefox multiqc_report.html
 ```
-主要看几个图
 
-+ 平均GC含量
-
-大体上查看一下测序的总的GC含量，GC含量说明了当前测序是否有很大问题，如果偏差较大，那么可能出现偏测序偏好性（绿色线是理论值，黄色线是实际的情况），因为是转录组，所以可能出现部分序列偏多的情况，这里没有特别大的差异。
-
-* 所有的测序文件的质量
-
-在开头10bp之内和70bp之后，出现了质量值低于30的情况，这个时候说明测序的序列两端的部分序列质量可能一般，需要进行剔除。
-
-* 查看平均质量值的read的数量
-
-在平均质量低于20的read处可以看到有曲线存在，这个说明其中存在质量很低的read，后续需要进行剔除
-
-* 查看接头情况
-
-显示为通过，但是有部分可能包含有几个碱基的接头序列，为了保险也进行一步接头剔除。
+* 有关fastq的报告解读，参考[用FastQC检查二代测序原始数据的质量](https://www.plob.org/article/5987.html)。 绿色表示通过，红色表示未通过，黄色表示不太好。一般，RNA-Seq数据在sequence deplication levels未通过是比较正常的，因为一个基因大量表达，则会测到很多遍。
+  * 平均GC含量（Per Sequence GC Content)：
+    * 查看测序总的GC含量，GC含量说明当前测序是否有很大问题，如果偏差较大，则可能出现测序偏好性（绿色是理论值，黄色是实际值），因为是转录组，所以可能出现部分序列偏多的情况。
+  * 所有测序文件的质量（Sequence Quality Histograms）：
+    * 开头10bp之前和70bp之后，出现质量值低于30（99.9%）的情况，说明测序的序列两端部分序列质量一般，需要剔除。
+  * 查看平均质量值的reads数量（Per Sequence Quality Scores）：
+    * 平均质量低于20的reads处可以看到曲线存在，说明其中存在质量很低的reads，后续需要进行剔除。
+  * 接头情况（Adapter Content）：
+    * 显示通过，但是部分可能包含几个碱基的接头序列，进行剔除接头。
 
 ### 4.2 剔除接头以及测序质量差的碱基
-上面看到，在接头那里是显示的通过，但是可以看到有部分是有4个碱基与接头序列匹配的，属于Illumina的通用接头。另外也可以看到，除了可能存在接头的情况，在测序质量那里也可以看到在`5'`端存在低质量的测序区域，所以像两端这种低质量的区域也是要去除的的，这一步采用`trimmomatic`进行。
+fastqc的接头情况显示部分reads有4个碱基与接头序列匹配，属于Illumina的通用接头，并且测序质量显示`5'`端（10 bp之前）存在低质量的测序区域。因此，使用`trimmomatic`去除两端的低质量区域。
 
 ```bash
 cd ~/project/rat/sequence
-# 新建文件夹
+
+# 新建目录
 mkdir -p ../output/adapter/
 
-# 循环处理文件夹下的
+# 循环处理sequence文件夹的文件
 for i in $(ls *.fastq.gz);
 do
-    # --minimum-length 如果剔除接头后read长度低于30，这条read将会被丢弃
-    # --overlap        如果两端的序列与接头有4个碱基的匹配将会被剔除
-    # --trim-n         剔除两端的N
     cutadapt -a AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT \
     --minimum-length 30 --overlap 4 --trim-n \
     -o ../output/adapter/${i}  ${i}
+    # --minimum-length 如果剔除接头后reads长度低于30，则丢弃该reads
+    # --overlap        如果两端的序列与接头有4个碱基的匹配则会被剔除
+    # --trim-n         剔除两端的N
 done
 ```
 
-### 4.4 再次去除低质量区域
+### 4.3 去除低质量区域
+
 ```bash
 cd ~/project/rat/output/adapter/
 mkdir ../trim
 
 parallel -j 4 "
-  # LEADING:20，从序列的开头开始去掉质量值小于 20 的碱基
-  # TRAILING:20，从序列的末尾开始去掉质量值小于 20 的碱基
-  # SLIDINGWINDOW:5:15，从 5' 端开始以 5bp 的窗口计算碱基平均质量，如果此平均值低于 15，则从这个位置截断read
-  # MINLEN:36， 如果 reads 长度小于 30bp 则扔掉整条 read。
-  java -jar ~/Applications/biosoft/Trimmomatic-0.38/trimmomatic-0.38.jar \
+  java -jar ~/biosoft/Trimmomatic-0.38/trimmomatic-0.38.jar \
     SE -phred33 {1} ../trim/{1} \
     LEADING:20 TRAILING:20 SLIDINGWINDOW:5:15 MINLEN:30 \
+  # LEADING:20，从序列的开头开始去掉质量值小于20的碱基
+  # TRAILING:20，从序列的末尾开始去掉质量值小于20的碱基
+  # SLIDINGWINDOW:5:15，从5'端开始以5bp的窗口计算碱基平均质量，如果此平均值低于15，则从这个位置截断reads
+  # MINLEN:30，如果reads长度小于30bp，则扔掉整条reads
 " ::: $( ls *.gz)
 ```
-### 4.3 再次查看质量情况
+
+### 4.4 查看质量情况
 ```bash
 cd ~/project/rat/output/trim
-
 mkdir ../fastqc_trim
 parallel -j 4 "
     fastqc -t 4 -o ../fastqc_trim {1}
@@ -739,23 +719,20 @@ parallel -j 4 "
 cd ../fastqc_trim
 multiqc .
 ```
-相对于上面的情况，现在好多了
 
-## 5 去除rRNA序列[可不做]
+## 5 去除rRNA序列[选做]
+在提取RNA的过程中没有对RNA进行筛选的情况下，得到的大部分为`rRNA`，可能影响后续的分析，并且增加分析时间。
 
-如果在提取RNA过程中没有对RNA进行筛选的情况下，那么得到的大部分将会是`rRNA`，这个对于后续的分析可能会存在影响，另外也会让比对的时间变长。
-
-> **注意**：在使用`sortmerna`的时候需要确保测序文件是**未压缩的文件**
+**Tips**：使用`sortmerna`时，需要**未压缩的测序文件**。
 
 ```bash
 cd ~/project/rat/output
 mkdir -p ./rRNA/discard
 
 cd trim
-
 parallel -j 4 "
   # 解压测序文件
-  gzip -d {1}*.fq.gz
+  gzip -d {1}*.fa.gz
   
   # euk_rNRA_ref_data就是之前安装sortmerna的时候定义的数据库文件
   # --reads  : 测序文件
@@ -784,101 +761,69 @@ parallel -j 4 "
 ```
 
 ## 6 序列比对
-
-<table>
-    <tr>
-        <td>
-            <img src="./pic/RNA-Seq-alignment.png" align="left" alt="Sample"  width="300">
-            得到干净的测序数据之后，接就可以进行序列比对了，比对的过程是一种<strong>寻找</strong>的过程，将<code>read</code>定位到它位于基因组的位置，通过找寻之后才能说这条read是属于哪条基因的，这样才能对基因的表达进行定量。另外RNA-seq的序列与基因组的序列有时候会不一样，因为存在内含子与外显子这种序列的差别，而RNA-seq是测的RNA的序列，所以会出现跨范围的序列的比对（如左图所示）。
-        </td>
-    </tr>
-</table>
+将reads定位到它在基因组所处的位置，通过比对reads所属的基因，对基因的表达进行定量。此外，RNA-seq的序列与基因组的序列有时可能不一致，因为存在内含子与外显子的差别，而RNA-seq测的是RNA序列，所以会出现跨区段的序列比对。
 
 ### 6.1 建立索引
-
-这一步使用`hisat2`中的工具`hisat2-build`建立索引。
-
-+ 用法
-
-```
-hisat2-build [选项] [基因组序列(.fa)] [索引文件的前缀名]
-```
-+ 开始使用
+使用`hisat2`的`hisat2-build`工具建立索引。
 
 ```bash
-$ cd ~/project/rat/genome
-$ mkdir index
-$ cd index
+cd ~/project/rat/genome
+mkdir index
+cd index
 
-$ hisat2-build  -p 6 ../rn6.chr1.fa rn6.chr1
+# 建立索引
+hisat2-build -p 4 ../genome.chr1.fa genome.chr1
 ```
-在运行过程中会有部分信息提示，其中说到建立索引文件的分块情况以及运行时间的统计
 
-索引建立完成之后在`~/project/rat/genome`文件夹下会出现
+* 运行过程中显示部分信息提示，包含建立索引文件的分块情况及运行时间的统计。完成后，`~/project/rat/genome/index`会生成8个文件，即对基因组进行压缩后的文件，将基因组序列数据分块成了8份，在序列比对的时候直接使用这些文件而不是基因组`genome.chr1.fa`文件。
 
 ```
-rn6.chr1.1.ht2
-rn6.chr1.2.ht2
-rn6.chr1.3.ht2
-rn6.chr1.4.ht2
-rn6.chr1.5.ht2
-rn6.chr1.6.ht2
-rn6.chr1.7.ht2
-rn6.chr1.8.ht2
+genome.chr1.1.ht2  
+genome.chr1.2.ht2
+...
+genome.chr1.8.ht2
 ```
-8个文件，这些文件是对基因组进行压缩之后的文件，这个将基因组序列数据分块成了8份，在执行序列比对的时候直接使用这些文件而不是基因组`rn6.chr1.fa`文件。
 
-
-### 6.2  开始比对
-
-这里使用hasat2进行比对
-
-+ 用法
-
-```bash
-hisat2 [选项] -x [索引文件] [ -1 1测序文件 -2 2测序文件 -U 未成对测序文件 ] [ -S 输出的sam文件 ]
-```
-+ 实际使用
+### 6.2  序列比对
+使用`hasat2`进行序列比对。
 
 ```bash
 cd ~/project/rat/output
 mkdir align
-cd rRNA
+cd trim
 
-$ parallel -k -j 4 "
-    hisat2 -t -x ../../genome/index/rn6.chr1 \
-      -U {1}.fq.gz -S ../align/{1}.sam \
+# hisat2语法
+hisat2 [选项] -x [索引文件] [-1 1测序文件 -2 2测序文件 -U 未成对测序文件] [-S 输出的sam文件]
+
+parallel -k -j 4 "
+    hisat2 -t -x ../../genome/index/genome.chr1 \
+      -U {1}.fastq.gz -S ../align/{1}.sam \
       2>../align/{1}.log
-" ::: $(ls *.gz | perl -p -e 's/.fq.gz$//')
+" ::: $(ls *.gz | perl -p -e 's/.fastq.gz$//')
 ```
-比对完成之后可以进入文件夹查看一下日志信息
+
+* 比对完成后，可以查看日志信息，显示序列比对的时间和比对情况。
 
 ```bash
-$ cd ~/project/rat/output/align
+cd ~/project/rat/output/align
+cat SRR2190795.log
 
-$ cat SRR2190795.log
-```
-
-
-```
+# 结果
 Time loading forward index: 00:00:01
 Time loading reference: 00:00:00
-Multiseed full-index search: 00:09:45
-22507073 reads; of these:
-  22507073 (100.00%) were unpaired; of these:
-    19556407 (86.89%) aligned 0 times
-    2693776 (11.97%) aligned exactly 1 time
-    256890 (1.14%) aligned >1 times
-13.11% overall alignment rate
-Time searching: 00:09:45
-Overall time: 00:09:46
+Multiseed full-index search: 00:08:31
+14998487 reads; of these:
+  14998487 (100.00%) were unpaired; of these:
+    13419407 (89.47%) aligned 0 times
+    1482355 (9.88%) aligned exactly 1 time
+    96725 (0.64%) aligned >1 times
+10.53% overall alignment rate
+Time searching: 00:08:32
+Overall time: 00:08:33
+# 比对率为10.53%，一般全基因组比对的比对率可达到95%以上，此处仅比对chr1。
 ```
 
-日志信息中说到了比对花费的时间以及比对情况。这里可以看到`13.11%`的比对率，一般情况下如果是比对到全基因组上，那么比对率可以达到`95%`以上，这里因为我们是拿的`chr1`做的测试的比对，所以比率还可以，没有问题。
-
-+ 总结比对情况
-
-自己写一个脚本将序列比对率和时间进行统计
+* 总结比对情况，写一个脚本统计序列比对率和时间。
 
 ```bash
 cd ~/project/rat/output/align
@@ -910,9 +855,7 @@ done
 ```
 
 * 格式转化与排序
-
-SAM格式是目前用来存放大量核酸比对结果信息的通用格式，也是人类能够“直接”阅读的格式类型，而BAM和CRAM是为了方便传输，降低存储压力将SAM进行压缩得到的格式形式。
-
+SAM格式是目前用来存放大量核酸比对结果信息的通用格式，是能够“直接”阅读的格式类型，而BAM和CRAM是为了方便传输，降低存储压力而压缩SAM得到的格式形式。bam文件是sam文件的二进制格式，可以减小文件的存储。利用samtools将sam格式比对文件转换为bam格式并排序，并对其建立索引，生成.bai文件。
 
 ```bash
 cd ~/project/rat/output/align
@@ -922,34 +865,24 @@ parallel -k -j 4 "
 " ::: $(ls *.sam | perl -p -e 's/\.sam$//')
 
 rm *.sam
-
 ls
 ```
 
-```bash
-SRR2190795.log          SRR2240185.log
-SRR2190795.sort.bam     SRR2240185.sort.bam
-SRR2190795.sort.bam.bai SRR2240185.sort.bam.bai
-SRR2240182.log          SRR2240186.log
-SRR2240182.sort.bam     SRR2240186.sort.bam
-SRR2240182.sort.bam.bai SRR2240186.sort.bam.bai
-SRR2240183.log          SRR2240187.log
-SRR2240183.sort.bam     SRR2240187.sort.bam
-SRR2240183.sort.bam.bai SRR2240187.sort.bam.bai
-SRR2240184.log          SRR2240228.log
-SRR2240184.sort.bam     SRR2240228.sort.bam
-SRR2240184.sort.bam.bai SRR2240228.sort.bam.bai
-```
-
 ## 7. 表达量统计
-使用HTSEQ-count - [htseq的使用方法和计算原理](https://htseq.readthedocs.io/en/master/count.html#)
-
-如何判断一个 reads 属于某个基因， htseq-count 提供了 union, intersection_strict,intersection_nonempty 3 种模型，如图（大多数情况下作者推荐用 union 模型），它描述了在多种情况下，比对到基因组上的read分配的问题，在这些问题中，最难分配的就是一条read在两个基因相交的地方比对上了之后的情况。一般情况下作者推荐使用`union`的方式。当然，除此之外
-
-* 用法
+使用HTSEQ-count工具的union模型（HTSEQ-count提供了union，intersection_strict，intersection_nonempty 3 种模型）判断reads所属的基因，具体为给定一个包含比对信息的sam文件和一个包含基因组特征的gff文件，统计每个特征对应的reads数量。
 
 ```bash
+cd ~/project/rat/output
+mkdir HTseq
+cd align
+
+# 语法
 htseq-count [options] <alignment_files> <gff_file>
+
+parallel -j 4 "
+    htseq-count -s no -f bam {1}.sort.bam ../../annotation/annotation.gtf \
+      >../HTseq/{1}.count  2>../HTseq/{1}.log
+" ::: $(ls *.sort.bam | perl -p -e 's/\.sort\.bam$//')
 ```
 
 * 参数说明
@@ -958,7 +891,7 @@ htseq-count [options] <alignment_files> <gff_file>
 | --- | --- |
 | -f --format | default: sam 设置输入文件的格式，该参数的值可以是sam或bam。|
 | -r --order | default: name 设置sam或bam文件的排序方式，该参数的值可以是name或pos。前者表示按read名进行排序，后者表示按比对的参考基因组位置进行排序。若测序数据是双末端测序，当输入sam/bam文件是按pos方式排序的时候，两端reads的比对结果在sam/bam文件中一般不是紧邻的两行，程序会将reads对的第一个比对结果放入内存，直到读取到另一端read的比对结果。因此，选择pos可能会导致程序使用较多的内存，它也适合于未排序的sam/bam文件。而pos排序则表示程序认为双末端测序的reads比对结果在紧邻的两行上，也适合于单端测序的比对结果。很多其它表达量分析软件要求输入的sam/bam文件是按pos排序的，但HTSeq推荐使用name排序，且一般比对软件的默认输出结果也是按name进行排序的。|
-| -s --stranded | default: yes 设置是否是链特异性测序。该参数的值可以是yes,no或reverse。no表示非链特异性测序；若是单端测序，yes表示read比对到了基因的正义链上；若是双末端测序，yes表示read1比对到了基因正义链上，read2比对到基因负义链上；reverse表示双末端测序情况下与yes值相反的结果。根据说明文件的理解，一般情况下双末端链特异性测序，该参数的值应该选择reverse（本人暂时没有测试该参数）。|
+| -s --stranded | default: yes 设置是否是链特异性测序。该参数的值可以是yes,no或reverse。no表示非链特异性测序；若是单端测序，yes表示read比对到了基因的正义链上；若是双末端测序，yes表示read1比对到了基因正义链上，read2比对到基因负义链上；reverse表示双末端测序情况下与yes值相反的结果。根据说明文件的理解，一般情况下双末端链特异性测序，该参数的值应该选择reverse。|
 | -a --a | default: 10 忽略比对质量低于此值的比对结果。在0.5.4版本以前该参数默认值是0。|
 | -t --type | default: exon 程序会对该指定的feature（gtf/gff文件第三列）进行表达量计算，而gtf/gff文件中其它的feature都会被忽略。|
 | -i --idattr | default: gene_id 设置feature ID是由gtf/gff文件第9列那个标签决定的；若gtf/gff文件多行具有相同的feature ID，则它们来自同一个feature，程序会计算这些features的表达量之和赋给相应的feature ID。|
@@ -967,55 +900,32 @@ htseq-count [options] <alignment_files> <gff_file>
 | -q --quiet | 不输出程序运行的状态信息和警告信息。|
 | -h --help | 输出帮助信息。|
 
+* 查看生成的文件
+
 ```bash
-cd ~/project/rat/output
-mkdir HTseq
-
-cd align
-parallel -j 4 "
-    htseq-count -s no -f bam {1}.sort.bam ../../annotation/rn6.gff \
-      >../HTseq/{1}.count  2>../HTseq/{1}.log
-" ::: $(ls *.sort.bam | perl -p -e 's/\.sort\.bam$//')
-```
-
-查看生成的文件
-
-```
 cd ~/project/rat/output/HTseq
-cat SRR2190795.count | head -n 10
-```
+cat SRR2190795.count | head -n 5
 
-结果（第一列：基因的ID，第二列：read计数）
-
-```
-ENSRNOG00000000001	1
-ENSRNOG00000000007	3
-ENSRNOG00000000008	0
-ENSRNOG00000000009	0
-ENSRNOG00000000010	0
-ENSRNOG00000000012	0
-ENSRNOG00000000017	10
-ENSRNOG00000000021	22
-ENSRNOG00000000024	843
-ENSRNOG00000000033	27
+# 结果（基因ID   reads计数）
+ENSRNOG00000000001      0
+ENSRNOG00000000007      0
+ENSRNOG00000000008      0
+ENSRNOG00000000009      0
+ENSRNOG00000000010      0
 ```
 
 ## 8 合并表达矩阵与标准化
 ### 8.1 合并
+将多个表合并为一个表，作为一个整体输入到后续分析的程序中。
 
-这里就是将下面的这种表合并为一张表，作为一个整体输入到后续分析的程序中
-
-```
+```bash
       样本1 |        样本2 |       样本3
 基因1   x   | 基因1    x   | 基因1   x
 基因2   x   | 基因2    x   | 基因2   x
 基因3   x   | 基因3    x   | 基因3   x
 基因4   x   | 基因4    x   | 基因4   x
-```
 
-合并为
-
-```
+# 合并
       样本1   样本2  样本3
 基因1   x      x      x
 基因2   x      x      x
@@ -1023,9 +933,10 @@ ENSRNOG00000000033	27
 基因4   x      x      x
 ```
 
-下面使用`R`语言中的`merge`将表格合并
+* 使用`R`语言中的`merge`将表格合并。
 
 ```R
+R
 rm(list=ls())
 setwd("~/project/rat/output/HTseq")
 
@@ -1056,66 +967,57 @@ write.csv(data_merge, "merge.csv", quote = FALSE, row.names = FALSE)
 ```
 
 ### 8.2 数据标准化
-
-
 #### 8.2.1 简介
+* 表达量  
 
-+ 表达量是个什么？
+一个细胞中某一基因表达得到的所有RNA为**绝对的数量**，即实际多少。但RNA-seq中，不确定用于测序的组织块含有的细胞个数，及提取RNA过程中损失的数量，则通过read count以及标准化后的数值并不表示真实的具体数量，而是**相对定量**，用于数据比较。
 
-在一个细胞中，如果统计某一个基因的表达得到的所有的RNA，这个数量就是**绝对的数量**，就是实际上有多少。但是在RNA-seq中，并不知道被用于测序的组织块有多少个细胞，另外提取RNA的过程中损失了多少，那么最后我们通过这个read count以及标准化之后得到的并不是真实的具体的数量，这个数量是**相对定量**，就是这个数值单独拿出来没有什么意义，但是在数据相互比较中才显示出意义来。
+* `read count`与相对表达量
 
-+ `read count`与相对表达量
+原始的read count数目并不能体现出基因与基因之间的相对的表达量的关系。经过HTseq-count得到的数值代表落在基因区域内的reads的数量，但不同基因的长度不同，则对应的reads比对的区域大小不同，因此需要进行样本内不同基因之间的标准化。  
+但后续只分析基因的差异表达，所以对**测序深度标准化**后就可以直接比较不同样本同一个基因之间的read count数值，因为不涉及一个样本内不同基因的对比，属于**样本间标准化**，因为不同RNA-seq的测序深度可能存在差异。
 
-<table>
-    <tr>
-        <td>
-            <img align="left" src="./pic/read_map_and_count.png" alt="Sample"  height="300">
-            得到的原始<code>read count</code>并不能体现出基因与基因之间的相对的表达量的关系。比如经过<code>HTseq-count</code>之后得到的那些数值，这个数值就是说落在基因区域内的read的数量。但是如上图所示，不同的基因的长度不同，那么对应的read比对到的区域的大小不同，基因之间的长度不同这就带来了<strong>直接比落在基因上的read数量来说明表达量就是不公平的</strong>这种情况
-           <img align="right" src="./pic/child_adult.jpg" alt="Sample"  height="200">
-          （就好比直接比两个人的体重来判定胖瘦一样，比如一个100斤的6-7岁的小胖子和110斤的成年人一样，不考虑身高因素这种关键是没有意义的），所以需要根据基因的长度来对原始的read count进行转化之后才能<strong>公平</strong>。这里的标准化是属于<strong>样本内</strong>的各个基因之间的表达量的标准化。
-        </td>
-    </tr>
-</table>
-
-
-但是后续只是为了分析基因的差异表达，所以在对测序**深度进行标准化之后**就可以直接对不同样本同一个基因之间的read count数进行比较，因为并不涉及到一个样本内不同基因的对比。与上面的样本内的不同，这个是属于**样本间**的标准化，因为不同RNA-seq的测序深度可能是有差别的。
-
-```
-             样本间相同基因的对比（TMM分位数标准化或者深度标准化，或者还是CPM、RPKM、FPKM、TPM标准化）
+```bash
+          样本间相同基因的对比（TMM分位数标准化或深度标准化，或还是CPM、RPKM、FPKM、TPM标准化）
                     |
           sample1   |   sample2      sample3
 gene1       x    <--+-->  x            x
                                        ^
                                        |
-                                       +------ 样本内的不同基因对比（RPKM、FPKM、TPM标准化）
+                                       +------ 样本内不同基因对比（RPKM、FPKM、TPM标准化）
                                        |
                                        v
 gene2       x             x            x
 gene3       x             x            x
 ```
 
-样本之间的标准化会使用`分位数标准化`或者`CPM(counts per million)`或者`log-CPM`进行（`log-CPM`的计算为`log2(CPM + 2 * 10^6/N)`，这样的取对数避免了对`0`取对数的情况，这个说明在下面的`vst`标准化那里会提到，之所以取对数是因为使所有样本间的log倍数变化（log-fold-change）向0推移而减小低表达基因间微小计数变化带来的巨大的伪差异性，如果总的read数量有`4千万`，那么`0`的值就是`log2(2 / 40) = -4.32`）
-
-因为这几个计算方法并不涉及到基因长度，所以在计算上是相对方便的，当然了，如果研究的样本在可变剪接的使用上有较大差异，那么在比较的时候使用上面的几种方式可能就不好，这个时候需要考虑长度的因素了。
-
-为了后续可能需要的QPCR实验验证，这里将数据进行一个样本内的标准化的计算。但是这个数值不用于后续的差异分析当中。相关博文[RNA-Seq分析|RPKM, FPKM, TPM, 傻傻分不清楚？](http://www.360doc.com/content/18/0112/02/50153987_721216719.shtml)；[BBQ(生物信息基础问题35，36)：RNA-Seq 数据的定量之RPKM，FPKM和TPM](https://www.jianshu.com/p/30035cae4ee9)，但是目前存在争议究竟是使用`FPKM`还是`TPM`的问题，这里对两种方法都进行计算。
+样本间的标准化会使用`分位数标准化`或`CPM(counts per million)`或者`log-CPM`进行（`log-CPM`的计算为`log2(CPM + 2*10^6/N)`，取对数避免对`0`取对数的情况，取对数是因为使所有样本间的log倍数变化（log-fold-change）向0推移而减小低表达基因间微小计数变化带来的巨大的伪差异性，如果总reads数量有`4千万`，那么`0`的值就是`log2(2 / 40) = -4.32`）。   
+因为上述计算方法并不涉及基因长度，所以计算相对方便，如果研究的样本在可变剪接的使用上有较大差异，那么比较时不宜使用上述方法，而需要考虑长度因素。    
+因为后续可能需要QPCR实验验证，此处将数据进行一个样本内的标准化计算，但这个数值不用于后续的差异分析，参考[RNA-Seq分析|RPKM, FPKM, TPM, 傻傻分不清楚？](http://www.360doc.com/content/18/0112/02/50153987_721216719.shtml)；[BBQ(生物信息基础问题35，36)：RNA-Seq 数据的定量之RPKM，FPKM和TPM](https://www.jianshu.com/p/30035cae4ee9)，因存在使用`FPKM`还是`TPM`的争议，此处使用两种方法计算。
 
 ### 8.2.2 cufflinks
-
-
-
-### 8.2.3 手动计算
-
-+ 首先得到相关基因的长度信息
+* 计算相关基因的长度
 
 ```R
-library(GenomicFeatures)
+# 安装BiocManager(packages)
+install.packages("BiocManager") 
+
+# 安装GenomicFeatures和makeTxDbFromGFF库(bioconductor)
+library(BiocManager)
+BiocManager::install(c("GenomicFeatures", "makeTxDbFromGFF"))
+BiocManager::install("GenomicFeatures")
+
+# 加载R包
+library("GenomicFeatures")
+
 # 构建Granges对象
-txdb <- makeTxDbFromGFF("rn6.gff" )
+txdb <- makeTxDbFromGFF("annotation.gtf" )
+
 # 查找基因的外显子
 exons_gene <- exonsBy(txdb, by = "gene")
+
 # 计算总长度
-# reduce()、width()是Irange对象的方法
+## reduce()、width()是Irange对象的方法
 gene_len <- list()
 for(i in names(exons_gene)){
     range_info = reduce(exons_gene[[i]])
@@ -1123,42 +1025,38 @@ for(i in names(exons_gene)){
     sum_len    = sum(width_info)
     gene_len[[i]] = sum_len
 }
-
-# 或者写为lapply的形式(快很多)
+## 或者写为lapply的形式(快很多)
 gene_len <- lapply(exons_gene,function(x){sum(width(reduce(x)))})
 
 data <- t(as.data.frame(gene_len))
 # 写入文件
-write.table(data, file = "rn6_gene_len.tsv", row.names = TRUE, sep="\t", quote = FALSE, col.names = FALSE)
+write.table(data, file = "genome_gene_len.tsv", row.names = TRUE, sep="\t", quote = FALSE, col.names = FALSE)
 ```
 
 
-开始计算`RPKM` 和 `TPM`
+* **计算`RPKM` 和 `TPM`**
+* `cpm`计算公式
 
-+ `cpm`计算公式
+```bash
+CPM = (10^6 * nr) / N
+# CPM: Counts per million
+# nr: 比对至目标基因的reads数量
+# N: 有效比对至基因组的reads总数量
+```
 
-   ```
-   CPM = (10^6 * nr) / N
-   ```
-   + `CPM` : Counts per million
-   + `nr`  : 比对至目标基因的read数量
-   + `N`   : 是总有效比对至基因组的read数量
-
-+ `RPKM`计算公式
-
-   ```
-   RPKM = (10^6 * nr) / (L * N)
-   ```
-   + `RPKM`: Reads Per Kilobase per Million
-   + `nr`  : 比对至目标基因的read数量
-   + `L`   : 目标基因的外显子长度之和除以1000(因此，**要注意这里的L单位是kb，不是bp**)
-   + `N`   : 是总有效比对至基因组的read数量
+* `RPKM`计算公式
+```bash
+RPKM = (10^6 * nr) / (L * N)
+# RPKM: Reads Per Kilobase per Million
+# L：目标基因的外显子长度之和除以1000(注意L的单位是kb，不是bp)
+# nr: 比对至目标基因的reads数量
+# N: 有效比对至基因组的reads总数量
+```
 
 ```R
 #!R
 # =========== RPKM =============
-
-gene_len_file <- "rn6_gene_len.tsv"
+gene_len_file <- "genome_gene_len.tsv"
 count_file <- "samples.count"
 
 gene_len <- read.table(gene_len_file, header = FALSE, row.name = 1)
@@ -1181,10 +1079,9 @@ for(i in row.names(count)){
 }
 ```
 
-+ TPM计算公式
-   
-   ```
-   TPM = nr * read_r * 10^6 / g_r * T
+* `TPM`计算公式
+```
+TPM = nr * read_r * 10^6 / g_r * T
    T   = ∑(ni * read_i / g_i)
    ```
 
@@ -1272,8 +1169,7 @@ y^                         y^
 
 
 ## 9. 差异表达分析
-
-+ 查看几个管家基因的表达量情况。
+* 查看管家基因的表达情况。
 
 `GAPDH(ENSRNOG00000018630)`、`beta-actin(ENSRNOG00000034254)`
 

@@ -69,6 +69,10 @@ xzvf
 
 
 
+### Linux code
+code:
+* code.exe [options][paths...]
+
 
 
 

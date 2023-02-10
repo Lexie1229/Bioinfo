@@ -298,7 +298,7 @@ mkdir -p ~/project/rat/database/sortmerna_db/rRNA_databases
 mv ./rRNA_databases/ ~/project/rat/database/sortmerna_db/rRNA_databases
 
 # 相关库文件
-cd ~/project/rat/database/sortmerna_db
+cd ~/biosoft/sortmerna-2.1
 sortmerna_ref_data=$(pwd)/rRNA_databases/silva-bac-16s-id90.fasta,$(pwd)/index/silva-bac-16s-db:\
 $(pwd)/rRNA_databases/silva-bac-23s-id98.fasta,$(pwd)/index/silva-bac-23s-db:\
 $(pwd)/rRNA_databases/silva-arc-16s-id95.fasta,$(pwd)/index/silva-arc-16s-db:\
@@ -938,7 +938,7 @@ ENSRNOG00000000010      0
 ```R
 R
 rm(list=ls())
-setwd("~/project/rat/output/HTseq")
+setwd("C:/Users/19065/project/rat/output/HTseq")
 
 # 得到文件样本编号
 files <- list.files(".", "*.count")
@@ -995,7 +995,9 @@ gene3       x             x            x
 因为上述计算方法并不涉及基因长度，所以计算相对方便，如果研究的样本在可变剪接的使用上有较大差异，那么比较时不宜使用上述方法，而需要考虑长度因素。    
 因为后续可能需要QPCR实验验证，此处将数据进行一个样本内的标准化计算，但这个数值不用于后续的差异分析，参考[RNA-Seq分析|RPKM, FPKM, TPM, 傻傻分不清楚？](http://www.360doc.com/content/18/0112/02/50153987_721216719.shtml)；[BBQ(生物信息基础问题35，36)：RNA-Seq 数据的定量之RPKM，FPKM和TPM](https://www.jianshu.com/p/30035cae4ee9)，因存在使用`FPKM`还是`TPM`的争议，此处使用两种方法计算。
 
-### 8.2.2 cufflinks
+#### 8.2.2 cufflinks
+
+#### 8.2.3 手动计算
 * 计算相关基因的长度
 
 ```R
@@ -1005,13 +1007,12 @@ install.packages("BiocManager")
 # 安装GenomicFeatures和makeTxDbFromGFF库(bioconductor)
 library(BiocManager)
 BiocManager::install(c("GenomicFeatures", "makeTxDbFromGFF"))
-BiocManager::install("GenomicFeatures")
 
 # 加载R包
 library("GenomicFeatures")
 
 # 构建Granges对象
-txdb <- makeTxDbFromGFF("annotation.gtf" )
+txdb <- makeTxDbFromGFF("annotation.gtf")
 
 # 查找基因的外显子
 exons_gene <- exonsBy(txdb, by = "gene")
@@ -1032,7 +1033,6 @@ data <- t(as.data.frame(gene_len))
 # 写入文件
 write.table(data, file = "genome_gene_len.tsv", row.names = TRUE, sep="\t", quote = FALSE, col.names = FALSE)
 ```
-
 
 * **计算`RPKM` 和 `TPM`**
 * `cpm`计算公式
@@ -1057,7 +1057,7 @@ RPKM = (10^6 * nr) / (L * N)
 #!R
 # =========== RPKM =============
 gene_len_file <- "genome_gene_len.tsv"
-count_file <- "samples.count"
+count_file <- "SRR2190795.count"
 
 gene_len <- read.table(gene_len_file, header = FALSE, row.name = 1)
 colnames(gene_len) <- c("length")
@@ -1080,21 +1080,16 @@ for(i in row.names(count)){
 ```
 
 * `TPM`计算公式
-```
+
+```bash
 TPM = nr * read_r * 10^6 / g_r * T
    T   = ∑(ni * read_i / g_i)
-   ```
-
-   简言之
-
-   ```
-   TPM = (nr / g_r) * 10^6 / ∑(ni / gi)
-   ```
-   + `TPM`   : Transcripts Per Million
-   + `nr`    : 比对至目标基因的read数量
-   + `read_r`: 是比对至基因r的平均read长度
-   + `g_r`   : 是基因r的外显子长度之和（**这里无需将其除以1000**）
-
+即 TPM = (nr / g_r) * 10^6 / ∑(ni / gi)
+# TPM:Transcripts Per Million
+# nr:比对至目标基因的reads数量
+# read_r:是比对至基因r的平均reads长度
+# g_r:是基因r的外显子长度之和（无需除以1000）
+```
 
 ```R
 # =========== 计算TPM ============
@@ -1129,9 +1124,8 @@ count["TPM"] <- TPM
 write.table(count, "123.normalize.count", col.names = TRUE, row.names = TRUE, sep="\t", quote = FALSE)
 ```
 
-实际上上面两种计算方法都默认了每一个基因的所有的外显子都会表达出来，但是实际上可能并不是的，所以如果想要较为精确的值就需要对`bam`文件加上`gff`注释文件进行联合之后得到真实的基因的外显子的长度。但是这个对于`RPKM`的整体计算来说没有什么影响，但是对于`TPM`来说可能会有微弱的差异。
-
-上面可以看到。`RPKM`的是单个基因的read count数做分子，然后分母均和总read数相关，实际上这样在一定程度上消除了测序的建库的大小的差异。但是这会带来一定的问题，就是不能保证不同的样本中总的RNA的表达总量总是一致的。假如肝细胞比红细胞的RNA总量高，但是在经过RPKM的时候将
+以上两种计算方法默认每个基因所有的外显子都会表达，但实际上并不如此，如果想要较为精确的值，则需`bam`文件联合`gff`注释文件得到真实的基因外显子长度。此过程对`RPKM`的整体计算没有影响，但对`TPM`可能存在微弱差异。   
+因为，`RPKM`是单个基因的read count数为分子，分母均和总reads数相关，在一定程度上消除了测序建库大小的差异。但也会引起一定的问题，即不能保证不同的样本中总RNA的表达总量总是保持一致。假如肝细胞比红细胞的RNA总量高，但计算`RPKM`的时候将`nr/N`归一化到`0-1`范围内（此时没有乘`10^6/L`），即按照比例来说一样，但实际上RNA的表达量数值是不等的，只能说表达的占比相等。但是这个数值相等是否能评判不同组织中具体基因的表达量呢？
 
 ```
 某基因表达量： 
@@ -1144,11 +1138,8 @@ write.table(count, "123.normalize.count", col.names = TRUE, row.names = TRUE, se
             +--+ 占比0.01
 红细胞总RNA： 
             +-------------+
-```
 
-经过`nr / N`归一化压缩到`0~1`的范围内（这个时候没有乘以`10^6 / L`这个常量），那么按照比例来说一样，但是实际上的RNA表达量数值是不等的。只能说表达的占比相等。
 
-```
                     归一化
 
 ----------------------------------------------
@@ -1165,9 +1156,6 @@ y^                         y^
                1 x                         1x
 ```
 
-但是这个数值相等了，是否能评判不同组织中的具体的基因表达量呢？
-
-
 ## 9. 差异表达分析
 * 查看管家基因的表达情况。
 
@@ -1175,63 +1163,43 @@ y^                         y^
 
 ```bash
 cd ~/project/rat/output/HTseq
-
 cat merge.csv | grep -E "ENSRNOG00000018630|ENSRNOG00000034254"
-```
-这是两个基因的表达量情况
-```
-ENSRNOG00000018630,2821,8092,4810,5813,8320,4161,3426,3249
-ENSRNOG00000034254,5073,13386,5774,8791,16865,7583,4494,4860
+
+# 两个基因的表达量情况
+ENSRNOG00000018630,0,0,0,0,0,0,0
+ENSRNOG00000034254,0,0,0,0,0,0,0
+# 原因（可能）：管家基因不在1号染色体上
 ```
 ### 9.1 数据前处理
 
-+ 删除`HTseq-count`的总结行
+* 删除`HTseq-count`的总结行
 
 ```R
+# 删除gene_id行
 dataframe <- read.csv("merge.csv", header=TRUE, row.names = 1)
 ```
-在数据中存在总结的项，这些项对于后续分析有影响，在HTseq-count的结果有5行总结的内容，分别是：
+
+* HTseq-count的结果数据中存在5行总结的内容，影响后续分析，需要删除。
 
 | 项                     | 说明                                   |
 | ---------------------- | -------------------------------------- |
 | __alignment_not_unique | 比对到多个位置的reads数                |
-| __ambiguous            | 不能判断落在那个单位类型的reads数      |
+| __ambiguous            | 不能判断落在哪个单位类型的reads数      |
 | __no_feature           | 不能对应到任何单位类型的reads数        |
 | __not_aligned          | 存在于SAM文件，但没有比对上的reads数   |
 | __too_low_aQual        | 低于-a设定的reads mapping质量的reads数 |
 
-
-这里删除掉
-
-```
-                       SRR2190795 SRR2240182 SRR2240183 SRR2240184
-__alignment_not_unique    1237425    1821001    1327114    1554701
-__ambiguous                237874     419677     260420     328308
-__no_feature              1331291    1927193    1435345    1475574
-__not_aligned             1350172    2317888    1262136     963510
-__too_low_aQual                 0          0          0          0
-ENSRNOG00000000001              1          2          0          1
-                       SRR2240185 SRR2240186 SRR2240187 SRR2240228
-__alignment_not_unique    1807092     962538    1703558    1436165
-__ambiguous                364825     186332     336135     275106
-__no_feature              2239366    1150812    1566965    1425114
-__not_aligned             1336922    1027748    1734828    1539988
-__too_low_aQual                 0          0          0          0
-ENSRNOG00000000001              6          2          0          0
-```
-
-
 ```R
-# 去除前面5行
+# 删除前5行内容
 countdata <- dataframe[-(1:5),]
 
 # 查看数据
 head(countdata)
 ```
 
-+ 将ID的版本号去除
+* 去除ID的版本号
 
-有的时候在基因名后面会有`.1`或者`.2`等等的标号出现（这里没有），这个时候需要把它除去
+有时基因名后有`.1`或`.2`等标号，也需要去除。
 
 ```R
 # 得到行的名
@@ -1243,25 +1211,24 @@ name_replace <- gsub("\\.\\w+","", row.names(countdata))
 row.names(countdata) <- name_replace
 ```
 
-+ 去除低表达的基因
+* 去除低表达的基因  
 
-> 在任何样本中都没有足够多的序列片段的基因应该从下游分析中过滤掉。这样做的原因有好几个。 从生物学的角度来看，在任何条件下的表达水平都不具有生物学意义的基因都不值得关注，因此最好忽略。 从统计学的角度来看，去除低表达计数基因使数据中的均值 - 方差关系可以得到更精确的估计，并且还减少了在观察差异表达的下游分析中需要进行的统计检验的数量。
+在任何样本中都没有足够多的序列片段的基因应该从下游分析中过滤掉。因为：① 从生物学角度，在任何条件下的表达水平都不具有生物学意义的基因不值得关注，最好忽略；② 从统计学角度，去除低表达计数基因使数据中的均值-方差关系得到更精确的估计，并且减少观察差异表达的下游分析中需要进行的统计检验的数量。
 
 ```R
 countdata <- countdata[rowSums(countdata) > 0,]
 ```
 
-到这里就得到了可以用于后续差异分析的数据了
-
 ### 9.2 差异分析
 
-差异分析使用`DESeq2`包进行分析，这个对于输入的数据是原始的`read count`，所以上述经过`HTseq`的read计数之后的数据可以输入到`DESeq2`包中进行差异分析。它与`EdgeR`包类似，都是基于负二项分布模型。在转录组分析中有三个分析的水平`基因水平(gene-level)`、`转录本水平(transcript-level)`、`外显子使用水平(exon-usage-level)`。但是原始的`read count`数量并不能代表基因的表达量。
+使用`DESeq2`包进行差异分析，需要输入原始的`read count`，因此输入上述`HTseq`的reads计数后的数据进行分析。`DESeq2`包与`EdgeR`包类似，都是基于负二项分布模型。在转录组分析中有三个分析的水平`基因水平(gene-level)`、`转录本水平(transcript-level)`、`外显子使用水平(exon-usage-level)`。但是原始的`read count`数量并不能代表基因的表达量。
+
 
 > 表达差异分析只对比不同样本之间的同一个转录本，所以不需要考虑转录本长度，只考虑总读段数。一个**最简单思想**就是，样本测序得到的总读段数（实际上是可以比对到转录组的总读段数）越多，则每个基因分配到的读段越多。因此**最简单的标准化因子**就是总读段数，用总读段数作标准化的前提是大部分基因的表达是非显著变化的，这与基因芯片中的基本假设相同。**但是**实际工作中发现很多情况下总读段数主要是一小部分大量表达的基因贡献的。Bullard等（2010）在比较了几种标准化方法的基础上发现在每个泳道内使用非零计数分布的上四分位数（Q75%）作为标准化因子是一种更稳健的选择，总体表现是所研究方法中最优的。
 >
 > Bioconductor的edgeR包和DESeq包分别提供了上四分位数和中位数来作为标准化因子，就是出于这个思想。[Bioconductor分析RNA-seq数据](https://www.jianshu.com/p/8f89284c16f8)
 
-+ DESeq2的差异分析的步骤
+* DESeq2的差异分析的步骤
 
 > 1. **构建一个dds(DESeqDataSet)的对象**
 > 2. **利用DESeq函数进行标准化处理**
@@ -1269,19 +1236,13 @@ countdata <- countdata[rowSums(countdata) > 0,]
 
 #### 9.2.1 安装与加载包
 
-首先安装对应的R包
-
 ```R
-# 使用bioconductor进行安装
-source("http://bioconductor.org/biocLite.R")
-options(BioC_mirror="http://mirrors.ustc.edu.cn/bioc/")
-
-# 安装包
-biocLite("DESeq2")
-biocLite("pheatmap")
-biocLite("biomaRt")
-biocLite("org.Rn.eg.db")
-biocLite("clusterProfiler")
+# 安装
+BiocManager::install("DESeq2")
+BiocManager::install("pheatmap")
+BiocManager::install("biomaRt")
+BiocManager::install("org.Rn.eg.db")
+BiocManager::install("clusterProfiler")
 
 # 加载
 library(DESeq2)
@@ -1290,24 +1251,25 @@ library(biomaRt)
 library(org.Rn.eg.db)
 library(clusterProfiler)
 ```
+
 #### 9.2.2 构建对象
 
-这里说白了就是把数据导入到R中生成对应的数据结构，它的基本用法如下：
+把数据导入R，生成对应的数据结构。
 
 ```R
+# 语法
 dds <- DESeqDataSetFromMatrix(countData = cts, colData = coldata, design= ~ batch + condition)
 ```
-+ `countData（表达矩阵）`：是上面一步生成的一个数据框（列对应着每一个样本，行对应的基因名称，中间的值是read的计数），类似于下面的
 
-|       | 样本1 | 样本2 | 样本3 | 样本4 |
-| ----- | ----- | ----- | ----- | ----- |
-| 基因1 | 10    | 20    | 15    | 16    |
-| 基因2 | 0     | 0     | 2     | 2     |
-| 基因3 | 120   | 110   | 20    | 10    |
-| 基因4 | 40    | 44    | 10    | 20    |
-| 基因5 | 20    | 10    | 13    | 12    |
+* `countData（表达矩阵）`：上面生成的数据框（列对应样本，行对应基因名称，中间对应reads的计数），格式如下：
 
-+ `colData（样本信息）`：这个是用来描述样本的是实验组还是对照组，类似于下面
+|       | 样本1 | 样本2 | 样本3 |
+| ----- | ----- | ----- | ----- |
+| 基因1 | 10    | 20    | 15    | 
+| 基因2 | 0     | 0     | 2     |
+| 基因3 | 120   | 110   | 20    |
+
+* `colData（样本信息）`：用来描述样本是实验组还是对照组，格式如下：
 
 | sample      | treatment |
 | ----------- | --------- |
@@ -1316,11 +1278,11 @@ dds <- DESeqDataSetFromMatrix(countData = cts, colData = coldata, design= ~ batc
 | Experiment1 | treatment |
 | Experiment2 | treatment |
 
-treatment不一定就是指代样本是经过什么处理的，也可以是`细胞类型`、`基因型`、`表现型`、`样本处理方式`、`批次`等等信息，因为如果直接给样本信息程序是不知道究竟是怎样的分组的，而这些信息就是被用于区分样本的性质对样本分组，所以说是很重要的信息，如果分错那么数据比较的时候就会相应的发生变化，最后得到的结果就会发生变化。
+treatment不一定指代样本经过什么处理，也可以是`细胞类型`、`基因型`、`表现型`、`样本处理方式`、`批次`等信息，因为如果直接给样本信息程序是不知道究竟是怎样的分组的，而这些信息就是被用于区分样本的性质对样本分组，所以说是很重要的信息，如果分错那么数据比较的时候就会相应的发生变化，最后得到的结果就会发生变化。
 
-+ `design（样本差异比较）`：就是指定样本依据什么分为实验组与对照组
+* `design（样本差异比较）`：就是指定样本依据什么分为实验组与对照组
 
-上面的`表达矩阵`已经得到了，下面需要生成样本的信息，下面的表格我直接从NCBI的`Run selector`中得到。
+上面的`表达矩阵`已经得到了，下面需要生成`样本信息`，下面的表格直接从NCBI的`Run selector`中得到。
 
 | Run | BioSample | Sample name | Experiment | LoadDate | MBases | MBytes | health state | treatment |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -1350,7 +1312,7 @@ EOF
 countdata
 
 # 读取样本分组信息(注意，需要加上row.names = 1, header = TRUE，将行列名需要看好)
-coldata <- read.table("../phenotype/phenotype.csv", row.names = 1, header = TRUE, sep = "," )
+coldata <- read.table("./phenotype/phenotype.csv", row.names = 1, header = TRUE, sep = "," )
 # 确认一下行列名是否有（不是简单的数值）
 head(coldata)
 # 调整数据顺序
@@ -1361,25 +1323,26 @@ dds <- DESeqDataSetFromMatrix(countData = countdata, colData = coldata, design= 
 
 # 查看dds
 dds
-```
 
-```
+# 结果
 class: DESeqDataSet 
-dim: 32883 8 
+dim: 2728 4 
 metadata(1): version
 assays(1): counts
-rownames(32883): ENSRNOG00000000001 ENSRNOG00000000007 ...
-  ENSRNOG00000062307 ENSRNOG00000062308
+rownames(2728): ENSRNOG00000000417
+  ENSRNOG00000001466 ... ENSRNOG00000071167
+  ENSRNOG00000071194
 rowData names(0):
-colnames(8): SRR2190795 SRR2240182 ... SRR2240187 SRR2240228
-colData names(4): ids health.state condition treatment
+colnames(4): SRR2240185 SRR2240186 SRR2240187
+  SRR2240228
+colData names(3): state condition treatment
 ```
 
 #### 9.2.3 样本相关性
 
 因为存在很多基因的差别等因素，在某些基因上可能样本间几乎没有差别，但是总体来看就会有较大差别了，这里对包含众多的基因这样的因素的情况下进行样本相关性进行评估，评估样本的重复组之间是否很相似或者是否实验组与对照组之间差别明显。
 
-+ PCA分析(principal components analysis)
+* PCA分析(principal components analysis)
 
 由于上面得到的是最原始的`read count`，但是PCA分析需要对数据进行转化才能进行。一般取对数，但是最原始的数据中有些基因的计数为`0`，这样在取`log`值的时候意味着`−∞`，这样是不行的，所以一般会加上一个常数再取`log`，也就是`log(count + N)`（其中`N`是一个常数），但是也有较好的方法来进行校正，比如`DEseq2`包自带的`rlog`和`vst`函数（全名为[`variance stabilizing transformation`](https://en.wikipedia.org/wiki/Variance-stabilizing_transformation)），它们消除了方差对均值的依赖，尤其是低均值时的高`log counts`的变异。
 
@@ -1391,11 +1354,9 @@ colData names(4): ids health.state condition treatment
 # DEseq2包提供了相应的函数
 vsdata <- rlog(dds, blind=FALSE)
 # intgroup 分组
+library(ggplot2)
 plotPCA(vsdata, intgroup="treatment") + ylim(-10, 10)
 ```
-
-![](./pic/PCA_analysis.png)
-
 
 距离越近相关性越大，否则越远，如果点单独的偏离，那么这个样本可能不好用。
 
@@ -1446,7 +1407,7 @@ pheatmap(sampleDistMatrix,
          col=colors)
 ```
 
-<img src="./pic/sample_distance_heatmap.png" alt="Sample"  width="400">
+
 
 可以看到样本与样本之间的距离，颜色越深，距离越近。
 
@@ -1454,7 +1415,7 @@ pheatmap(sampleDistMatrix,
 
 #### 9.2.4 差异基因
 
-+ 使用`DESeq()`方法计算不同组别间的基因的表达差异，它的输入是上一步构建的`dss`数据对象
+* 使用`DESeq()`方法计算不同组别间基因的表达差异，其输入为`9.2.2`构建的`dss`数据对象。
 
 ```R
 # 改变样本组别顺序
@@ -1483,7 +1444,7 @@ final dispersion estimates
 fitting model and testing
 ```
 
-+ 查看实验组与对照组的对比结果
+* 查看实验组和对照组的对比结果
 
 ```R
 result <- results(dds, pAdjustMethod = "fdr", alpha = 0.05)
@@ -1496,6 +1457,27 @@ head(result)
 log2 fold change (MLE): treatment treatment vs control 
 Wald test p-value: treatment treatment vs control 
 DataFrame with 6 rows and 6 columns
+
+                    baseMean log2FoldChange     lfcSE
+                   <numeric>      <numeric> <numeric>
+ENSRNOG00000000417   636.407      0.4486687  0.217484
+ENSRNOG00000001466   597.112      4.9329106  0.285266
+ENSRNOG00000001488  2146.862     -0.1196395  0.182813
+ENSRNOG00000001489   101.899     -0.0843860  0.333376
+ENSRNOG00000001490   123.953      0.0337919  0.309519
+ENSRNOG00000001492   215.430     -0.7128240  0.254208
+                        stat      pvalue        padj
+                   <numeric>   <numeric>   <numeric>
+ENSRNOG00000000417  2.062996 3.91130e-02 1.04317e-01
+ENSRNOG00000001466 17.292336 5.37299e-67 1.46817e-64
+ENSRNOG00000001488 -0.654437 5.12830e-01 6.74111e-01
+ENSRNOG00000001489 -0.253125 8.00171e-01 8.89044e-01
+ENSRNOG00000001490  0.109176 9.13063e-01 9.54090e-01
+ENSRNOG00000001492 -2.804095 5.04580e-03 1.81417e-02
+
+
+
+
                              baseMean     log2FoldChange            lfcSE               stat            pvalue              padj
                             <numeric>          <numeric>        <numeric>          <numeric>         <numeric>         <numeric>
 ENSRNOG00000000001   1.17994640466912   2.82050381813686 2.03998348785486   1.38261110196669 0.166784143097929                NA
@@ -1535,40 +1517,37 @@ ENSRNOG00000018371 705.943312960284  4.65111741552834  0.41021741987017  11.3381
 
 ```R
 summary(result_order)
-```
 
-```
-out of 19962 with nonzero total read count
+# 结果
+out of 2648 with nonzero total read count
 adjusted p-value < 0.05
-LFC > 0 (up)       : 2248, 11%
-LFC < 0 (down)     : 1148, 5.8%
-outliers [1]       : 31, 0.16%
-low counts [2]     : 5234, 26%
-(mean count < 2)
+LFC > 0 (up)       : 360, 14%
+LFC < 0 (down)     : 344, 13%
+outliers [1]       : 0, 0%
+low counts [2]     : 462, 17%
+(mean count < 1)
 [1] see 'cooksCutoff' argument of ?results
 [2] see 'independentFiltering' argument of ?results
+# 共有360个基因上调，344个基因下调，0个离群值。
 ```
 
-可以看到，一共`2248`个基因上调；`1148`个基因下调，`31`个离群值
-
-+ 查看显著的基因数量
+* 查看显著的基因数量
 
 ```R
 table(result_order$padj<0.05)
-```
 
-```
+# 结果
 FALSE  TRUE 
-11301  3396
+ 1482   704 
 ```
 
-+ 将数据保存起来
+* 保存数据
 
 ```R
 # 新建文件夹
-dir.create("../DESeq2")
+dir.create("./DESeq2")
 # 不用按照padj排序的结果，就保存按照基因名排序的
-write.csv(result, file="../DESeq2/results.csv", quote = F)
+write.csv(result, file="./DESeq2/results.csv", quote = F)
 ```
 
 ## 10. 提取差异表达基因与注释
@@ -1708,7 +1687,7 @@ plotMA(result_order, ylim=c(-10,10))
 
 ## 12. 富集分析
 
-+ 使用`clusterProfiler`进行富集分析
+* 使用`clusterProfiler`进行富集分析
 
 ```R
 # 接续着上面的结果

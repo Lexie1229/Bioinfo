@@ -50,8 +50,6 @@ echo "==> When some packages went wrong, check http://mirrors.ustc.edu.cn/ubuntu
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/1-apt.sh)"
 ```
 
-> count
-> chomd
 
 > * curl:下载工具
 >> * -f, --fail          Fail silently (no output at all) on HTTP errors 连接失败不显示http错误

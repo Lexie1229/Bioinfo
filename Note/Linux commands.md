@@ -59,8 +59,9 @@ pwd(print work directory):用于显示当前工作目录。
 ### Linux tar
 tar：
 * tar [OPTION] [FILE]
-  * -x, --extract, --get       extract files from an archive
-  * -f, --file=ARCHIVE         use archive file or device ARCHIVE
+  * -x, --extract, --get：extract files from an archive
+  * -f, --file=ARCHIVE：use archive file or device ARCHIVE
+  * -z, --gzip, --gunzip, --ungzip：filter the archive through gzip
 jxvf
 xzvf
 
@@ -80,7 +81,8 @@ code:
 ### Linux mkdir
 
 
-
+> count
+> chomd
 
 
 

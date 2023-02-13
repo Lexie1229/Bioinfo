@@ -1,20 +1,9 @@
 # Classifying Plasmids
-
-[TOC levels=1-3]: # ""
-
-- [Classifying Plasmids](#classifying-plasmids)
-  - [NCBI RefSeq](#ncbi-refseq)
-  - [MinHash to get non-redundant plasmids](#minhash-to-get-non-redundant-plasmids)
-  - [Grouping by MinHash](#grouping-by-minhash)
-  - [Plasmid: prepare](#plasmid-prepare)
-  - [Plasmid: run](#plasmid-run)
-
-
 ## NCBI RefSeq
 
 ```bash
-mkdir -p ~/data/plasmid
-cd ~/data/plasmid
+mkdir -p ~/project/plasmid
+cd ~/project/plasmid
 
 rsync -avP ftp.ncbi.nlm.nih.gov::refseq/release/plasmid/ RefSeq/
 

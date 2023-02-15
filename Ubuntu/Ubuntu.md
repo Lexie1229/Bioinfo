@@ -1,19 +1,4 @@
-# Setting-up scripts for Ubuntu 20.04
-
-[TOC levels=1-3]: # ""
-
-- [Setting-up scripts for Ubuntu 20.04](#setting-up-scripts-for-ubuntu-2004)
-  - [1.Bypass GFW blocking](#1bypass-gfw-blocking)
-  - [2.Install packages needed by Linuxbrew and some others](#2install-packages-needed-by-linuxbrew-and-some-others)
-  - [3.Optional: adjusting Desktop](#3optional-adjusting-desktop)
-  - [4.Install Linuxbrew](#4install-linuxbrew)
-  - [5.Download](#5download)
-  - [6.Install packages managed by Linuxbrew](#6install-packages-managed-by-linuxbrew)
-  - [7.Packages of each language](#7packages-of-each-language)
-  - [8.Bioinformatics Apps](#8bioinformatics-apps)
-  - [9.Optional: MySQL](#9optional-mysql)
-  - [10.Optional: dotfiles](#10optional-dotfiles)
-  - [11.Directory Organization](#11directory-organization)
+# [Setting-up scripts for Ubuntu 20.04](https://github.com/wang-q/ubuntu)
 
 The whole developing environment is based on [Linuxbrew](http:s//linuxbrew.sh/). Many of the
 following steps also work under macOS via [Homebrew](https://brew.sh/).
@@ -180,14 +165,6 @@ bash download.sh
 source $HOME/.bashrc
 ```
 
-> * 
-
-
-
-
-
-
-
 ## 6.Install packages managed by Linuxbrew
 Packages include:
 * Programming languages: Perl, Python, R, Java, Lua and Node.js
@@ -198,11 +175,12 @@ bash $HOME/Scripts/dotfiles/brew.sh
 source $HOME/.bashrc
 ```
 
-cd ~/Scripts
-git clone https://github.com/wang-q/dotfiles
-bash $HOME/Scripts/dotfiles/brew.sh
-source $HOME/.bashrc
-
+```bash
+cd ~/Scripts  
+git clone https://github.com/wang-q/dotfiles  
+bash $HOME/Scripts/dotfiles/brew.sh  
+source $HOME/.bashrc  
+```
 
 Attentions:
 

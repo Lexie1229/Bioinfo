@@ -171,16 +171,12 @@ Packages include:
 * Some generalized tools
 
 ```shell script
+cd ~/Scripts  
+git clone https://github.com/wang-q/dotfiles 
 bash $HOME/Scripts/dotfiles/brew.sh
 source $HOME/.bashrc
 ```
 
-```bash
-cd ~/Scripts  
-git clone https://github.com/wang-q/dotfiles  
-bash $HOME/Scripts/dotfiles/brew.sh  
-source $HOME/.bashrc  
-```
 
 Attentions:
 

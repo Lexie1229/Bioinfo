@@ -1,9 +1,9 @@
-# Classifying Plasmids
+# [Classifying Plasmids]()
 ## NCBI RefSeq
 
 ```bash
-mkdir -p ~/project/plasmid
-cd ~/project/plasmid
+mkdir -p ~/biodata/plasmid
+cd ~/biodata/plasmid
 
 rsync -avP ftp.ncbi.nlm.nih.gov::refseq/release/plasmid/ RefSeq/
 

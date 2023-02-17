@@ -125,16 +125,18 @@ source $HOME/.bashrc
 * conda：用于安装和管理生信相关的工具。    
 ```bash
 # 下载脚本
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/biosoft/miniconda.sh
 
 # 安装conda
 bash miniconda.sh
+source ~/.bashrc
 
 # 配置conda
 conda config --add channels conda-forge
 conda config --add channels defaults
 conda config --add channels r
 conda config --add channels bioconda
+conda config --set auto_activate_base false
 
 # 建立python3.6的环境 
 conda create --name python36 python=3.6
@@ -201,15 +203,24 @@ pip install cutadapt
 | 手册 | https://cutadapt.readthedocs.io/en/stable/guide.html |
 
 ### 2.5 质量修剪
-* Trim Galore
+* Trim Galore   
 Trim Galore：使用perl脚本编写的工具，是对`cutapat`和`fastqc`命令的封装，可以自动检测接头并调用`cutapat`去除。
 
 ```bash
 cd ~/biosoft
 
-wget https://github.com/FelixKrueger/TrimGalore/archive/0.6.3.tar.gz -O TrimGalore.gz
+wget https://github.com/FelixKrueger/TrimGalore/archive/0.6.3.tar.gz
 
-gzip -d TrimGalore.gz
+tar xvzf 0.6.3.tar.gz
+
+cd ~/biosoft/TrimGalore-0.6.3
+
+# 导入临时环境变量
+export PATH="$(pwd):$PATH"
+## 写入.bashrc文件
+echo '# TrimGalore'>> ~/.bashrc
+echo 'export PATH="$HOME/biosoft/TrimGalore-0.6.3:$PATH"' >> ~/.bashrc
+source ~/.bashrc
 ```
 
 | Trim Galore | 站点                                                         |
@@ -217,7 +228,7 @@ gzip -d TrimGalore.gz
 | 官网        | https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md |
 | 手册        | https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md |
 
-* trimmomatic
+* trimmomatic   
 trimmomatic：是多线程命令行工具，用来修剪Illumina (FASTQ)数据以及删除接头，是目前使用最多的高通量测序数据清洗的工具。
 
 ```bash
@@ -264,7 +275,9 @@ cd hisat2-2.2.1
 # 导入临时环境变量
 export PATH="~/biosoft/hisat2-2.2.1:$PATH"
 ## 写入.bashrc文件
-
+echo '# hisat2'>> ~/.bashrc
+echo 'export PATH="$HOME/biosoft/hisat2-2.2.1:$PATH"' >> ~/.bashrc
+source ~/.bashrc
 
 # 测试是否可用
 hisat2 -h
@@ -394,6 +407,10 @@ cd stringtie-2.2.1
 
 # 导入环境变量
 export PATH="$(pwd):$PATH"
+## 写入.bashrc文件
+echo '# StringTie'>> ~/.bashrc
+echo 'export PATH="$HOME/biosoft/stringtie-2.2.1:$PATH"' >> ~/.bashrc
+source ~/.bashrc
 
 # 测试是否可用
 stringtie --help

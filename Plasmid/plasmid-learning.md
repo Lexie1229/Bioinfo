@@ -1,5 +1,11 @@
 # [Classifying Plasmids](https://github.com/wang-q/withncbi/blob/master/taxon/plasmid.md)
 ## NCBI RefSeq
+.fna:FASTA格式DNA和蛋白质序列比对文件,其存储可被分子生物学软件使用的DNA信息.  
+.gbff:表示核苷酸序列，包括元数据(metadata,主要是描述数据属性信息的数据）、注释和序列本身.
+.faa
+.gpff
+
+
 
 ```bash
 mkdir -p ~/biodata/plasmid
@@ -19,6 +25,12 @@ gzip -dcf RefSeq/plasmid.1.1.genomic.fna.gz |
 #>NC_006427.1 Enterococcus faecium plasmid pJB01, complete sequence
 #>NC_001370.1 Lactobacillus plantarum plasmid pC30il, complete sequence
 #>NC_002810.1 Streptococcus mutans LM7 plasmid pLM7, complete sequence
+
+>NZ_PYUR01000034.1 Salmonella enterica subsp. enterica serovar Typhimurium strain OLF-FSR1-ST-44 plasmid unnamed1 40, whole genome shotgun sequence
+>NZ_PYUR01000035.1 Salmonella enterica subsp. enterica serovar Typhimurium strain OLF-FSR1-ST-44 plasmid unnamed1 18, whole genome shotgun sequence
+>NZ_PYUR01000036.1 Salmonella enterica subsp. enterica serovar Typhimurium strain OLF-FSR1-ST-44 plasmid unnamed1 24, whole genome shotgun sequence
+>NZ_SJZK01000009.1 Yersinia enterocolitica strain CFS1932 plasmid pCFS1932-1, whole genome shotgun sequence
+>NZ_SJZK01000010.1 Yersinia enterocolitica strain CFS1932 plasmid pCFS1932-2, whole genome shotgun sequence
 
 faops n50 -S -C RefSeq/*.genomic.fna.gz
 #N50     222278

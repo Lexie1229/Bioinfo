@@ -67,24 +67,30 @@ pwd(print work directory):用于显示当前工作目录。
 
 
 
-### rsync
-rsync(remote sync):
+### Linux rsync
+rsync(remote sync):远程同步数据。
 * rsync [OPTION] SRC [SRC] DEST
-  * -a/--archive:archive mode; equals -rlptgoD (no -H,-A,-X)
-  * -v/--verbose:increase verbosity
+  * -a/--archive:archive mode; equals -rlptgoD (no -H,-A,-X)（归档模式，表示以递归方式传输文件，并保持所有属性
+  * -v/--verbose:increase verbosity（增加详细程度）。
   * --partial:keep partially transferred files
   * --progress:show progress during transfer.
+  * -r 
+  * -l
+  * -p
+  * -t
+
   * -P:same as --partial --progress.
 
 
 ### Linux tar
-tar：
+tar(tape archive)：用于文件的打包压缩及解压。
 * tar [OPTION] [FILE]
-  * -x, --extract, --get：extract files from an archive
-  * -f, --file=ARCHIVE：use archive file or device ARCHIVE
-  * -z, --gzip, --gunzip, --ungzip：filter the archive through gzip
-jxvf
-xzvf
+  * -x/--extract/--get：extract files from an archive(从备份文件/存档中还原文件)。
+  * -z/--gzip/--gunzip/--ungzip：filter the archive through gzip(通过gzip指令处理备份文件)。
+  * -v/--verbose:verbosely list files processed(详细列出已处理的文件,显示指令执行过程)。
+  * -f/--file=ARCHIVE：use archive file or device ARCHIVE（指定备份文件）。
+  * -j/--bzip2:filter the archive through bzip2（通过bzip2指令处理备份文件）。
+
 
 
 

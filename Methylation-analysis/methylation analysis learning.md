@@ -66,11 +66,12 @@ trim_galore -o ./TetTKO_mESC_rep1/trimmed_data/ --fastqc ./TetTKO_mESC_rep1/*.fa
 # 安装bismark
 cd ~/biosoft
 wget https://github.com/FelixKrueger/Bismark/archive/refs/tags/0.24.0.tar.gz
-tar xzf 0.24.0
+tar xzf 0.24.0.tar.gz
 cd Bismark-0.24.0
 export PATH=$HOME/biosoft/Bismark-0.24.0:$PATH 
 ## 写入.bashrc文件
-echo 'PATH=$HOME/biosoft/Bismark-0.24.0:$PATH' >> ~/.bashrc
+echo '# Bismark'
+echo 'export PATH="$HOME/biosoft/Bismark-0.24.0:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 
 # 建立索引
@@ -254,7 +255,7 @@ Rscript $HOME/Scripts/methylation-analysis/Scripts/R/DSS_differ_analysis.R ./WT_
 ```
 
 ## 5 实际甲基化信息分析
-提出了一种简单的方法来利用从传统甲基化分析流程中的甲基化信息
+提出了一种简单的方法来利用从传统甲基化分析流程中的甲基化信息.
 
 ## 6 参考
 * [Aria2 Manual](https://aria2.github.io/manual/en/html/index.html)

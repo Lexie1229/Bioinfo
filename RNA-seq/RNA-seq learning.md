@@ -231,6 +231,10 @@ cd Trimmomatic-0.38
 
 # 导入临时环境变量
 export PATH="$(pwd):$PATH"
+## 写入.bashrc文件
+echo '# Trimmomatic'>> ~/.bashrc
+echo 'export PATH="$HOME/biosoft/Trimmomatic-0.38:$PATH"' >> ~/.bashrc
+source ~/.bashrc
 ```
 
 |   | 站点 |
@@ -254,11 +258,13 @@ cd ~/biosoft/
 wget https://cloud.biohpc.swmed.edu/index.php/s/oTtGWbWjaxsQ2Ho/download
 
 # 解压
-unzip downlosd
+unzip download
 cd hisat2-2.2.1
 
 # 导入临时环境变量
 export PATH="~/biosoft/hisat2-2.2.1:$PATH"
+## 写入.bashrc文件
+
 
 # 测试是否可用
 hisat2 -h

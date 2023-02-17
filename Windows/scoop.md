@@ -44,9 +44,8 @@ scoop list
 > * aria2
 > * dark
 > * innounp
-> 
 > * curl:(curl 选项 url）下载工具，利用URL语法在命令行方式下工作的开源文件传输工具.
-> * wget；(wget 选项 文件)：
+> * wget:(wget 选项 文件)
 > * gzip
 > * unzip
 > * grep

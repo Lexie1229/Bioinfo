@@ -42,6 +42,7 @@ gzip：用于压缩或解压文件,扩展名为.gz.
 * gzip [OPTION] [FILE]
   * -d/--decompress：decompress.
   * -c/--stdout:write on standard output, keep original files unchanged.
+  * -f/--force:force overwrite of output file and compress links.
 
 ## Linux head
 head:用于查看文件开头部分的内容。
@@ -56,32 +57,6 @@ pwd(print work directory):用于显示当前工作目录。
 * pwd [OPTION]
   * -P：print the physical directory, without any symbolic links(显示物理路径，而不带任何软链接).
 
-
-
-### Linux sed
-* sed:用于利用脚本处理文本文件。
-
-
-### sync
-* sync:用于同步数据。
-
-
-
-### Linux rsync
-rsync(remote sync):远程同步数据。
-* rsync [OPTION] SRC [SRC] DEST
-  * -a/--archive:archive mode; equals -rlptgoD (no -H,-A,-X)（归档模式，表示以递归方式传输文件，并保持所有属性
-  * -v/--verbose:increase verbosity（增加详细程度）。
-  * --partial:keep partially transferred files
-  * --progress:show progress during transfer.
-  * -r 
-  * -l
-  * -p
-  * -t
-
-  * -P:same as --partial --progress.
-
-
 ### Linux tar
 tar(tape archive)：用于文件的打包压缩及解压。
 * tar [OPTION] [FILE]
@@ -95,6 +70,31 @@ tar(tape archive)：用于文件的打包压缩及解压。
 
 
 
+### Linux sed
+* sed:用于利用脚本处理文本文件。
+
+
+### sync
+* sync(synchronize):用于同步数据。
+
+
+
+### Linux rsync
+rsync(remote sync):用于远程同步数据。
+* rsync [OPTION] SRC [SRC] DEST
+  * -a/--archive:archive mode; equals -rlptgoD (no -H,-A,-X)（归档模式，表示以递归方式传输文件，并保持所有属性.
+  * -v/--verbose:increase verbosity（增加详细程度).
+  * --partial:keep partially transferred files
+  * --progress:show progress during transfer.
+  * -r/--recursive：recurse into directories(递归到目录中).
+  * -l/--links:copy symlinks as symlinks.
+  * -p/--perms:preserve permissions(保留文件权限).
+  * -t/--times:preserve modification times(保留修改时间).
+
+  * -P:same as --partial --progress.
+
+
+
 
 
 ### Linux code
@@ -102,6 +102,11 @@ code:
 * code.exe [options][paths...]
 
 
+### ls
+ls(list directory contents):用于显示指定工作目录下的内容。
+* -l:use a long listing format(使用长格式显示当前目录中的文件和子目录)。
+* -a/--all：do not ignore entries starting with .(显示当前目录中的所有文件和子目录，包括隐藏文件)。
+* -h
 
 
 
@@ -110,6 +115,9 @@ code:
 
 > count
 > chomd
-
+> ssh
+> cat
+> tldr
+> dos2unix
 
 

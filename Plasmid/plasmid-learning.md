@@ -5,8 +5,6 @@
 .faa
 .gpff
 
-
-
 ```bash
 mkdir -p ~/biodata/plasmid
 cd ~/biodata/plasmid
@@ -37,20 +35,23 @@ faops n50 -S -C RefSeq/*.genomic.fna.gz
 #S       2072550889
 #C       22389
 
-gzip -dcf RefSeq/*.genomic.fna.gz > RefSeq/plasmid.fa
+#N50     210913
+#S       5700090700
+#C       74067
 
+gzip -dcf RefSeq/*.genomic.fna.gz > RefSeq/plasmid.fa
 ```
 
 ## MinHash to get non-redundant plasmids
 
 ```bash
-mkdir ~/data/plasmid/nr
-cd ~/data/plasmid/nr
+mkdir ~/biodata/plasmid/nr
+cd ~/biodata/plasmid/nr
 
 faops size ../RefSeq/plasmid.fa > refseq.sizes
 
 tsv-filter refseq.sizes --le 2:2000 | wc -l
-#2473
+#10098
 
 faops some ../RefSeq/plasmid.fa <(tsv-filter refseq.sizes --gt 2:2000) refseq.fa
 

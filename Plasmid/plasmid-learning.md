@@ -1,15 +1,13 @@
 # [Classifying Plasmids](https://github.com/wang-q/withncbi/blob/master/taxon/plasmid.md)
 ## NCBI RefSeq
-.fna:FASTA格式DNA和蛋白质序列比对文件,其存储可被分子生物学软件使用的DNA信息.  
-.gbff:表示核苷酸序列，包括元数据(metadata,主要是描述数据属性信息的数据）、注释和序列本身.
-.faa
-.gpff
 
 ```bash
 mkdir -p ~/biodata/plasmid
 cd ~/biodata/plasmid
 
 rsync -avP ftp.ncbi.nlm.nih.gov::refseq/release/plasmid/ RefSeq/
+
+
 
 gzip -dcf RefSeq/*.genomic.gbff.gz > genomic.gbff
 perl ~/Scripts/withncbi/taxon/gb_taxon_locus.pl genomic.gbff > refseq_id_seq.csv
@@ -41,6 +39,20 @@ faops n50 -S -C RefSeq/*.genomic.fna.gz
 
 gzip -dcf RefSeq/*.genomic.fna.gz > RefSeq/plasmid.fa
 ```
+
+NOTE
+* RefSeq:NCBI Reference Sequence Databased
+    * NCBI生物序列数据库中，有两种不同的标识符，表示序列的来源和版本信息。 
+    * \>NC_:表示该序列来自于NCBI的RefSeq数据库，提供一些可靠和经过认证的核酸和蛋白质序列记录,有固定的版本号，表示每个序列的特定版本。
+
+    * \>NZ_SJZK01000010.1 Yersinia enterocolitica strain CFS1932 plasmid pCFS1932-2, whole genome shotgun sequence:表示该序列来自于GenBank序列数据库的非RefSeq部分，这是一个由NCBI维护的公共数据库，包含大量未经认证的核酸和蛋白质序列记录，版本号不是固定的，因此同一条记录可能在不同的时间点有不同的版本号。
+
+.fna:FASTA格式DNA和蛋白质序列比对文件,其存储可被分子生物学软件使用的DNA信息.  
+.gbff:表示核苷酸序列，包括元数据(metadata,主要是描述数据属性信息的数据）、注释和序列本身.
+.faa
+.gpff
+
+
 
 ## MinHash to get non-redundant plasmids
 

@@ -156,11 +156,14 @@ programming language system itself.
 >> * -c(complement) : just Complement, prepends C_  
 >> * -f STR : only RC sequences in this list.file  
 >> * -l INT : sequence line length [80]
+>    
 > * faops some [options] <in.fa> <list.file> <out.fa> 提取多个序列  
 >> * -i(invert) : Invert, output sequences not in the list  
 >> * -l INT : sequence line length [80]  
+>   
 > * faops order [options] <in.fa> <list.file> <out.fa> 按给定顺序提取多个序列  
 >> * -l INT：sequence line length [80]  
+>   
 > * faops size <in.fa> [more_files.fa] 计算每一个reads的总碱基数
 >> * faops filter [options] <in.fa> <out.fa> 按照条件对序列进行筛选
 >> * -a INT：pass sequences at least this big ('a'-smallest)
@@ -174,6 +177,7 @@ programming language system itself.
 >> * -s：simplify sequence names(简化序列名称)。
 >> * -l INT：sequence line length [INT]
 >>> * 例如：faops filter -l 0 <in.fq> <out.fa>，将所有内容写在一行上，并将fastq格式转变为fasta格式。
+>  
 > * faops n50 [options] <in.fa> [more_files.fa] 计算n50和其他数据
 >> * -H：do not display header（不显示标题-N50）。
 >> * -N INT：compute Nx statistic [INT] (计算N[INT])。
@@ -182,7 +186,3 @@ programming language system itself.
 >> * -E：compute the E-size (from GAGE)
 >> * -C：count entries（计算序列条数）。
 >> * -g INT：size of genome, instead of total size in files（基于组装的基因组大小进行N[INT]预测）。
-
-> * ( )：指令群组（command group).
-> * < ：读入。
-> * \ ：换行。

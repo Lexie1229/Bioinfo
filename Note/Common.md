@@ -13,3 +13,7 @@ makefile
 ddr：内存
 
 第一性原理
+
+> * ( )：指令群组（command group).
+> * < ：读入。
+> * \ ：换行。

@@ -1,5 +1,5 @@
 # [Classifying Plasmids](https://github.com/wang-q/withncbi/blob/master/taxon/plasmid.md)
-## 1 NCBI RefSeq
+## 1 NCBI RefSeq（下载参考序列）
 
 ```bash
 mkdir -p ~/biodata/plasmid
@@ -7,55 +7,39 @@ cd ~/biodata/plasmid
 
 # 下载数据
 rsync -avP ftp.ncbi.nlm.nih.gov::refseq/release/plasmid/ RefSeq/
+gzip -dcf RefSeq/*.genomic.gbff.gz > genomic.gbff  ##因内存问题，仅使用部分数据
 
-
-
-gzip -dcf RefSeq/*.genomic.gbff.gz > genomic.gbff
 perl ~/Scripts/withncbi/taxon/gb_taxon_locus.pl genomic.gbff > refseq_id_seq.csv
 rm genomic.gbff
 
-gzip -dcf RefSeq/plasmid.1.1.genomic.fna.gz |
-    grep "^>" |
-    head -n 5
-#>NC_006130.1 Streptococcus pyogenes 71-724 plasmid pDN571, complete sequence
-#>NC_004464.2 Citrobacter freundii plasmid pCTX-M3, complete sequence
-#>NC_006427.1 Enterococcus faecium plasmid pJB01, complete sequence
-#>NC_001370.1 Lactobacillus plantarum plasmid pC30il, complete sequence
-#>NC_002810.1 Streptococcus mutans LM7 plasmid pLM7, complete sequence
-
->NZ_PYUR01000034.1 Salmonella enterica subsp. enterica serovar Typhimurium strain OLF-FSR1-ST-44 plasmid unnamed1 40, whole genome shotgun sequence
->NZ_PYUR01000035.1 Salmonella enterica subsp. enterica serovar Typhimurium strain OLF-FSR1-ST-44 plasmid unnamed1 18, whole genome shotgun sequence
->NZ_PYUR01000036.1 Salmonella enterica subsp. enterica serovar Typhimurium strain OLF-FSR1-ST-44 plasmid unnamed1 24, whole genome shotgun sequence
->NZ_SJZK01000009.1 Yersinia enterocolitica strain CFS1932 plasmid pCFS1932-1, whole genome shotgun sequence
->NZ_SJZK01000010.1 Yersinia enterocolitica strain CFS1932 plasmid pCFS1932-2, whole genome shotgun sequence
+# 查看fna文件
+gzip -dcf RefSeq/plasmid.1.1.genomic.fna.gz | grep "^>" | head -n 5
+# >NZ_PYUR01000034.1 Salmonella enterica subsp. enterica serovar Typhimurium strain OLF-FSR1-ST-44 plasmid unnamed1 40, whole genome shotgun sequence
+# >NZ_PYUR01000035.1 Salmonella enterica subsp. enterica serovar Typhimurium strain OLF-FSR1-ST-44 plasmid unnamed1 18, whole genome shotgun sequence
+# >NZ_PYUR01000036.1 Salmonella enterica subsp. enterica serovar Typhimurium strain OLF-FSR1-ST-44 plasmid unnamed1 24, whole genome shotgun sequence
+# >NZ_SJZK01000009.1 Yersinia enterocolitica strain CFS1932 plasmid pCFS1932-1, whole genome shotgun sequence
+# >NZ_SJZK01000010.1 Yersinia enterocolitica strain CFS1932 plasmid pCFS1932-2, whole genome shotgun sequence
 
 faops n50 -S -C RefSeq/*.genomic.fna.gz
 #N50     222278
 #S       2072550889
 #C       22389
 
-#N50     210913
-#S       5700090700
-#C       74067
 
 gzip -dcf RefSeq/*.genomic.fna.gz > RefSeq/plasmid.fa
 ```
 
 NOTE
 * RefSeq:NCBI Reference Sequence Databased
-    * NCBI生物序列数据库中，有两种不同的标识符，表示序列的来源和版本信息。 
-    * \>NC_:表示该序列来自于NCBI的RefSeq数据库，提供一些可靠和经过认证的核酸和蛋白质序列记录,有固定的版本号，表示每个序列的特定版本。
+    * \>NC_(chromosomes):表示该序列来自于NCBI的RefSeq数据库，提供一些可靠和经过认证的核酸和蛋白质序列记录,有固定的版本号，表示每个序列的特定版本。
+    * \>NZ_:表示该序列来自于GenBank序列数据库的非RefSeq部分，这是一个由NCBI维护的公共数据库，包含大量未经认证的核酸和蛋白质序列记录，版本号不是固定的，因此同一条记录可能在不同的时间点有不同的版本号。
+* 文件格式：
+    * [gbff(GenBank Flat File) 格式](https://www.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/file-formats/about-ncbi-gbff/)：NCBI的GenBank数据库(核酸序列数据库）中的标准格式，表示核苷酸序列，包括元数据(metadata,主要是描述数据属性信息的数据）、注释和序列本身。
+    * gpff(GenPept Flat File) 格式：NCBI的GenPept数据库(蛋白质序列数据库）中的标准格式，表示蛋白质序列及其注释信息。
+    * fna:FASTA格式DNA和蛋白质序列比对文件,其存储可被分子生物学软件使用的DNA信息.  
+    * faa：储存蛋白质序列的文本格式。
 
-    * \>NZ_SJZK01000010.1 Yersinia enterocolitica strain CFS1932 plasmid pCFS1932-2, whole genome shotgun sequence:表示该序列来自于GenBank序列数据库的非RefSeq部分，这是一个由NCBI维护的公共数据库，包含大量未经认证的核酸和蛋白质序列记录，版本号不是固定的，因此同一条记录可能在不同的时间点有不同的版本号。
-
-.fna:FASTA格式DNA和蛋白质序列比对文件,其存储可被分子生物学软件使用的DNA信息.  
-.gbff:表示核苷酸序列，包括元数据(metadata,主要是描述数据属性信息的数据）、注释和序列本身.
-.faa
-.gpff
-
-
-
-## MinHash to get non-redundant plasmids
+## MinHash to get non-redundant plasmids（获得非冗余质粒）
 
 ```bash
 mkdir ~/biodata/plasmid/nr

@@ -108,6 +108,11 @@ ls(list directory contents):用于显示指定工作目录下的内容。
 * -a/--all：do not ignore entries starting with .(显示当前目录中的所有文件和子目录，包括隐藏文件)。
 * -h
 
+### mv
+mv
+* mv [OPTION] SOURCE DIRECTORY
+* -t/--target-directory=DIRECTORY：move all SOURCE arguments into DIRECTORY。
+
 
 
 ### Linux mkdir

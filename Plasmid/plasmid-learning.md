@@ -1,10 +1,11 @@
 # [Classifying Plasmids](https://github.com/wang-q/withncbi/blob/master/taxon/plasmid.md)
-## NCBI RefSeq
+## 1 NCBI RefSeq
 
 ```bash
 mkdir -p ~/biodata/plasmid
 cd ~/biodata/plasmid
 
+# 下载数据
 rsync -avP ftp.ncbi.nlm.nih.gov::refseq/release/plasmid/ RefSeq/
 
 

@@ -62,3 +62,9 @@ gb_taxon_locus.pl - scan a multi-sequence .gb file
     perl gb_taxon_locus.pl plastid.1.genomic.gbff > refseq_id_seq.csv
 
 =cut
+
+# Path::Tiny
+## Slurp mode：
+## Slurping the content of a file means reading all the content into one scalar variable.
+## If the file has multiple lines, as usually text files do,
+## then that scalarvariable will have new-line characters (represented by \n) in it.

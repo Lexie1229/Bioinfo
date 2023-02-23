@@ -21,10 +21,9 @@ gzip -dcf RefSeq/plasmid.1.1.genomic.fna.gz | grep "^>" | head -n 5
 # >NZ_SJZK01000010.1 Yersinia enterocolitica strain CFS1932 plasmid pCFS1932-2, whole genome shotgun sequence
 
 faops n50 -S -C RefSeq/*.genomic.fna.gz
-#N50     222278
-#S       2072550889
-#C       22389
-
+# N50     216181
+# S       2776005905
+# C       43673
 
 gzip -dcf RefSeq/*.genomic.fna.gz > RefSeq/plasmid.fa
 ```
@@ -36,7 +35,7 @@ NOTE
 * 文件格式：
     * [gbff(GenBank Flat File) 格式](https://www.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/file-formats/about-ncbi-gbff/)：NCBI的GenBank数据库(核酸序列数据库）中的标准格式，表示核苷酸序列，包括元数据(metadata,主要是描述数据属性信息的数据）、注释和序列本身。
     * gpff(GenPept Flat File) 格式：NCBI的GenPept数据库(蛋白质序列数据库）中的标准格式，表示蛋白质序列及其注释信息。
-    * fna:FASTA格式DNA和蛋白质序列比对文件,其存储可被分子生物学软件使用的DNA信息.  
+    * fna:FASTA格式DNA和蛋白质序列比对文件,其存储可被分子生物学软件使用的DNA信息。   
     * faa：储存蛋白质序列的文本格式。
 
 ## MinHash to get non-redundant plasmids（获得非冗余质粒）
@@ -45,6 +44,7 @@ NOTE
 mkdir ~/biodata/plasmid/nr
 cd ~/biodata/plasmid/nr
 
+#计算每个reads的碱基数
 faops size ../RefSeq/plasmid.fa > refseq.sizes
 
 tsv-filter refseq.sizes --le 2:2000 | wc -l

@@ -1,5 +1,5 @@
 # [Classifying Plasmids](https://github.com/wang-q/withncbi/blob/master/taxon/plasmid.md)
-## 1 NCBI RefSeq（下载参考序列）
+## 1 NCBI RefSeq（参考序列）
 
 ```bash
 mkdir -p ~/biodata/plasmid
@@ -21,9 +21,9 @@ gzip -dcf RefSeq/plasmid.1.1.genomic.fna.gz | grep "^>" | head -n 5
 # >NZ_SJZK01000010.1 Yersinia enterocolitica strain CFS1932 plasmid pCFS1932-2, whole genome shotgun sequence
 
 faops n50 -S -C RefSeq/*.genomic.fna.gz
-# N50     216181
-# S       2776005905
-# C       43673
+# N50     216181         ## N50
+# S       2776005905     ## SUM
+# C       43673          ## COUNT
 
 gzip -dcf RefSeq/*.genomic.fna.gz > RefSeq/plasmid.fa
 ```
@@ -44,16 +44,23 @@ NOTE
 mkdir ~/biodata/plasmid/nr
 cd ~/biodata/plasmid/nr
 
-#计算每个reads的碱基数
+# 计算每个序列的碱基数，并写入refseq.sizes
 faops size ../RefSeq/plasmid.fa > refseq.sizes
 
+# 
 tsv-filter refseq.sizes --le 2:2000 | wc -l
-#10098
+## 结果 
+## 9006
 
+# 提取序列
 faops some ../RefSeq/plasmid.fa <(tsv-filter refseq.sizes --gt 2:2000) refseq.fa
 
-cat refseq.fa |
+cat refseq.fa | 
+    # 构建mash sketch 数据库
     mash sketch -k 21 -s 1000 -i -p 8 - -o refseq.plasmid.k21s1000.msh
+## 检查构建的
+mash info refseq.plasmid.k21s1000.msh
+
 
 # split
 mkdir -p job
@@ -120,8 +127,34 @@ faops some -i refseq.fa components.list stdout > refseq.nr.fa
 faops some refseq.fa <(cut -f 1 connected_components.tsv) stdout >> refseq.nr.fa
 
 rm -fr job
-
 ```
+
+NOTE  
+tsvTSV (Tab-Separated Values)  
+* tsv-filter：tsv-filter [options] [file]
+    * --le：
+    * --gt：
+
+Mash(MinHash)   
+* mash command [options] [arguments]
+    * sketch：构建草图，用于快速进行遗传距离分析。
+        * mash sketch [options] input [<input>]
+        * -k int：K-mer size. Hashes will be based on strings of this many nucleotides(K-mer大小，核苷酸的字符串大小).
+        * -s int：Seed to provide to the hash function(种子，用作随机数生成器或哈希函数的输入，以产生一系列随机或伪随机数，用于初始化哈希函数的内部状态).
+        * -i：Sketch individual sequences, rather than whole files, e.g. for multi-fastas of single-chromosome genomes or pair-wise gene comparisons(生成单个).
+        * -p int：Parallelism. This many threads will be spawned for processing(并行性，使用int线程处理).
+        * -o path：Output prefix (first input file used if unspecified). The suffix '.msh' will be appended.
+
+    * info:
+
+* Mash的原理:借用MinHash搜索引擎常用的判断重复文档的技术，并增加了计算两两之间突变距离和P值显著性检验。
+    * 将序列集合打碎成固定长度的短片段，称为k-mer；
+    * 在大多数真核生物基因组中，21-mer是一种适合于组装长序列的长度，同时可以最大化重叠区域，并提高组装的准确性；
+    * 将每个k-mer经哈希函数转换成哈希值，得到由哈希值组成的集合；
+    * 计算序列集相似度的问题，即转化成集合的运算。
+    
+    mash sketch -k 21 -s 1000 -i -p 8 - -o refseq.plasmid.k21s1000.msh
+
 
 ## Grouping by MinHash
 

@@ -1,4 +1,4 @@
-# `faops` operates fasta files
+# [`faops` operates fasta files](https://github.com/wang-q/faops)
 
 `faops` is a lightweight tool for operating sequences in the fasta format.
 

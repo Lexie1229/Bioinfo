@@ -13,17 +13,15 @@ perl ~/Scripts/withncbi/taxon/gb_taxon_locus.pl genomic.gbff > refseq_id_seq.csv
 rm genomic.gbff
 
 # 查看fna文件
-gzip -dcf RefSeq/plasmid.1.1.genomic.fna.gz | grep "^>" | head -n 5
+gzip -dcf RefSeq/plasmid.1.1.genomic.fna.gz | grep "^>" | head -n 3
 # >NZ_PYUR01000034.1 Salmonella enterica subsp. enterica serovar Typhimurium strain OLF-FSR1-ST-44 plasmid unnamed1 40, whole genome shotgun sequence
 # >NZ_PYUR01000035.1 Salmonella enterica subsp. enterica serovar Typhimurium strain OLF-FSR1-ST-44 plasmid unnamed1 18, whole genome shotgun sequence
 # >NZ_PYUR01000036.1 Salmonella enterica subsp. enterica serovar Typhimurium strain OLF-FSR1-ST-44 plasmid unnamed1 24, whole genome shotgun sequence
-# >NZ_SJZK01000009.1 Yersinia enterocolitica strain CFS1932 plasmid pCFS1932-1, whole genome shotgun sequence
-# >NZ_SJZK01000010.1 Yersinia enterocolitica strain CFS1932 plasmid pCFS1932-2, whole genome shotgun sequence
 
 faops n50 -S -C RefSeq/*.genomic.fna.gz
-# N50     216181         ## N50
-# S       2776005905     ## SUM
-# C       43673          ## COUNT
+## N50     216181         N50
+## S       2776005905     SUM
+## C       43673          COUNT
 
 gzip -dcf RefSeq/*.genomic.fna.gz > RefSeq/plasmid.fa
 ```
@@ -38,66 +36,71 @@ NOTE
     * fna:FASTA格式DNA和蛋白质序列比对文件,其存储可被分子生物学软件使用的DNA信息。   
     * faa：储存蛋白质序列的文本格式。
 
-## MinHash to get non-redundant plasmids（获得非冗余质粒）
+## 2 MinHash to get non-redundant plasmids（获得非冗余质粒）
 
 ```bash
 mkdir ~/biodata/plasmid/nr
 cd ~/biodata/plasmid/nr
 
-# 计算每个序列的碱基数，并写入refseq.sizes
+# 计算plasmid.fa中每个序列的碱基数，并写入refseq.sizes
 faops size ../RefSeq/plasmid.fa > refseq.sizes
 
-# 
+# 查看refseq.sizes中碱基数≤2000的行数
 tsv-filter refseq.sizes --le 2:2000 | wc -l
-## 结果 
 ## 9006
 
-# 提取序列
+# 提取plasmid.fa中碱基数>2000(refseq.sizes)的序列，并写入refseq.fa
 faops some ../RefSeq/plasmid.fa <(tsv-filter refseq.sizes --gt 2:2000) refseq.fa
 
+# 构建 mash sketch 数据库
 cat refseq.fa | 
-    # 构建mash sketch 数据库
-    mash sketch -k 21 -s 1000 -i -p 8 - -o refseq.plasmid.k21s1000.msh
-## 检查构建的
-mash info refseq.plasmid.k21s1000.msh
+    mash sketch -k 21 -s 1000 -i -p 4 - -o refseq.plasmid.k21s1000.msh
+## 检查构建的数据库
+mash info refseq.plasmid.k21s1000.msh | head -20
 
-
-# split
+# split（分割）
 mkdir -p job
-faops size refseq.fa |
-    cut -f 1 |
-    split -l 1000 -a 3 -d - job/
-
+## 将refseq.fa的第一列每1000行分割为一个文件，并以000开始命名
+faops size refseq.fa |                  # 计算碱基数
+    cut -f 1 |                          # 显示第一列
+    split -l 1000 -a 3 -d - job/        # 分割文件
+## 寻找job目录下文件名符合"数字开头的三字符"模式的文件，并从小到大排序
+## 将标准输出重定向到标准错误，并输出格式化的文本字符串==> {}
+## 提取refseq.fa中{}包含的序列，并构建 mash sketch 数据库
 find job -maxdepth 1 -type f -name "[0-9]??" | sort |
     parallel -j 4 --line-buffer '
-        echo >&2 "==> {}"
+        echo >&2 "==> {}"                        
         faops some refseq.fa {} stdout |
-            mash sketch -k 21 -s 1000 -i -p 6 - -o {}.msh
+            mash sketch -k 21 -s 1000 -i -p 4 - -o {}.msh
     '
-
+## 寻找job目录下文件名符合"数字开头的三字符"模式的文件，并从小到大排序
+## 
+## 以{}.msh为参考，估算refseq.plasmid.k21s1000.msh的遗传距离，并写入{}.tsv
 find job -maxdepth 1 -type f -name "[0-9]??" | sort |
     parallel -j 4 --line-buffer '
         echo >&2 "==> {}"
-        mash dist -p 6 {}.msh refseq.plasmid.k21s1000.msh > {}.tsv
+        mash dist -p 4 {}.msh refseq.plasmid.k21s1000.msh > {}.tsv
     '
 
-# distance < 0.01
+# distance < 0.01(距离<0.01)
+## 寻找job目录下文件名符合"数字开头的三字符"模式的文件，并从小到大排序
+## 并写入redundant.tsv
 find job -maxdepth 1 -type f -name "[0-9]??" | sort |
-    parallel -j 16 '
+    parallel -j 8 '
         cat {}.tsv |
             tsv-filter --ff-str-ne 1:2 --le 3:0.01
     ' \
     > redundant.tsv
 
-head -n 5 redundant.tsv
+# 查看redundant.tsv的内容
+head -n 3 redundant.tsv
 #NZ_CP034776.1   NC_005249.1     0.000730741     0       970/1000
 #NZ_CP034416.1   NC_005249.1     0.00580821      0       794/1000
 #NZ_LR745046.1   NC_005249.1     0.0010072       0       959/1000
-#NZ_LR745043.1   NC_005249.1     0.000656154     0       973/1000
-#NZ_CP033694.1   NC_006323.1     0.00766986      0       741/1000
 
+# 查看redundant.tsv的行数
 cat redundant.tsv | wc -l
-# 129384
+## 129384
 
 cat redundant.tsv |
     perl -nla -F"\t" -MGraph::Undirected -e '
@@ -119,9 +122,10 @@ cat connected_components.tsv |
     perl -nla -F"\t" -e 'printf qq{%s\n}, $_ for @F' \
     > components.list
 
+# 查看connected_components.tsv和components.list的行数
 wc -l connected_components.tsv components.list
-#  2073 connected_components.tsv
-#  9800 components.list
+##  2073   connected_components.tsv
+##  9800   components.list
 
 faops some -i refseq.fa components.list stdout > refseq.nr.fa
 faops some refseq.fa <(cut -f 1 connected_components.tsv) stdout >> refseq.nr.fa
@@ -131,32 +135,33 @@ rm -fr job
 
 NOTE  
 tsvTSV (Tab-Separated Values)  
-* tsv-filter：tsv-filter [options] [file]
-    * --le：
-    * --gt：
+* tsv-filter [options] [file]
+    * --le|gt|eq|ne|lt|ge FIELD:NUM：Compare a field to a number (integer or float)(FIELE列：数字≤|>|=|≠|<|≥NUM).
+    * --ff-eq|ff-ne|ff-lt|ff-le|ff-gt|ff-ge FIELD1:FIELD2:Field to field comparisons - Similar to field vs literal comparisons, but field vs field(字段与字段的比较).
 
 Mash(MinHash)   
 * mash command [options] [arguments]
     * sketch：构建草图，用于快速进行遗传距离分析。
-        * mash sketch [options] input [<input>]
+        * mash sketch [options] [input]
         * -k int：K-mer size. Hashes will be based on strings of this many nucleotides(K-mer大小，核苷酸的字符串大小).
         * -s int：Seed to provide to the hash function(种子，用作随机数生成器或哈希函数的输入，以产生一系列随机或伪随机数，用于初始化哈希函数的内部状态).
-        * -i：Sketch individual sequences, rather than whole files, e.g. for multi-fastas of single-chromosome genomes or pair-wise gene comparisons(生成单个).
+        * -i：Sketch individual sequences, rather than whole files, e.g. for multi-fastas of single-chromosome genomes or pair-wise gene comparisons(绘制单个序列).
         * -p int：Parallelism. This many threads will be spawned for processing(并行性，使用int线程处理).
-        * -o path：Output prefix (first input file used if unspecified). The suffix '.msh' will be appended.
-
-    * info:
-
+        * -o path：Output prefix (first input file used if unspecified). The suffix '.msh' will be appended(输出前缀，附加后缀.msh). 
+    * dist：估算比对序列到参考序列的遗传距离。
+        * mash dist [options] [reference] [query]
+        * -p int：Parallelism. This many threads will be spawned for processing(并行性，使用int线程处理).
+    * info：显示草图文件的信息。
+        * mash info [options] <sketch>
 * Mash的原理:借用MinHash搜索引擎常用的判断重复文档的技术，并增加了计算两两之间突变距离和P值显著性检验。
     * 将序列集合打碎成固定长度的短片段，称为k-mer；
     * 在大多数真核生物基因组中，21-mer是一种适合于组装长序列的长度，同时可以最大化重叠区域，并提高组装的准确性；
     * 将每个k-mer经哈希函数转换成哈希值，得到由哈希值组成的集合；
     * 计算序列集相似度的问题，即转化成集合的运算。
     
-    mash sketch -k 21 -s 1000 -i -p 8 - -o refseq.plasmid.k21s1000.msh
 
 
-## Grouping by MinHash
+## 3 Grouping by MinHash（分组）
 
 ```bash
 mkdir ~/data/plasmid/grouping
@@ -361,7 +366,7 @@ wc -l next.tsv
 
 ```
 
-## Plasmid: prepare
+## 4 Plasmid: prepare
 
 * Split sequences
 
@@ -486,7 +491,7 @@ rsync -avP \
 
 ```
 
-## Plasmid: run
+## 5 Plasmid: run
 
 ```bash
 cd ~/data/plasmid/

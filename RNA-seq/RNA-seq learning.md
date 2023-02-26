@@ -642,6 +642,8 @@ parallel:用于构建并行运行命令。
   * -j(--jobs) n：run n jobs in parallel.
   * -k：keep same order.
   * --pipe：split stidn to multiple jobs.
+  * --line-buffer：(指定并行执行的每个任务的输出应立即发送到控制台，而不是缓冲输出直到任务完成，不会在磁盘上缓冲，可以处理无限量的数据).
+
 
 ## 4 质量控制
 ### 4.1 质量评估

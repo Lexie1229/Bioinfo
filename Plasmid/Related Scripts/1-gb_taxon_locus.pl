@@ -1,16 +1,16 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use autodie;
+use autodie;  # automatically handle errors
 
 use Path::Tiny;
 
-my $file = shift;
+my $file = shift
 
-if ( !$file ) {
+if ( !$file ) {             # 检查是否传递了一个参数
     die "You should provide a .gb file.\n";
 }
-elsif ( !-e $file ) {
+elsif ( !-e $file ) {       # 检查文件是否存在
     die "[$file] doesn't exist.\n";
 }
 

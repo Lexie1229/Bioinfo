@@ -154,6 +154,8 @@ tsv(Tab Separated Values)
     * --le|gt|eq|ne|lt|ge FIELD:NUM：Compare a field to a number (integer or float)(FIELE列：数字≤|>|=|≠|<|≥NUM).
     * --ff-eq|ff-ne|ff-lt|ff-le|ff-gt|ff-ge FIELD1:FIELD2:Field to field comparisons - Similar to field vs literal comparisons, but field vs field(字段与字段的数值的比较).
     * --ff-str-eq|ff-str-ne|ff-istr-eq|ff-istr-ne  FIELD1:FIELD2:Field to field comparisons - Similar to field vs literal comparisons, but field vs field(字段与字段的字符串的比较).
+    * --regex|iregex|not-regex|not-iregex  FIELD:REGEX：Test if a field matches a regular expression(测试字段是否与正则表达式匹配).
+    * --d|delimiter CHR：Field delimiter. Default: TAB(指定字段分隔符).
 * tsv-select [options] [file]
     * -f/--fields field-list：Fields to retain. Fields are output in the order listed(保留字段,字段按列出的顺序输出).
     * -H/--header：Treat the first line of each file as a header(指定输入文件是否包含标题行,若包含，则默认使用标题行中的列名来选择列).
@@ -173,7 +175,7 @@ Mash(MinHash)
         * mash dist [options] [reference] [query]
         * -p int：Parallelism. This many threads will be spawned for processing(并行性，使用int线程处理).
     * info：显示草图文件的信息。
-        * mash info [options] <sketch>
+        * mash info [options] sketch
 * Mash的原理:借用MinHash搜索引擎常用的判断重复文档的技术，并增加了计算两两之间突变距离和P值显著性检验。
     * 将序列集合打碎成固定长度的短片段，称为k-mer；
     * 在大多数真核生物基因组中，21-mer是一种适合于组装长序列的长度，同时可以最大化重叠区域，并提高组装的准确性；
@@ -432,15 +434,18 @@ find subgroup -name "*.lst" | sort |
     '
 
 # append ccs(追加连通分量)
-# 以\t为分隔符,在subgroup中查找包含字符串"{1}"的文件，并写入
+# 以\t分隔输入行,在subgroup中查找包含字符串"{1}"的文件，并将所有水平空格转换为换行符后追加到${file}指定的文件中
 cat ../nr/connected_components.tsv |
     parallel -j 1 --colsep "\t" '
         file=$(rg -F -l  "{1}" subgroup)
-        # {1}是占位符，表示parallel命令中的第一个变量
+        # {1}是占位符，表示parallel命令中的第一个变量，即每个输入行的第一列
+
         echo {} | tr "[:blank:]" "\n" >> ${file}
+        # ${file}用于表示文件名或文件路径等字符串，通常用于向命令中传递文件名或路径等参数
     '
 
 # remove duplicates(去除重复)
+# 将每个*.lst排序去重后，重新写入*.lst
 find subgroup -name "*.lst" | sort |
     parallel -j 8 '
         cat {} | sort | uniq > tmp.lst
@@ -448,24 +453,27 @@ find subgroup -name "*.lst" | sort |
     '
 
 # 查看subgroup目录下所有文件的行数，并从大到小排序
-wc -l subgroup/* |
+wc -l subgroup/* |  
     sort -nr |
     head -n 3
 # 68408 total
 # 15812 subgroup/lonely.lst
 # 14397 subgroup/6_2.lst
 
-# 去除输出中行首的空格
+# 去除行首的空格，计算subgroup目录下文件中第一列数值≤10的行数
 wc -l subgroup/* |
     perl -pe 's/^\s+//' |
+    # \s+表示匹配一个或多个空白字符
     tsv-filter -d " " --le 1:10 |
     wc -l
 ## 159
 
+# 去除行首的空格，将subgroup目录下文件中第一列数值≥50并满足正则表达式的行以从大到小的顺序写入next.tsv
 wc -l subgroup/* |
     perl -pe 's/^\s+//' |
     tsv-filter -d " " --ge 1:50 |
     tsv-filter -d " " --regex '2:\d+' |
+    # 筛选第二列满足正则表达式\d+的行
     sort -nr \
     > next.tsv
 
@@ -480,51 +488,57 @@ rm -fr job
 * Split sequences(分割序列)
 
 ```bash
-mkdir ~/data/plasmid/GENOMES
-mkdir ~/data/plasmid/taxon
+mkdir ~/biodata/plasmid/GENOMES
+mkdir ~/biodata/plasmid/taxon
 
-cd ~/data/plasmid/grouping
+cd ~/biodata/plasmid/grouping
 
+# 将"#Serial Group Count Target"标题写入group_target.tsv
 echo -e "#Serial\tGroup\tCount\tTarget" > ../taxon/group_target.tsv
+
 
 cat next.tsv |
     cut -d" " -f 2 |
-    parallel -j 4 -k --line-buffer '
+    parallel -j 8 -k --line-buffer '
         echo >&2 "==> {}"
 
         GROUP_NAME={/.}
-        TARGET_NAME=$(head -n 1 {} | perl -pe "s/\.\d+//g")
+        TARGET_NAME=$(head -n 1 {}   | perl -pe "s/\.\d+//g")
+        # \d+表示匹配一个或多个数字，\.表示匹配.
 
         SERIAL={#}
+        # {#}表示当前循环的计数器值
         COUNT=$(cat {} | wc -l)
 
         echo -e "${SERIAL}\t${GROUP_NAME}\t${COUNT}\t${TARGET_NAME}" >> ../taxon/group_target.tsv
 
         faops order ../nr/refseq.fa {} stdout |
             faops filter -s stdin stdout \
+            # 简化序列名称， >NC_000937.1 变为 >NC_000937
             > ../GENOMES/${GROUP_NAME}.fa
     '
 
+
 cat next.tsv |
     cut -d" " -f 2 |
-    parallel -j 4 -k --line-buffer '
+    parallel -j 8 -k --line-buffer '
         echo >&2 "==> {}"
         GROUP_NAME={/.}
         faops size ../GENOMES/${GROUP_NAME}.fa > ../taxon/${GROUP_NAME}.sizes
     '
 
 # Optional: RepeatMasker
-#egaz repeatmasker -p 16 ../GENOMES/*.fa -o ../GENOMES/
+#egaz repeatmasker -p 12 ../GENOMES/*.fa -o ../GENOMES/
 
 # split-name
 find ../GENOMES -maxdepth 1 -type f -name "*.fa" | sort |
-    parallel -j 4 '
+    parallel -j 8 '
         faops split-name {} {.}
     '
 
 # mv to dir of basename
 find ../GENOMES -maxdepth 2 -mindepth 2 -type f -name "*.fa" | sort |
-    parallel -j 4 '
+    parallel -j 8 '
         mkdir -p {.}
         mv {} {.}
     '
@@ -534,30 +548,30 @@ find ../GENOMES -maxdepth 2 -mindepth 2 -type f -name "*.fa" | sort |
 * `prepseq`
 
 ```bash
-cd ~/data/plasmid/
+cd ~/biodata/plasmid/
 
 cat taxon/group_target.tsv |
     sed -e '1d' |
-    parallel --colsep '\t' --no-run-if-empty --linebuffer -k -j 4 '
+    parallel --colsep '\t' --no-run-if-empty --linebuffer -k -j 8 '
         echo -e "==> Group: [{2}]\tTarget: [{4}]\n"
 
         for name in $(cat taxon/{2}.sizes | cut -f 1); do
             egaz prepseq GENOMES/{2}/${name}
         done
     '
-
 ```
 
-* Check outliers of lengths
+* Check outliers of lengths(检查长度的异常值)
 
 ```bash
-cd ~/data/plasmid/
+cd ~/biodata/plasmid/
 
 cat taxon/*.sizes | cut -f 1 | wc -l
-#4816
+# 43629
+
 
 cat taxon/*.sizes | cut -f 2 | paste -sd+ | bc
-#466119084
+# 3476125393
 
 cat taxon/group_target.tsv |
     sed -e '1d' |
@@ -582,10 +596,10 @@ cat taxon/group_target.tsv |
     '
 
 cat taxon/*.sizes | cut -f 1 | wc -l
-#4780
+# 43235
 
 cat taxon/*.sizes | cut -f 2 | paste -sd+ | bc
-#464908146
+# 3467737064
 
 ```
 
@@ -603,7 +617,7 @@ rsync -avP \
 ## 5 Plasmid: run（处理质粒）
 
 ```bash
-cd ~/data/plasmid/
+cd ~/biodata/plasmid/
 
 cat taxon/group_target.tsv |
     sed -e '1d' | grep "^53" |

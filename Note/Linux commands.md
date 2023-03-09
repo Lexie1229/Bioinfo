@@ -1,6 +1,11 @@
 # Commands
 ## Linux commands
 
+### Linux bc
+bc(binary calculator)：用于任意精度的计算.
+* bc [options] [file]
+  * -l/--mathlib：use the predefined math routines(定义使用的标准数学库).
+
 ### Linux bg
 bg(background)：用于将后台暂停的工作恢复到后台执行.
 * fg [job_spec]
@@ -11,6 +16,7 @@ cut:剪切文件中选定的行写至标准输出.
   * -f/--fields=LIST:select only these fields(以区域为单位进行分割，仅显示选定的区域).
   * -b/--bytes=LIST:select only these bytes(以字节为单位进行分割，仅显示选定的字节).
   * -c/--characters=LIST:select only these characters(以字符为单位进行分割，仅显示选定的字符).
+  * -d/--delimiter=DELIM：use DELIM instead of TAB for field delimiter(指定分隔符).
 
 ### Linux fg
 fg(foreground)：用于将后台暂停的工作恢复到前台执行.
@@ -64,6 +70,12 @@ nohup(no hang up):用于不挂断地运行命令，退出终端不影响运行.
   * nohup：不挂断运行，关闭终端，任务继续，`Ctrl+C`，任务终止；关闭标准输入，重定向标准输出和标准错误到当前目录的nohup.out文件；忽略SIGHUP信号。
   * nohup &：永久在后台执行，接受标准输入，重定向标准输出和标准错误到当前目录的nohup.out文件。
 
+### paste
+paste：用于将多个文件的行逐行合并成一个输出.
+* paste [OPTION] [FILE]
+  * -d/--delimiters=LIST：reuse characters from LIST instead of TABs(指定分隔符).
+  * -s/--serial：paste one file at a time instead of in parallel(将所有输入文件合并成单个文件，并将所有行连接在一起).
+
 ### Linux ps
 ps(process status):用于显示当前进程的状态.
 * ps [options]
@@ -113,6 +125,12 @@ sed:用于利用脚本处理文本文件，对文本进行编辑和替换.
   * -i[SUFFIX]/--in-place[=SUFFIX]：edit files in place (makes backup if SUFFIX supplied)(直接修改读取数据的文件，如果使用SUFFIX，则备份；默认不会修改原始文件).
   * -n/--quiet/--silent：suppress automatic printing of pattern space(仅显示处理后的行,其他不显示).
 
+### Linux shopt
+shopt(shell option)：用于显示或修改shell的选项设置.
+* shopt [-pqsu] [-o] [optname]
+  * shopt：Without any option arguments, list each supplied OPTNAME, or all shell options if no OPTNAMEs are given, with an indication of whether or not each is set(显示所有可以设置的shell操作选项).
+  * -s：enable (set) each OPTNAME(启用OPTNAME).
+
 ### Linux sort
 sort:用于对文本文件的内容排序.
 * sort [OPTION] [FILE]:读取文件内容，进行排序.
@@ -139,6 +157,19 @@ tar(tape archive)：用于文件的打包压缩及解压.
   * -f/--file=ARCHIVE：use archive file or device ARCHIVE（指定备份文件）。
   * -j/--bzip2:filter the archive through bzip2（通过bzip2指令处理备份文件）。
 
+### Linux tr
+tr(text replacer)：用于转换或删除文件中的字符.
+* tr [OPTION] SET1 [SET2]
+  * [:blank:]：all horizontal whitespace(所有水平空格).
+  * \n：new line(新行).
+
+### Linux uniq
+uniq：用于检查及删除文本文件中重复出现的行列.
+* uniq [OPTION] [INPUT [OUTPUT]]
+  * -c/--count：prefix lines by the number of occurrences(在每行前面显示每个行出现的次数).
+  * -d/--repeated：only print duplicate lines, one for each group(只显示重复的行).
+  * -u/--unique：only print unique lines(只显示不重复的行).
+
 ### Linux wc
 wc(word count):用于计算字数.
 * wc [OPTION] [FILE]
@@ -156,14 +187,37 @@ wc(word count):用于计算字数.
 
 ---------------------------------------------------------------------
 ## Other commands
+
+### echo
+echo：用于输出字符串.
+* echo [-neE] [ARGUMENTS]
+  * -e：启用转义字符的解释.
+  * -n：不输出结尾的换行符.
+
 ### parallel
 parallel:用于构建并行运行命令。
 * parallel [options] [command [arguments]] (::: arguments参数|:::: argfile(s)文件)
   * -j(--jobs) n：run n jobs in parallel(并行任务数).
   * -k：keep same order(保持顺序不变).
+  * -d delim：Input items are terminated by delim(指定分隔符).
   * --pipe：split stidn to multiple jobs(将输入分为多块).
   * --line-buffer：(指定并行执行的每个任务的输出应立即发送到控制台，而不是缓冲输出直到任务完成，不会在磁盘上缓冲，可以处理无限量的数据).
-  * --colsep regexp：Split input on regexp for positional replacements()(指定输入行中字段的分隔符（或正则表达式）).
+  * --colsep regexp：Split input on regexp for positional replacements()(指定输入行中字段的分隔符（或正则表达式），把行切分成列).
+  * {} {.} {/} {/.} {#} {%} {= perl code =}：Replacement strings(替换字符串).
+    * {}：Input line(输入行).
+    * {.}：Input line without extension(输入行，不带扩展名).
+    * {/}：Basename of input line(输入行，不带路径，仅显示文件名).
+    * {//}：Dirname of input line(输入行，仅保留路径).
+    * {/.}：Basename of input line without extension(输入行，不带扩展名和路径).
+    * {#}：Sequence number of the job to run(输出任务编号).
+    * {%}：Job slot number(输出任务槽号).
+  * {3} {3.} {3/} {3/.} {=3 perl code =}：Positional replacement strings(替换特定位置的字符串).
+    * {n}：Argument from input source n or the n'th argument.
+    * {n.}：Argument from input source n or the n'th argument without extension.
+    * {n/}：Basename of argument from input source n or the n'th argument.
+    * {n//}：Dirname of argument from input source n or the n'th argument.
+    * {n/.}：Basename of argument from input source n or the n'th argument without extension.
+    * {=perl expression=}：Replace with calculated perl expression.
 
 -----------------------------------------------------------------------
 ### rg
@@ -171,13 +225,13 @@ rg(ripgrep)
   * -F/--fixed-strings：Treat the pattern as a literal string instead of a regular expression. When this flag is used, special regular expression meta characters such as .(){}*+ do not need to be escaped(使用字符串而不是正则表达式进行匹配,特殊正则表达式元字符不需要转义).
   * -l/--files-with-matches：Print the paths with at least one match and suppress match contents(只显示文件名而不显示匹配行).
 
+
+
 ### Linux mount
 mount:用于挂载
-* mount [options] <source> <directory>
+* mount [options] source directory
   * -a/--all:mount all filesystems mentioned in fstab(将/etc/fstab)
   * -o
-
-
 
 ### sync
 * sync(synchronize):用于同步数据。
@@ -190,10 +244,11 @@ code:
 
 
 ### ls
-ls(list directory contents):用于显示指定工作目录下的内容.
+ls(list files):用于显示指定工作目录下的内容.
 * -l:use a long listing format(使用长格式显示当前目录中的文件和子目录).
 * -a/--all：do not ignore entries starting with .(显示当前目录中的所有文件和子目录，包括隐藏文件).
-* -h
+* -h/--human-readable：with -l and -s, print sizes like 1K 234M 2G etc.
+* -F/--classify：append indicator (one of */=>@|) to entries.
 
 ### mv
 mv
@@ -202,19 +257,18 @@ mv
 
 
 
-### Linux mkdir
-
-
-
 
 
 > count
 > chomd
 > ssh
-> cat
+> cat(catenate)
 > tldr
 > jobs
 > as
 > dos2unix
 > kill
-
+> mkdir
+> pigz
+> ln
+> set

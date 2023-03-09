@@ -165,7 +165,8 @@ programming language system itself.
 >> * -l INT：sequence line length [80]  
 >   
 > * faops size <in.fa> [more_files.fa] 计算每一个reads的总碱基数
->> * faops filter [options] <in.fa> <out.fa> 按照条件对序列进行筛选
+>
+> * faops filter [options] <in.fa> <out.fa> 按照条件筛选序列
 >> * -a INT：pass sequences at least this big ('a'-smallest)
 >> * -z INT：pass sequences this size or smaller ('z'-biggest)
 >> * -n INT：pass sequences with fewer than this number of N's
@@ -186,3 +187,21 @@ programming language system itself.
 >> * -E：compute the E-size (from GAGE)
 >> * -C：count entries（计算序列条数）。
 >> * -g INT：size of genome, instead of total size in files（基于组装的基因组大小进行N[INT]预测）。
+>
+> 
+
+
+
+
+
+    count         count base statistics in FA file(s)
+    size          count total bases in FA file(s)
+    masked        masked (or gaps) regions in FA file(s)
+    frag          extract sub-sequences from a FA file
+    one           extract one fa record
+    replace       replace headers from a FA file
+    split-name    splitting by sequence names
+    split-about   splitting to chunks about specified size
+    dazz          rename records for dazz_db
+    interleave    interleave two PE files
+    region        extract regions from a FA file

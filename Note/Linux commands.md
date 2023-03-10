@@ -232,9 +232,9 @@ parallel:用于构建并行运行命令.
 ### egaz
 egaz(Easy Genome Aligner)：用于处理基因组组装和注释数据.
 * egaz command [long options]
-  * template: create executing bash files.
+  * template: create executing bash files(创建正在执行的bash文件).
     * egaz template [options] path/seqdir [more path/seqdir]
-    * --multi：multiple genome alignments, orthologs(将)
+    * --multi：multiple genome alignments, orthologs(将多基因组比对，直系同源物).
     * -p/--parallel INT：number of threads(并行处理的线程数).
     * --order：multiple alignments with original order(using fake_tree.nwk)(按顺序组装输入文件中的序列).
     * -o/--outdir STR：Output directory(default value:.)(指定输出路径).

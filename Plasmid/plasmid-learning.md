@@ -518,7 +518,6 @@ cat next.tsv |
             > ../GENOMES/${GROUP_NAME}.fa
     '
 
-
 cat next.tsv |
     cut -d" " -f 2 |
     parallel -j 8 -k --line-buffer '

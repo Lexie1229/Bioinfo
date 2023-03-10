@@ -37,6 +37,9 @@ grep：用于查找文件里符合条件的字符串.
 * grep [OPTION] PATTERNS [FILE]
   * -i/--ignore-case:ignore case distinctions in patterns and data(忽略字符大小写的差别).
   * -q/--quiet, --silent: suppress(抑制) all normal output(不显示任何信息).
+  * -v/--invert-match：select non-matching lines(反向查找，仅显示不匹配的行).
+  * -x/--line-regexp：match only whole lines(精确匹配，匹配整行).
+  * -r/--recursive：like --directories=recurse(递归查找子目录中的文件).
 
 ### Linux gzip
 gzip：用于压缩或解压文件,扩展名为.gz.
@@ -94,21 +97,26 @@ pwd(print work directory):用于显示当前工作目录.
 rm(remove):用于删除一个文件或者目录.
 * rm [option] [file]
   * rm filename:删除指定文件.
-  * -r/-R,--recursive,递归:remove directories and their contents recursively（删除当前目录下的所有文件及目录).
+  * -r/-R,--recursive,递归:remove directories and their contents recursively(删除当前目录下的所有文件及目录).
   * -f/--force: ignore nonexistent files and arguments, never prompt(忽略不存在的文件和参数，从不提示).
 
 ### Linux rsync
 rsync(remote sync):用于远程同步数据.
 * rsync [OPTION] SRC [SRC] DEST
-  * -a/--archive:archive mode; equals -rlptgoD (no -H,-A,-X)（归档模式，表示以递归方式传输文件，并保持所有属性.
-  * -v/--verbose:increase verbosity（增加详细程度).
-  * --partial:keep partially transferred files
-  * --progress:show progress during transfer.
-  * -r/--recursive：recurse into directories(递归到目录中).
-  * -l/--links:copy symlinks as symlinks.
+  * -a/--archive:archive mode; equals -rlptgoD (no -H,-A,-X)(归档模式，包括递归复制、保留链接、保留文件权限、保留时间戳、保留所有者和组、保留设备文件).
+  * -v/--verbose:increase verbosity(增加详细程度).
+  * --partial:keep partially transferred files(保留不完整的文件).
+  * --progress:show progress during transfer(显示传输进度).
+  * -r/--recursive：recurse into directories(递归复制目录和子目录).
+  * -l/--links:copy symlinks as symlinks(保留文件链接).
   * -p/--perms:preserve permissions(保留文件权限).
-  * -t/--times:preserve modification times(保留修改时间).
-  * -P:same as --partial --progress.
+  * -t/--times:preserve modification times(保留文件时间时间).
+  * -g/--group：preserve group(保留文件属组).
+  * -o/--owner：preserve owner(super-user only)(保留文件属者).
+  * --devices：preserve device files(super-user only)(保留设备文件，如/dev/).
+  * --specials：preserve special files(保留特殊文件，如/proc/).
+  * -P：same as --partial --progress.
+  * -D：same as --devices --specials.
 
 ### Linux sed
 sed:用于利用脚本处理文本文件，对文本进行编辑和替换.
@@ -134,9 +142,9 @@ shopt(shell option)：用于显示或修改shell的选项设置.
 ### Linux sort
 sort:用于对文本文件的内容排序.
 * sort [OPTION] [FILE]:读取文件内容，进行排序.
-  * -n/--numeric-sort:compare according to string numerical value（根据字符串数值进行排序,从小到大).
-  * -r/--reverse:reverse the result of comparisons（以相反的顺序排序,从大到小).
-  * -k/--key=KEYDEF:sort via a key; KEYDEF gives location and type.KEYDEF is F[.C][OPTS][,F[.C][OPTS]] for start and stop position, where F is a field number and C a character position in the field; both are origin 1, and the stop position defaults to the line's end.（按指定的列进行排序).
+  * -n/--numeric-sort:compare according to string numerical value(根据字符串数值进行排序,从小到大).
+  * -r/--reverse:reverse the result of comparisons(以相反的顺序排序,从大到小).
+  * -k/--key=KEYDEF:sort via a key; KEYDEF gives location and type.KEYDEF is F[.C][OPTS][,F[.C][OPTS]] for start and stop position, where F is a field number and C a character position in the field; both are origin 1, and the stop position defaults to the line's end.(按指定的列进行排序).
     * 例如：-k 1.2，3.3  表示从第一个字段的第二个字符开始，到第三个字段的第三个字符结束进行排序.
   * -t/--field-separator=SEP:use SEP instead of non-blank to blank transition(指定排序时所用的栏位分隔字符).
 * sort [OPTION]:读取标准输入，进行排序.
@@ -195,14 +203,16 @@ echo：用于输出字符串.
   * -n：不输出结尾的换行符.
 
 ### parallel
-parallel:用于构建并行运行命令。
+parallel:用于构建并行运行命令.
 * parallel [options] [command [arguments]] (::: arguments参数|:::: argfile(s)文件)
   * -j(--jobs) n：run n jobs in parallel(并行任务数).
   * -k：keep same order(保持顺序不变).
   * -d delim：Input items are terminated by delim(指定分隔符).
   * --pipe：split stidn to multiple jobs(将输入分为多块).
-  * --line-buffer：(指定并行执行的每个任务的输出应立即发送到控制台，而不是缓冲输出直到任务完成，不会在磁盘上缓冲，可以处理无限量的数据).
+  * --line-buffer：(输出缓冲模式设置为行缓冲，指定并行执行的每个任务的输出应立即发送到控制台，而不是缓冲输出直到任务完成，不会在磁盘上缓冲，可以处理无限量的数据).
   * --colsep regexp：Split input on regexp for positional replacements()(指定输入行中字段的分隔符（或正则表达式），把行切分成列).
+  * --no-run-if-empty
+  * -r：Do not run empty input.
   * {} {.} {/} {/.} {#} {%} {= perl code =}：Replacement strings(替换字符串).
     * {}：Input line(输入行).
     * {.}：Input line without extension(输入行，不带扩展名).
@@ -218,6 +228,16 @@ parallel:用于构建并行运行命令。
     * {n//}：Dirname of argument from input source n or the n'th argument.
     * {n/.}：Basename of argument from input source n or the n'th argument without extension.
     * {=perl expression=}：Replace with calculated perl expression.
+
+### egaz
+egaz(Easy Genome Aligner)：用于处理基因组组装和注释数据.
+* egaz command [long options]
+  * template: create executing bash files.
+    * egaz template [options] path/seqdir [more path/seqdir]
+    * --multi：multiple genome alignments, orthologs(将)
+    * -p/--parallel INT：number of threads(并行处理的线程数).
+    * --order：multiple alignments with original order(using fake_tree.nwk)(按顺序组装输入文件中的序列).
+    * -o/--outdir STR：Output directory(default value:.)(指定输出路径).
 
 -----------------------------------------------------------------------
 ### rg
@@ -235,6 +255,7 @@ mount:用于挂载
 
 ### sync
 * sync(synchronize):用于同步数据。
+
 
 
 
@@ -259,7 +280,11 @@ mv
 
 
 
+
+
+> alias
 > count
+> cp
 > chomd
 > ssh
 > cat(catenate)
@@ -272,3 +297,5 @@ mv
 > pigz
 > ln
 > set
+> tail
+

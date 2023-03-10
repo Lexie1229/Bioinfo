@@ -608,10 +608,9 @@ cat taxon/*.sizes | cut -f 2 | paste -sd+ | bc
 ```bash
 rsync -avP \
     ~/data/plasmid/ \
-    wangq@202.119.37.251:data/plasmid
+    wangq@202.119.37.251:data/plasmid    # 未执行
 
 # rsync -avP wangq@202.119.37.251:data/plasmid/ ~/data/plasmid
-
 ```
 
 ## 5 Plasmid: run（处理质粒）
@@ -621,6 +620,8 @@ cd ~/biodata/plasmid/
 
 cat taxon/group_target.tsv |
     sed -e '1d' | grep "^53" |
+    # 删除标题行，过滤"53"开头的行
+
     parallel --colsep '\t' --no-run-if-empty --linebuffer -k -j 1 '
         echo -e "==> Group: [{2}]\tTarget: [{4}]\n"
 
@@ -629,7 +630,7 @@ cat taxon/group_target.tsv |
             $(cat taxon/{2}.sizes | cut -f 1 | grep -v -x "{4}" | xargs -I[] echo "GENOMES/{2}/[]") \
             --multi -o groups/{2}/ \
             --order \
-            --parallel 24 -v
+            --parallel 8 -v
 
 #        bash groups/{2}/1_pair.sh
 #        bash groups/{2}/3_multi.sh

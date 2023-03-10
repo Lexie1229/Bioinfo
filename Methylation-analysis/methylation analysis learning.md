@@ -1,7 +1,7 @@
 # [甲基化分析](https://github.com/Jihong-Tang/methylation-analysis/tree/master/NBT_repeat)
 
 ## 0 介绍
-APOBEC偶联甲基化表观测序 (ACE-seq）可以特异性检测5hmC（5-羟甲基胞嘧啶）。基于[NBT文章](https://www.nature.com/articles/nbt.4204)中的ACE-seq数据，学习在小鼠（mouse）样本中寻找5hmc DMLs（differentially methylated loci，差异甲基化位点）的生物信息流程，学习基于[`bismark`](https://github.com/FelixKrueger/Bismark)和[`DSS`](http://bioconductor.org/packages/release/bioc/html/DSS.html) 软件工具包的甲基化数据分析程序，熟悉基本的生物信息数据分析协议。
+APOBEC偶联甲基化表观测序(ACE-seq)可以特异性检测5hmC（5-羟甲基胞嘧啶）。基于[NBT文章](https://www.nature.com/articles/nbt.4204)中的ACE-seq数据，学习在小鼠（mouse）样本中寻找5hmc DMLs（differentially methylated loci，差异甲基化位点）的生物信息流程，学习基于[`bismark`](https://github.com/FelixKrueger/Bismark)和[`DSS`](http://bioconductor.org/packages/release/bioc/html/DSS.html) 软件工具包的甲基化数据分析程序，熟悉基本的生物信息数据分析协议。
 
 ## 1 数据下载 
 ### 1.1 测序数据
@@ -260,7 +260,7 @@ Rscript $HOME/Scripts/methylation-analysis/Scripts/R/DSS_differ_analysis.R ./WT_
 ## 6 参考
 * [Aria2 Manual](https://aria2.github.io/manual/en/html/index.html)
 * [Bismark User Guide](https://rawgit.com/FelixKrueger/Bismark/master/Docs/Bismark_User_Guide.html)
-* [DSS package Manual](http://bioconductor.org/packages/release/bioc/manuals/DSS/man/DSS.pdf）
+* [DSS package Manual](http://bioconductor.org/packages/release/bioc/manuals/DSS/man/DSS.pdf)
 
 
 

@@ -159,11 +159,11 @@ split:用于分割文件。
 ### Linux tar
 tar(tape archive)：用于文件的打包压缩及解压.
 * tar [OPTION] [FILE]
-  * -x/--extract/--get：extract files from an archive(从备份文件/存档中还原文件)。
+  * -x/--extract/--get：extract files from an archive(解压缩归档文件，从备份文件/存档中还原文件)。
   * -z/--gzip/--gunzip/--ungzip：filter the archive through gzip(通过gzip指令处理备份文件)。
-  * -v/--verbose:verbosely list files processed(详细列出已处理的文件,显示指令执行过程)。
-  * -f/--file=ARCHIVE：use archive file or device ARCHIVE（指定备份文件）。
-  * -j/--bzip2:filter the archive through bzip2（通过bzip2指令处理备份文件）。
+  * -v/--verbose:verbosely list files processed(在操作过程中显示详细信息，详细列出已处理的文件,显示指令执行过程)。
+  * -f/--file=ARCHIVE：use archive file or device ARCHIVE(指定要操作的归档文件，指定备份文件)。
+  * -j/--bzip2:filter the archive through bzip2(通过bzip2指令处理备份文件)。
 
 ### Linux tr
 tr(text replacer)：用于转换或删除文件中的字符.
@@ -196,11 +196,33 @@ wc(word count):用于计算字数.
 ---------------------------------------------------------------------
 ## Other commands
 
+### aria2c
+aria2c：用于从互联网下载文件，支持通过HTTP、HTTPS、FTP、SFTP、BitTorrent和Metalink协议下载文件.
+* aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]
+  * -d/--dir=DIR：The directory to store the downloaded file(指定下载文件的保存路径).
+  * -Z/--force-sequential[=true|false]：Fetch URIs in the command-line sequentially and download each URI in a separate session, like the usual command-line download utilities(按顺序在命令行中获取URI，并在单独的会话中下载每个URI).
+
 ### echo
 echo：用于输出字符串.
 * echo [-neE] [ARGUMENTS]
   * -e：启用转义字符的解释.
   * -n：不输出结尾的换行符.
+
+### egaz
+egaz(Easy Genome Aligner)：用于处理基因组组装和注释数据.
+* egaz command [long options]
+  * template: create executing bash files(创建正在执行的bash文件).
+    * egaz template [options] path/seqdir [more path/seqdir]
+    * --multi：multiple genome alignments, orthologs(将多基因组比对，直系同源物).
+    * -p/--parallel INT：number of threads(并行处理的线程数).
+    * --order：multiple alignments with original order(using fake_tree.nwk)(按顺序组装输入文件中的序列).
+    * -o/--outdir STR：Output directory(default value:.)(指定输出路径).
+
+### fastqc
+fastqc：用于质量控制和评估高通量测序数据.
+* fastqc [-o output dir] [--(no)extract] [-f fastq|bam|sam] [-c contaminant file] seqfile1 .. seqfileN
+  * -o/--outdir：Create all output files in the specified output directory(指定输出目录).
+  * -t/--threads：Specifies the number of files which can be processed simultaneously(指定可以同时处理的文件数).
 
 ### parallel
 parallel:用于构建并行运行命令.
@@ -229,15 +251,11 @@ parallel:用于构建并行运行命令.
     * {n/.}：Basename of argument from input source n or the n'th argument without extension.
     * {=perl expression=}：Replace with calculated perl expression.
 
-### egaz
-egaz(Easy Genome Aligner)：用于处理基因组组装和注释数据.
-* egaz command [long options]
-  * template: create executing bash files(创建正在执行的bash文件).
-    * egaz template [options] path/seqdir [more path/seqdir]
-    * --multi：multiple genome alignments, orthologs(将多基因组比对，直系同源物).
-    * -p/--parallel INT：number of threads(并行处理的线程数).
-    * --order：multiple alignments with original order(using fake_tree.nwk)(按顺序组装输入文件中的序列).
-    * -o/--outdir STR：Output directory(default value:.)(指定输出路径).
+### trim_galore
+trim_galore：用于预处理高通量测序数据，包括质量控制、去除低质量序列、去除接头序列和寡聚核苷酸等.
+* trim_galore [options] filename(s)
+  * -o/--output_dir DIR：If specified all output will be written to this directory instead of the current directory. If the directory doesn't exist it will be created for you(指定所有输出写入特定的目录而不是当前目录，如果指定的目录不存在，则自动新建).
+  * --fastqc：Run FastQC in the default mode on the FastQ file once trimming is complete(修剪完成后，在FastQ文件的默认模式下运行FastQC).
 
 -----------------------------------------------------------------------
 ### rg
@@ -266,20 +284,37 @@ code:
 
 ### ls
 ls(list files):用于显示指定工作目录下的内容.
-* -l:use a long listing format(使用长格式显示当前目录中的文件和子目录).
-* -a/--all：do not ignore entries starting with .(显示当前目录中的所有文件和子目录，包括隐藏文件).
+* -l：use a long listing format(使用长格式显示当前目录中的文件和子目录).
+* -a/--all：do not ignore entries starting with . (显示当前目录中的所有文件和子目录，包括隐藏文件).
 * -h/--human-readable：with -l and -s, print sizes like 1K 234M 2G etc.
 * -F/--classify：append indicator (one of */=>@|) to entries.
 
 ### mv
 mv
 * mv [OPTION] SOURCE DIRECTORY
-* -t/--target-directory=DIRECTORY：move all SOURCE arguments into DIRECTORY.
+  * -t/--target-directory=DIRECTORY：move all SOURCE arguments into DIRECTORY.
+
+### bismark
+bismark：用于高效分析亚硫酸氢盐测序的数据.
+* bismark [options] genome_folder {-1 mates1 -2 mates2 | singles}：用于将序列与指定的亚硫酸氢盐基因组比对.
+  * -o/--output_dir dir：Write all output files into this directory. By default the output files will be written into the same folder as the input file(s)(指定输出目录).
+  * --parallel/--multicore int：Sets the number of parallel instances of Bismark to be run concurrently(设置Bismark并行运行个数).
+  * --genome_folder:包含未修改的参考基因组以及bismark_genome_preparation脚本生成的子目录的路径。
+* bismark_genome_preparation [options] arguments：用于准备参考基因组的 bisulfite 转换版本.
+  * --bowtie2：This will create bisulfite indexes for use with Bowtie 2. Recommended for most bisulfite sequencing applications (Default: ON)(建立用于Bowtie2的亚硫酸氢盐索引).
+  * --hisat2：This will create bisulfite indexes for use with HISAT2. This is recommended for specialist applications such as RNA methylation analyses or SLAM-seq type applications (see also: --slam).(Default: OFF).
+  * --parallel INT：Use several threads for each indexing process to speed up the genome preparation step. Remember that the indexing is run twice in parallel already (for the top and bottom strand separately)(使用多个线程，加快基因组索引过程).
+* deduplicate_bismark
+* bismark_methylation_extractor
+
+
+### samtools
 
 
 
+### bowtie
 
-
+### hista
 
 
 > alias
@@ -298,4 +333,5 @@ mv
 > ln
 > set
 > tail
+> sh
 

@@ -202,6 +202,29 @@ aria2c：用于从互联网下载文件，支持通过HTTP、HTTPS、FTP、SFTP�
   * -d/--dir=DIR：The directory to store the downloaded file(指定下载文件的保存路径).
   * -Z/--force-sequential[=true|false]：Fetch URIs in the command-line sequentially and download each URI in a separate session, like the usual command-line download utilities(按顺序在命令行中获取URI，并在单独的会话中下载每个URI).
 
+### bismark
+bismark：用于高效分析亚硫酸氢盐测序的数据.
+* bismark [options] genome_folder {-1 mates1 -2 mates2 | singles}：用于将序列与指定的亚硫酸氢盐基因组比对.
+  * -o/--output_dir dir：Write all output files into this directory. By default the output files will be written into the same folder as the input file(s)(指定输出目录).
+  * --parallel/--multicore int：Sets the number of parallel instances of Bismark to be run concurrently(设置Bismark并行运行个数).
+  * --genome_folder：The path to the folder containing the unmodified reference genome as well as the subfolders created by the Bismark_Genome_Preparation script (/Bisulfite_Genome/CT_conversion/ and /Bisulfite_Genome/GA_conversion/)(设置基因组文件夹的路径，包含未修改的参考基因组和亚硫酸氢盐处理生成的子目录的路径).
+* bismark_genome_preparation [options] arguments：用于将参考基因组转换为两种不同的亚硫酸氢盐转化
+版本(C->T，G->A)并为比对建立索引.
+  * --bowtie2：This will create bisulfite indexes for use with Bowtie 2. Recommended for most bisulfite sequencing applications(建立用于Bowtie2的亚硫酸氢盐索引).
+  * --hisat2：This will create bisulfite indexes for use with HISAT2. This is recommended for specialist applications such as RNA methylation analyses or SLAM-seq type applications(建立用于Hisat2的亚硫酸氢盐索引).
+  * --parallel INT：Use several threads for each indexing process to speed up the genome preparation step. Remember that the indexing is run twice in parallel already (for the top and bottom strand separately)(每个索引使用多个线程，加快基因组索引过程，索引默认分别针对顶部链和底部链并行运行两次).
+* deduplicate_bismark [options] filename(s)：用于从Bismark比对结果中删除比对到基因组中相同位置的比对.
+  * --bam：The output will be written out in BAM format(结果输出BAM格式文件).
+  * --output_dir [path]：Output directory, either relative or absolute. Output is written to the current directory if not specified explicitly(指定输出目录).
+* bismark_methylation_extractor [options] filenames：用于提取单个胞嘧啶的甲基化信息.
+  * -s/--single-end: Input file(s) are Bismark result file(s) generated from single-end read data(输入由单端测序数据生成的Bismark结果文件).
+  * --gzip:The methylation extractor files (CpG_OT_..., CpG_OB_... etc) will be written out in a GZIP compressed form to save disk space. This option is also passed on to the genome-wide cytosine report. BedGraph and coverage files will be written out as .gz by default(甲基化提取文件(CpG_OT_...，CpG_OB_... etc)以GZIP压缩形式输出以节省磁盘空间，包括全基因组胞嘧啶甲基化报告、BedGraph和coverage文件).
+  * --parallel/--multicore int：Sets the number of cores to be used for the methylation extraction process. Please note that a typical process of extracting a BAM file and writing out '.gz' output streams will in fact use ~3 cores per value of --parallel int specified (1 for the methylation extractor itself, 1 for a Samtools stream, 1 for GZIP stream)(设置甲基化提取过程使用的内核数，实际每次提取BAM文件并写入.gz文件的过程约使用3核，因此设置使用N int而实际使用3N int资源).
+  * --bedGraph：After finishing the methylation extraction, the methylation output is written into a sorted bedGraph file that reports the position of a given cytosine and its methylation state (in %, see details below)(甲基化输出写入排序的bedGraph文件，提供胞嘧啶的位置及其甲基化状态).
+  * --cytosine_report：After the conversion to bedGraph has completed, the option '--cytosine_report' produces a genome-wide methylation report for all cytosines in the genome(bedGraph转换完成后，生成全基因组所有胞嘧啶甲基化报告).
+  * --genome_folder path：Enter the genome folder you wish to use to extract sequences from (full path only)(指定用于甲基化提取的基因组的路径，只能全路径).
+  * -o/--output_dir DIR: Allows specification of a different output directory (absolute or relative path)(指定输出目录).
+
 ### echo
 echo：用于输出字符串.
 * echo [-neE] [ARGUMENTS]
@@ -251,6 +274,21 @@ parallel:用于构建并行运行命令.
     * {n/.}：Basename of argument from input source n or the n'th argument without extension.
     * {=perl expression=}：Replace with calculated perl expression.
 
+### samtools
+samtools：用于操作SAM和BAM文件，包括二进制查看、格式转换、排序及合并等.
+* samtools command [options]
+  * cat：concatenate BAMs(连接BAMs文件).
+    * samtools cat [options] in1.bam [... inN.bam]
+    * -o FILE：output BAM/CRAM(指定输出的文件类型为BAM/CRAM).
+    * -@/--threads INT：Number of additional threads to use [0](指定额外使用的线程数).
+  * sort：sort alignment file(对比对文件进行排序)
+    * samtools sort [options] [in.bam]
+    * -@/--threads INT：Number of additional threads to use [0](指定额外使用的线程数).
+  * index：index alignment(对比对文件建立索引)
+    * samtools index [-bc] [-m INT] in.bam [out.index]
+    * -b：Generate BAI-format index for BAM files[default](为BAM文件生成BAI格式索引).
+    * -@ INT：Sets the number of threads [none](指定使用的线程数).
+
 ### trim_galore
 trim_galore：用于预处理高通量测序数据，包括质量控制、去除低质量序列、去除接头序列和寡聚核苷酸等.
 * trim_galore [options] filename(s)
@@ -294,21 +332,8 @@ mv
 * mv [OPTION] SOURCE DIRECTORY
   * -t/--target-directory=DIRECTORY：move all SOURCE arguments into DIRECTORY.
 
-### bismark
-bismark：用于高效分析亚硫酸氢盐测序的数据.
-* bismark [options] genome_folder {-1 mates1 -2 mates2 | singles}：用于将序列与指定的亚硫酸氢盐基因组比对.
-  * -o/--output_dir dir：Write all output files into this directory. By default the output files will be written into the same folder as the input file(s)(指定输出目录).
-  * --parallel/--multicore int：Sets the number of parallel instances of Bismark to be run concurrently(设置Bismark并行运行个数).
-  * --genome_folder:包含未修改的参考基因组以及bismark_genome_preparation脚本生成的子目录的路径。
-* bismark_genome_preparation [options] arguments：用于准备参考基因组的 bisulfite 转换版本.
-  * --bowtie2：This will create bisulfite indexes for use with Bowtie 2. Recommended for most bisulfite sequencing applications (Default: ON)(建立用于Bowtie2的亚硫酸氢盐索引).
-  * --hisat2：This will create bisulfite indexes for use with HISAT2. This is recommended for specialist applications such as RNA methylation analyses or SLAM-seq type applications (see also: --slam).(Default: OFF).
-  * --parallel INT：Use several threads for each indexing process to speed up the genome preparation step. Remember that the indexing is run twice in parallel already (for the top and bottom strand separately)(使用多个线程，加快基因组索引过程).
-* deduplicate_bismark
-* bismark_methylation_extractor
 
 
-### samtools
 
 
 

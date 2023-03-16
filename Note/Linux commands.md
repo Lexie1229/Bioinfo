@@ -359,4 +359,5 @@ mv
 > set
 > tail
 > sh
+> gunzip -d
 

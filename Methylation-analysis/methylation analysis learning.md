@@ -173,30 +173,68 @@ cp ./TetTKO_data/SRR7368845_trimmed_bismark_bt2.deduplicated.bismark.cov ./TetTK
 ```
 
 ```r
-# 安装
-install.packages("tydir")
-install.packages("dplyr") 
+# 安装R包
+install.packages("tidyr")
+install.packages("dplyr")
 
-# 加载
+# 加载R包
 library(tidyr)
 library(dplyr)
 
+# 设置工作目录
 setwd("C:/Users/19065/project/NBT_repeat/R_analysis")
-file_names <- c("./WT_data/SRX4241790_methylation_result.txt", "./TetTKO_data/SRR7368845_methylation_result.txt")
+## setwd(dir)函数，用于设置当前的工作目录；dir是一个字符串，表示要设置为当前工作目录的目录路径。
 
+# 定义向量
+file_names <- c("./WT_data/SRX4241790_methylation_result.txt", "./TetTKO_data/SRR7368845_methylation_result.txt")
+## c(..., recursive = FALSE)函数，用于将参数组合成向量（或列表）；recursive表示指定是否递归地组合列表和嵌套向量中的元素
+
+# 定义函数
 func_read_file <- function(file_name){
+	## my_function <- function(<arguments>){# function body}函数，用于命名和创建函数;my_function表示函数的名称；arguments表示函数的参数；函数体（function body）表示一组执行指定任务的语句，这些语句可以访问参数和其他变量，并生成输出结果。
+
+	# 分割元素，获得列表，如"./WT_data/SRX4241790_methylation_result.txt"
 	dir_vec <- strsplit(file_name, split = "/")[[1]]
+	## strsplit(x, split, fixed = F, perl = F, useBytes = F)函数，用于分割字符串，根据指定的分隔符将其拆分成子字符串，并将这些子字符串存储在一个列表中；x表示要被拆分的字符串或字符向量；split表示用于分隔字符串的字符或正则表达式；fixed表示split是否应该被视为普通字符而不是正则表达式，默认为FALSE，即split是正则表达式。
+	## [[1]]表示访问一个列表中的第一个元素；列表中的每个元素都可以使用双方括号（[[ ]]）或美元符号（$）来访问，使用双方括号[[ ]]访问列表元素时，可以使用元素的索引或名称
+
+	# 计算列表元素数量，如3
 	len <- length(dir_vec)
+	## length(x)函数，用于计算对象中的元素数量；x表示一个R对象，可以是向量、列表、矩阵、数据框、数组等。
+
+	# 提取文件前缀，如SRX4241790_methylation_result
 	file_prefix = substring(dir_vec[len], 0, nchar(dir_vec[len]) - 4)
+	## substring(text, first = 1, last = nchar(text))函数，用于从字符串中提取一个子串；text表示一个字符串；first和last是整数，表示要提取的子串的起始和结束位置。
+	## nchar(x, type = "any")函数，用于计算字符串长度；x表示要计算长度的字符串或字符向量；type是一个可选参数，指定如何计算长度，默认值为"any"，表示计算所有字符的长度，如果设置为"bytes"，则只计算字节数。
+
+	# 提取文件保存路径，如./WT_data/
 	file_save_path = substring(file_name, 0, nchar(file_name) - nchar(dir_vec[len]))
+
+	# 输出提示信息
 	print(paste("File", file_name, "is being importing and this may take a while..."), sep = "")
+	## paste(..., sep = " ", collapse = NULL)函数，用于将多个字符串拼接成一个字符串；...表示要拼接的字符串，可以是多个；sep表示用于分隔字符串的分隔符，默认值为一个空格；collapse表示用于合并多个向量的可选参数。
+	## print(x, ...)函数，用于打印输出；x表示要输出的对象；...表示一些可选参数，比如控制输出格式的参数等。
+
+	# 读取数据
 	rawdata_df <- read.table(file_name, header = F, stringsAsFactors = F)
+	## read.table(file, header = TRUE, sep = "", quote = "\"'",dec = ".", fill = TRUE, comment.char = "", ...)函数，用于从文本文件中读取数据；file表示要读取的文件名或路径；header表示文件是否有标题行，默认为TRUE，表示第一行是标题行；sep:表示字段之间的分隔符，默认为空格；quote表示字符串的边界字符，默认为双引号和单引号；dec表示数值型列的小数点分隔符，默认为.；fill表示是否用NA值填充空值，默认为TRUE；comment.char表示注释行，默认为#。
+	## stringsAsFactors = F表示读入字符型数据时不将其转换为因子（factor）类型，以避免因子类型的不必要转换和处理所带来的麻烦。
+
+	# 输出提示信息
 	print("Importing file is finished!")
+
+	# 设置列名
 	colnames(rawdata_df) <- c("chr", "start", "end", "methyl%", "methyled", "unmethyled")
+	## colnames(x) <- value函数，用于获取或设置一个数据框（data frame）的列名；x表示一个数据框对象；value表示一个字符向量，用于设置数据框的列名，如果省略value参数，则colnames()函数返回数据框的列名。
+
+	# 数据写入文件
 	write.table(rawdata_df, paste(file_save_path, file_prefix, "_transfered.txt", sep = ""), row.names = F )
+	## write.table(x, file, sep = " ", quote = TRUE, dec = ".", row.names = TRUE, col.names = TRUE,... )函数，用于将数据写入一个以指定分隔符分隔的文本文件中；x表示要写入文件的数据，可以是一个数据框、矩阵或向量等R中支持的数据类型；file表示要写入的文件名，可以是一个字符向量或连接字符的字符串，如果文件已存在则将它覆盖，否则创建一个新文件；sep:表示分隔符，用于分隔每列数据的值，默认为" "，即空格；quote表示是否应该将字符串用双引号引起来，默认为TRUE；dec表示浮点数的小数点分隔符，默认为.；row.names和col.names表示是否应该在文件中包含行名和列名，默认为TRUE。
 }
 
+# 调用函数，逐一处理向量元素
 lapply(file_names, func_read_file)
+## lapply(X, FUN, ...)函数，用于对列表、矩阵、向量等数据类型的每个元素应用指定的函数，并返回一个包含结果的列表；X表示要应用函数的列表或向量；FUN表示要应用的函数。
 
 q()
 ```
@@ -222,6 +260,7 @@ file_save_path <- "./"
 # 输入数据
 first_raw_data <- read.table(first_file, header = T, stringsAsFactors = F)
 second_raw_data <- read.table(second_file, header = T, stringsAsFactors = F)
+## data <- read.table("example.txt", header=TRUE, sep="\t", stringsAsFactors=FALSE)函数，用于读取表格型文本数据；file表示文件名或连接符，指定读取数据的文件名或URL地址等；header表示是否将第一行数据作为表头；sep:表示字符串，用于指定数据中各字段之间的分隔符；stringsAsFactors表示是否将字符型变量转换为因子型变量。
 
 # 数据操作为BSseq异议做准备
 DSS_first_input_data <- first_raw_data %>%
@@ -232,16 +271,25 @@ DSS_second_input_data <- second_raw_data %>%
 	mutate(chr = paste("chr", chr, sep = "")) %>%
 	mutate(pos = start, N = methyled + unmethyled, X = methyled) %>%
 	select(chr, pos, N, X)
+## %>%表示管道操作符，用于将数据从一个函数或操作的输出传递到另一个函数或操作的输入。
+## mutate(.data, new_var = expression, ...)函数，用于在数据框中添加新的变量或对现有变量进行转换；.data表示要进行操作的数据框；new_var表示新变量的名称，可以是任何有效的R语言变量名；expression表示对新变量进行计算的表达式。
+## select(.data, var1, var2, ..., varn)函数，用于选择数据框中的列或变量；.data表示要进行操作的数据框；var1、var2、...、varn表示要选择的变量或列的名称。
 
 # 创建BSseq对象并进行静态测试
 bsobj <- makeBSseqData(list(DSS_first_input_data, DSS_second_input_data), c("S1", "S2"))
 dmlTest <- DMLtest(bsobj, group1 = c("S1"), group2 = c("S2"), smoothing = T)
+## makeBSseqData(data, sampleNames, assembly = NULL, annotation = NULL, colData = NULL, removeDuplicates = FALSE, verbose = FALSE)函数，用于将DNA甲基化数据转换为BSseq对象；data表示一个数据框列表，其中每个数据框代表一个样本的DNA甲基化数据；sampleNames表示一个字符向量，指定每个样本的名称；assembly和annotation参数是可选的，用于指定数据的基因组组装版本和注释信息；colData表示一个数据框，用于指定每个样本的其他相关信息，例如性别、年龄等；removeDuplicates表示是否删除重复的CpG位点；verbose表示是否输出详细的运行信息。
+## DMLtest(bsobj, group1, group2, formula = NULL, mincov = 5, minNumSNPs = 3, pAdjustMethod = "BH", alpha = 0.05, bAdjust = NULL, verbose = FALSE, ncores = 1, minQ = NULL, minDelta = NULL, direction = NULL, smoothing = FALSE, smooth_window_size = 3, smooth_sd = 1, mc.cores = 1, ignore_chroms = NULL, ignore_cpgs = NULL, ignore_samples = NULL)函数，用于对DNA甲基化数据进行差异分析；bsobj表示一个BSseq对象；group1和group2表示用于比较的两个样本组别；formula表示一个公式对象，用于指定模型中的自变量和因变量关系；mincov和minNumSNPs表示关于数据过滤的参数，用于指定最小测序深度和最小位点数；pAdjustMethod表示用于多重检验校正的方法；alpha表示显著性水平；bAdjust表示是否进行贝叶斯校正；verbose表示是否输出详细的运行信息；ncores表示用于并行计算的核数；minQ和minDelta表示关于DMR过滤的参数，用于指定最小的FDR和甲基化差异值；direction用于指定差异方向；smoothing表示是否对甲基化水平进行平滑处理；smooth_window_size和smooth_sd用于指定平滑的窗口大小和标准差；mc.cores用于指定并行计算的核数；ignore_chroms、ignore_cpgs和ignore_samples表示关于数据过滤的参数，用于忽略某些染色体、CpG位点或样本。
 
 # 检测 DMLs
 dmls <- callDML(dmlTest, p.threshold = 0.001)
+## callDML(bsobj, group1, group2, dmr.maxgap = 1000, dmr.minlen = 200, dmr.p = 0.05, dmr.consecCpGs = 3, alpha = 0.05, adjust = "BH", bAdjust = NULL, verbose = FALSE, method = c("ML", "OLS"), minNumSNPs = 3, mincov = 5, direction = NULL, ncores = 1, mc.cores = 1, ignore_chroms = NULL, ignore_cpgs = NULL, ignore_samples = NULL)
+
+
 
 # 检测 DMRs
 dmrs <- callDMR(dmlTest, p.threshold=0.01)
+## 
 
 # 输出结果
 write.table(dmlTest, paste(file_save_path, file_prefix, "_DSS_test_result.txt", sep = ""), row.names = F)
@@ -264,24 +312,4 @@ Rscript $HOME/Scripts/methylation-analysis/Scripts/R/DSS_differ_analysis.R ./WT_
 
 
 
-## NOTE
 
-* function():命名和创建函数。
-```r
-f <- function(<arguments>){
-	## Do something interesting
-}
-```
-
-* strsplit()：分割字符串。
-```r
-strsplit(x, split, fixed = F, perl = F, useBytes = F)
-```
-
-* substring():提取字符向量中的子串。
-```r
-substring (text, first, last)
-```
-
-* length():返回字符数量。
-* nchar():返回字符串长度。

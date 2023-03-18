@@ -262,7 +262,7 @@ first_raw_data <- read.table(first_file, header = T, stringsAsFactors = F)
 second_raw_data <- read.table(second_file, header = T, stringsAsFactors = F)
 ## data <- read.table("example.txt", header=TRUE, sep="\t", stringsAsFactors=FALSE)函数，用于读取表格型文本数据；file表示文件名或连接符，指定读取数据的文件名或URL地址等；header表示是否将第一行数据作为表头；sep:表示字符串，用于指定数据中各字段之间的分隔符；stringsAsFactors表示是否将字符型变量转换为因子型变量。
 
-# 数据操作为BSseq异议做准备
+# 数据操作为BSseq objection做准备
 DSS_first_input_data <- first_raw_data %>%
 	mutate(chr = paste("chr", chr, sep = "")) %>%
 	mutate(pos = start, N = methyled + unmethyled, X = methyled) %>%
@@ -275,7 +275,7 @@ DSS_second_input_data <- second_raw_data %>%
 ## mutate(.data, new_var = expression, ...)函数，用于在数据框中添加新的变量或对现有变量进行转换；.data表示要进行操作的数据框；new_var表示新变量的名称，可以是任何有效的R语言变量名；expression表示对新变量进行计算的表达式。
 ## select(.data, var1, var2, ..., varn)函数，用于选择数据框中的列或变量；.data表示要进行操作的数据框；var1、var2、...、varn表示要选择的变量或列的名称。
 
-# 创建BSseq对象并进行静态测试
+# 创建BSseq对象并进行差异分析测试
 bsobj <- makeBSseqData(list(DSS_first_input_data, DSS_second_input_data), c("S1", "S2"))
 dmlTest <- DMLtest(bsobj, group1 = c("S1"), group2 = c("S2"), smoothing = T)
 ## makeBSseqData(data, sampleNames, assembly = NULL, annotation = NULL, colData = NULL, removeDuplicates = FALSE, verbose = FALSE)函数，用于将DNA甲基化数据转换为BSseq对象；data表示一个数据框列表，其中每个数据框代表一个样本的DNA甲基化数据；sampleNames表示一个字符向量，指定每个样本的名称；assembly和annotation参数是可选的，用于指定数据的基因组组装版本和注释信息；colData表示一个数据框，用于指定每个样本的其他相关信息，例如性别、年龄等；removeDuplicates表示是否删除重复的CpG位点；verbose表示是否输出详细的运行信息。
@@ -283,13 +283,11 @@ dmlTest <- DMLtest(bsobj, group1 = c("S1"), group2 = c("S2"), smoothing = T)
 
 # 检测 DMLs
 dmls <- callDML(dmlTest, p.threshold = 0.001)
-## callDML(bsobj, group1, group2, dmr.maxgap = 1000, dmr.minlen = 200, dmr.p = 0.05, dmr.consecCpGs = 3, alpha = 0.05, adjust = "BH", bAdjust = NULL, verbose = FALSE, method = c("ML", "OLS"), minNumSNPs = 3, mincov = 5, direction = NULL, ncores = 1, mc.cores = 1, ignore_chroms = NULL, ignore_cpgs = NULL, ignore_samples = NULL)
-
-
+## callDML(dmlTest, p.threshold = 0.05, adjust = "BH", bAdjust = NULL, direction = NULL, verbose = FALSE)函数，用于对DNA甲基化数据进行甲基化差异位点的检测；dmlTest表示一个DMLtest对象，该对象包含了甲基化差异位点的统计信息；p.threshold表示显著性水平；adjust用于多重检验校正的方法；bAdjust用于指定是否进行贝叶斯校正；direction用于指定差异方向；verbose用于控制是否输出详细的运行信息。
 
 # 检测 DMRs
 dmrs <- callDMR(dmlTest, p.threshold=0.01)
-## 
+## callDMR(dmlTest, p.threshold = 0.05, adjust = "BH", bAdjust = NULL, direction = NULL, mergeDistance = NULL, verbose = FALSE, ...)函数，用于对DNA甲基化数据进行甲基化差异区域的检测；dmlTest表示一个DMLtest对象，该对象包含了甲基化差异位点的统计信息；p.threshold表示显著性水平；adjust表示用于多重检验校正的方法；bAdjust用于指定是否进行贝叶斯校正；direction用于指定差异方向；mergeDistance用于指定DMR之间的最大距离；verbose用于控制是否输出详细的运行信息。
 
 # 输出结果
 write.table(dmlTest, paste(file_save_path, file_prefix, "_DSS_test_result.txt", sep = ""), row.names = F)

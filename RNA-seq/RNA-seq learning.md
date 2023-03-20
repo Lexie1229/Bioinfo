@@ -150,8 +150,8 @@ conda config --set auto_activate_base false
 conda create --name python36 python=3.6
 ```
 
-NOTEconda：管理和部署应用程序、环境和软件包的工具。
-
+NOTE          
+conda:管理和部署应用程序、环境和软件包的工具。
 * conda command
   * config：修改.condarc文件中的配置值。
     * --add channels conda-canary：添加软件源，具有优先级。

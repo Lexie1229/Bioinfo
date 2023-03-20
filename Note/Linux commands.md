@@ -225,6 +225,15 @@ bismark：用于高效分析亚硫酸氢盐测序的数据.
   * --genome_folder path：Enter the genome folder you wish to use to extract sequences from (full path only)(指定用于甲基化提取的基因组的路径，只能全路径).
   * -o/--output_dir DIR: Allows specification of a different output directory (absolute or relative path)(指定输出目录).
 
+### conda
+conda:用于管理和部署应用程序、环境和软件包的工具.
+* conda [-h] [-V] command
+  * conda config：Modify configuration values in .condarc(修改.condarc文件中的配置值).
+    * --add channels conda-canary：Add the conda-canary channel(添加软件源，具有优先级).
+  * conda create：Create a new conda environment from a list of specified packages(创建新的conda环境).
+    * -n ENVIRONMET (--name ENVIRONMENT)：Name of environment(设置环境名称).
+  * conda info：Display information about current conda install(显示当前conda安装的信息).
+
 ### echo
 echo：用于输出字符串.
 * echo [-neE] [ARGUMENTS]
@@ -360,4 +369,7 @@ mv
 > tail
 > sh
 > gunzip -d
-
+> test -d
+> curl -fsSL
+> bash -c
+> wget -O

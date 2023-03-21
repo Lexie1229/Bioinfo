@@ -40,6 +40,7 @@ grep：用于查找文件里符合条件的字符串.
   * -v/--invert-match：select non-matching lines(反向查找，仅显示不匹配的行).
   * -x/--line-regexp：match only whole lines(精确匹配，匹配整行).
   * -r/--recursive：like --directories=recurse(递归查找子目录中的文件).
+  * -A/--after-context=NUM：print NUM lines of trailing context(显示匹配行后的NUM行).
 
 ### Linux gzip
 gzip：用于压缩或解压文件,扩展名为.gz.
@@ -73,8 +74,8 @@ nohup(no hang up):用于不挂断地运行命令，退出终端不影响运行.
   * nohup：不挂断运行，关闭终端，任务继续，`Ctrl+C`，任务终止；关闭标准输入，重定向标准输出和标准错误到当前目录的nohup.out文件；忽略SIGHUP信号。
   * nohup &：永久在后台执行，接受标准输入，重定向标准输出和标准错误到当前目录的nohup.out文件。
 
-### paste
-paste：用于将多个文件的行逐行合并成一个输出.
+### Linux paste
+paste：用于将多个文件以列对列的形式合并，行数保持不变.
 * paste [OPTION] [FILE]
   * -d/--delimiters=LIST：reuse characters from LIST instead of TABs(指定分隔符).
   * -s/--serial：paste one file at a time instead of in parallel(将所有输入文件合并成单个文件，并将所有行连接在一起).
@@ -373,3 +374,5 @@ mv
 > curl -fsSL
 > bash -c
 > wget -O
+
+awk

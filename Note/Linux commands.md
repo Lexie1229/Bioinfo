@@ -332,16 +332,22 @@ code:
 
 ### ls
 ls(list files):用于显示指定工作目录下的内容.
-* -l：use a long listing format(使用长格式显示当前目录中的文件和子目录).
-* -a/--all：do not ignore entries starting with . (显示当前目录中的所有文件和子目录，包括隐藏文件).
-* -h/--human-readable：with -l and -s, print sizes like 1K 234M 2G etc.
-* -F/--classify：append indicator (one of */=>@|) to entries.
+* ls [OPTION] [FILE]
+  * -l：use a long listing format(使用长格式显示当前目录中的文件和子目录).
+  * -a/--all：do not ignore entries starting with . (显示当前目录中的所有文件和子目录，包括隐藏文件).
+  * -h/--human-readable：with -l and -s, print sizes like 1K 234M 2G etc.
+  * -F/--classify：append indicator (one of */=>@|) to entries.
 
 ### mv
 mv
 * mv [OPTION] SOURCE DIRECTORY
   * -t/--target-directory=DIRECTORY：move all SOURCE arguments into DIRECTORY.
 
+### Linux mktemp
+mktemp：用于创建临时文件或目录，并打印文件名.
+* mktemp [OPTION] [TEMPLATE]
+  * -d/--directory：create a directory, not a file(创建一个临时目录).
+  * -t：interpret TEMPLATE as a single file name component,relative to a directory: $TMPDIR, if set; else the directory specified via -p; else /tmp [deprecated](指定临时目录的前缀).
 
 
 

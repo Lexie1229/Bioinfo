@@ -12,6 +12,10 @@ brew install wang-q/tap/faops
 
 ```bash
 faops <command> [options] <arguments>
+
+# 举例
+faops filter -l 0 <in.fq> <out.fa>
+## 将所有内容写在一行上，并将fastq格式转变为fasta格式
 ```
 
 ### 01.faops count
@@ -162,7 +166,7 @@ paste <(faops rc -l 0 ~/test/ufasta.fa stdout | grep -v '^>')\
         $F[1] = reverse($F[1]);
         exit(1) unless $F[0] eq $F[1];
      '
-# 若无输出，则表示运行成功 ；若
+echo $？
 ## 测试是否反向互补，即反转后是否一致
 ## $uc_str = uc($str)，用于将字符串转换为大写(perl函数)
 ## $str =~ tr/hw/HW，用于对字符串中的字符进行替换或删除，hw表示要替换或删除的字符集，HW表示替换或删除后的字符集(perl函数)
@@ -172,6 +176,7 @@ paste <(faops rc -l 0 ~/test/ufasta.fa stdout | grep -v '^>')\
 ## $F[0] = uc($F[0]) --> $F[0] = CCCAGTT
 ## $F[1] =~ tr/ACGTacgt/TGCATGCA/ --> $F[1] =TTGACCC
 ## $F[1] = reverse($F[1]) --> $F[1] = CCCAGTT
+## echo $？显示上一个命令的状态，0表示执行成功
 
 # with list.file
 faops rc -l 0 -f <(echo read47) ~/test/ufasta.fa stdout | grep '^>RC_'
@@ -209,28 +214,101 @@ faops filter -l 0 ~/test/ufasta.fa stdout | grep -A 1 '^>read12'
 
 ### 07.faops filter
 
-* faops filter [options] <in.fa> <out.fa> 按照条件筛选序列
-* -a INT：pass sequences at least this big ('a'-smallest)
-* -z INT：pass sequences this size or smaller ('z'-biggest)
-* -n INT：pass sequences with fewer than this number of N's
-* -u：Unique, removes duplicated ids, keeping the first(删除重复序列)。
-* -U：Upper case, converts all sequences to upper cases(将所有序列转换为大写)。
-* -b：pretend to be a blocked fasta file
-* -N：convert IUPAC ambiguous codes to 'N'
-* -d：remove dashes '-'
-* -s：simplify sequence names(简化序列名称)。
-* -l INT：sequence line length [INT]
-    * 例如：faops filter -l 0 <in.fq> <out.fa>，将所有内容写在一行上，并将fastq格式转变为fasta格式。
+* faops filter：filter fa records. 
+    * faops filter [options] <in.fa> <out.fa>  按照条件筛选序列
+    * -a INT：pass sequences at least this big ('a'-smallest)
+    * -z INT：pass sequences this size or smaller ('z'-biggest)
+    * -n INT：pass sequences with fewer than this number of N's
+    * -u：unique, removes duplicated ids, keeping the first(删除重复序列)。
+    * -U：upper case, converts all sequences to upper cases(将所有序列转换为大写)。
+    * -b：pretend to be a blocked fasta file
+    * -N：convert IUPAC ambiguous codes to 'N'
+    * -d：remove dashes '-'
+    * -s：simplify sequence names(简化序列名称)。
+    * -l INT：sequence line length [80] (序列每行显示INT个碱基).
 
+```bash
+# as formatter, sequence in one line
+
+
+```
 
 
 ### 08.faops split-name
+
+* faops split-name：splitting by sequence names(split an fa file into several files，using sequence names as file names).
+    * faops split-name [options] <in.fa> <outdir>  根据序列名称分割FA文件
+    * -l INT：sequence line length [80] (序列每行显示INT个碱基).
+
+```bash
+# all sequences
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+faops split-name ~/test/ufasta.fa $mytmpdir \
+&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+# 50
+rm -fr ${mytmpdir}
+## echo ${mytmpdir}
+## /tmp/tmp.**********
+
+# size restrict
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+faops filter -a 10 ~/test/ufasta.fa stdout \
+| faops split-name stdin $mytmpdir \
+&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+# 44
+rm -fr ${mytmpdir}
+```
+mytmpdir=$(mktemp -d -t 'mytmpdir')
 ### 09.faops split-about
+
+* faops split-about：splitting to chunks about specified size(Split an fa file into several files of about approx_size bytes each by record)
+    * faops split-about [options] <in.fa> <approx_size> <outdir>
+    * -e：sequences in one file should be EVEN
+    * -m INT：max parts
+    * -l INT：sequence line length [80] (序列每行显示INT个碱基).
+
+```bash
+# 2000 bp
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+faops split-about ~/test/ufasta.fa 2000 $mytmpdir \
+&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+# 5
+rm -fr ${mytmpdir}
+
+# max parts
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+faops split-about -m 2 ~/test/ufasta.fa 2000 $mytmpdir \
+&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+# 2
+rm -fr ${mytmpdir}
+
+# 2000 bp and size restrict
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+faops filter -a 100 ~/test/ufasta.fa stdout \
+faops split-about stdin 2000 $mytmpdir \
+&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+
+# 1 bp
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+faops split-about  ~/test/ufasta.fa 1 $mytmpdir \
+&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+# 50
+rm -fr ${mytmpdir}
+
+# 1 bp even
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+faops split-about -e ~/test/ufasta.fa 1 $mytmpdir \
+&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+# 26
+rm -fr ${mytmpdir}
+```
+
 ### 10.faops n50
 
-* faops n50 [options] <in.fa> [more_files.fa] 计算n50和其他数据
+* faops n50：compute N50 and other statistics.
+    * faops n50 [options] <in.fa> [more_files.fa] 计算n50和其他数据
     * -H：do not display header(不显示标题-N50).
-    * -N INT：compute Nx statistic [INT] (计算N[INT]).
+    * -N INT：compute Nx statistic [50] (计算N[INT]).
     * -S：compute sum of size of all entries(计算所有序列的总碱基数).
     * -A：compute average length of all entries(计算序列的平均碱基数).
     * -E：compute the E-size (from GAGE)
@@ -239,34 +317,39 @@ faops filter -l 0 ~/test/ufasta.fa stdout | grep -A 1 '^>read12'
 
 ### 11.faops order
 
-* faops order [options] <in.fa> <list.file> <out.fa> 按给定顺序提取多个序列  
+* faops order：extract some(multiple) fa records by the given order.
+    * faops order [options] <in.fa> <list.file> <out.fa> 按给定顺序提取多个序列  
     * -l INT：sequence line length [80] (序列每行显示INT个碱基).
 
-
 ### 12.faops replace
+
+* faops replace：replace headers from a FA file.
+    * faops replace [options] <in.fa> <replace.tsv> <out.fa>
+    * -s：only output sequences in the list, like `faops some`.
+    * -l INT：sequence line length [80] (序列每行显示INT个碱基).
+
 ### 13.faops dazz
+
+* faops dazz：rename records for dazz_db.
+
 ### 14.faops interleave
+
+* faops interleave：interleave two PE files.
+
 ### 15.faops region
+
+* faops region：extract regions from a FA file.
+
 ### 16.faops masked
 * faops masked：masked (or gaps) regions in FA file(s).
     * faops masked [options] <in.fa> [more_files.fa] 
     * -g：only record regions of N/n().
 
 
-* faops replace：replace headers from a FA file
-* faops split-name：splitting by sequence names
-    split-about   splitting to chunks about specified size
-    dazz          rename records for dazz_db
-    interleave    interleave two PE files
-    region        extract regions from a FA file
 
 
-    replace       replace headers from a FA file
-    split-name    splitting by sequence names
-    split-about   splitting to chunks about specified size
-    dazz          rename records for dazz_db
-    interleave    interleave two PE files
-    region        extract regions from a FA file
+
+
 
 
 

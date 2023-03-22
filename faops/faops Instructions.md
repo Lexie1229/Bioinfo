@@ -1,8 +1,9 @@
-# `faops` 使用说明书
+# [`faops` 使用说明](https://github.com/wang-q/faops)
 
 ## 安装 faops
 
 ```bash
+# 使用brew安装
 brew install wang-q/tap/faops
 ```
 
@@ -15,7 +16,16 @@ faops <command> [options] <arguments>
 
 # 举例
 faops filter -l 0 <in.fq> <out.fa>
-## 将所有内容写在一行上，并将fastq格式转变为fasta格式
+## 每条序列的碱基写入一行(例如>read12所示区别)，并将fastq格式转变为fasta格式
+## >read12
+## AGCgCcccaaaaGGaTgCGTGttagaCACTAAgTtCcAtGgctGTatccTtgTgtcACagcGTGaaCCCAaTAagatCaAgacTCCGCcCAcCTAttagccaGcCGtCtGcccCacCaGgGgcTtAtaAGAGgaGGCtttCtaGGTcCcACTtGgggTCaGCCcccaTGCgTGGtCtGTGTcCatgTCCtCCTCTaGCaCCCCTCgCAgctCCtAataCgAAGGaGCAtcaCAgGacgAgacgAcAtTcTcCaACcgtGGctCgGTCGGaCCcCGTAAcATTgCGgcAaAtGagCTaTtagGGATCGacTatgatCcGGCtGagtgAgaAtAtgGAcCtATcGtggGAgCACCtAtagTtcTaTAGGacgGgcAtcTCGCGcCaaggGcTggGaTTgTCTgtTACctCtagGTAGaGggcTaaatCca
+## >read12
+## AGCgCcccaaaaGGaTgCGTGttagaCACTAAgTtCcAtGgctGTatccTtgTgtcACagcGTGaaCCCAaTAagatCaA
+## gacTCCGCcCAcCTAttagccaGcCGtCtGcccCacCaGgGgcTtAtaAGAGgaGGCtttCtaGGTcCcACTtGgggTCa
+## GCCcccaTGCgTGGtCtGTGTcCatgTCCtCCTCTaGCaCCCCTCgCAgctCCtAataCgAAGGaGCAtcaCAgGacgAg
+## acgAcAtTcTcCaACcgtGGctCgGTCGGaCCcCGTAAcATTgCGgcAaAtGagCTaTtagGGATCGacTatgatCcGGC
+## tGagtgAgaAtAtgGAcCtATcGtggGAgCACCtAtagTtcTaTAGGacgGgcAtcTCGCGcCaaggGcTggGaTTgTCT
+## gtTACctCtagGTAGaGggcTaaatCca
 ```
 
 ### 01.faops count
@@ -210,95 +220,188 @@ faops some -l 0 ~/test/ufasta.fa <(echo read12) stdout
 faops filter -l 0 ~/test/ufasta.fa stdout | grep -A 1 '^>read12'
 # >read12
 # AGCgCcccaaaaGGaTgCGTGttagaCACTAAgTtCcAtGgctGTatccTtgTgtcACagcGTGaaCCCAaTAagatCaAgacTCCGCcCAcCTAttagccaGcCGtCtGcccCacCaGgGgcTtAtaAGAGgaGGCtttCtaGGTcCcACTtGgggTCaGCCcccaTGCgTGGtCtGTGTcCatgTCCtCCTCTaGCaCCCCTCgCAgctCCtAataCgAAGGaGCAtcaCAgGacgAgacgAcAtTcTcCaACcgtGGctCgGTCGGaCCcCGTAAcATTgCGgcAaAtGagCTaTtagGGATCGacTatgatCcGGCtGagtgAgaAtAtgGAcCtATcGtggGAgCACCtAtagTtcTaTAGGacgGgcAtcTCGCGcCaaggGcTggGaTTgTCTgtTACctCtagGTAGaGggcTaaatCca
+
+# exclude
+faops some -i ~/test/ufasta.fa <(echo read12) stdout | grep '^>' | wc -l
+# 49
 ```
 
 ### 07.faops filter
 
 * faops filter：filter fa records. 
     * faops filter [options] <in.fa> <out.fa>  按照条件筛选序列
-    * -a INT：pass sequences at least this big ('a'-smallest)
-    * -z INT：pass sequences this size or smaller ('z'-biggest)
-    * -n INT：pass sequences with fewer than this number of N's
-    * -u：unique, removes duplicated ids, keeping the first(删除重复序列)。
-    * -U：upper case, converts all sequences to upper cases(将所有序列转换为大写)。
-    * -b：pretend to be a blocked fasta file
-    * -N：convert IUPAC ambiguous codes to 'N'
-    * -d：remove dashes '-'
-    * -s：simplify sequence names(简化序列名称)。
+    * -a INT：pass sequences at least this big ('a'-smallest)(保留碱基数大于等于INT的序列).
+    * -z INT：pass sequences this size or smaller ('z'-biggest)(保留碱基数小于等于INT的序列).
+    * -n INT：pass sequences with fewer than this number of N's(保留'N'的数量小于INT的序列).
+    * -u：unique, removes duplicated ids, keeping the first(删除重复id的序列，仅保留第一次出现的序列).
+    * -U：upper case, converts all sequences to upper cases(将所有序列的碱基转换为大写).
+    * -b：pretend to be a blocked fasta file(假装成一个封闭的fasta文件，即将每条序列的碱基写入一行并在每条序列间插入空行).
+    * -N：convert IUPAC ambiguous codes to 'N'(将IUPAC不确定的代码转换为'N').
+    * -d：remove dashes '-'(删除破折号).
+    * -s：simplify sequence names(简化序列名称).
     * -l INT：sequence line length [80] (序列每行显示INT个碱基).
 
 ```bash
 # as formatter, sequence in one line
+faops filter -l 0 ~/test/ufasta.fa stdout | wc -l
+# 100
+faops size ~/test/ufasta.fa | wc -l
+# 50
 
+# as formatter, blocked fasta files
+faops filter -b ~/test/ufasta.fa stdout | wc -l
+# 150
+faops size ~/test/ufasta.fa | wc -l
+# 50
 
+# as formatter, identical headers
+faops filter -l 0 ~/test/ufasta.fa stdout | grep '^>'
+grep '^>' ~/test/ufasta.fa
+# >read0
+# >read1
+# >read2
+# >read3
+# >read4
+# >read5
+# ……
+
+# as formatter, identical sequences
+faops filter -l 0 ~/test/ufasta.fa stdout | grep -v '^>' | perl -ne 'chomp; print'
+grep -v '^>' ~/test/ufasta.fa | perl -ne 'chomp; print'
+# tCGTTTAACCCAAatcAAGGCaatACAggtGggCCGccCatgTcAcAAActcgatGAGtgGgaAaTGgAgTgaAGcaGCAtCtGctgaGCCCCATTctctAgCggaaaATGgtatCGaACcGagataAGtTAAacCgcaaCgGAtaagGgGcgGGctTCAaGtGAaGGaAGaGgGgTTcAaaAgGccCgtcGtCaaTcAaCtAAggcGgaTGtGACactCCCCtAtTtcaaGTCTTctaCccTtGaTaCGaTtcgCGT……
+
+# as formatter, identical sequences (gz)
+faops filter -l 0 ~/test/ufasta.fa.gz stdout | grep -v '^>' | perl -ne 'chomp; print'
+grep -v '^>' ~/test/ufasta.fa | perl -ne 'chomp; print'
+# tCGTTTAACCCAAatcAAGGCaatACAggtGggCCGccCatgTcAcAAActcgatGAGtgGgaAaTGgAgTgaAGcaGCAtCtGctgaGCCCCATTctctAgCggaaaATGgtatCGaACcGagataAGtTAAacCgcaaCgGAtaagGgGcgGGctTCAaGtGAaGGaAGaGgGgTTcAaaAgGccCgtcGtCaaTcAaCtAAggcGgaTGtGACactCCCCtAtTtcaaGTCTTctaCccTtGaTaCGaTtcgCGT……
+
+# identical sequences (gz) with -N
+faops filter -l 0 -N ~/test/ufasta.fa.gz stdout | grep -v '^>' | perl -ne 'chomp; print'
+grep -v '^>' ~/test/ufasta.fa | perl -ne 'chomp; print'
+# tCGTTTAACCCAAatcAAGGCaatACAggtGggCCGccCatgTcAcAAActcgatGAGtgGgaAaTGgAgTgaAGcaGCAtCtGctgaGCCCCATTctctAgCggaaaATGgtatCGaACcGagataAGtTAAacCgcaaCgGAtaagGgGcgGGctTCAaGtGAaGGaAGaGgGgTTcAaaAgGccCgtcGtCaaTcAaCtAAggcGgaTGtGACactCCCCtAtTtcaaGTCTTctaCccTtGaTaCGaTtcgCGT……
+
+# convert IUPAC to N
+faops filter -l 0 -N <(printf ">read\n%s\n" AMRG) stdout
+printf ">read\n%s\n" ANNG
+# >read
+# ANNG
+
+# remove dashes
+faops filter -l 0 -d <(printf ">read\n%s\n" A-RG) stdout
+printf ">read\n%s\n" ARG
+# >read
+# ARG
+
+# Upper cases
+faops filter -l 0 -U <(printf ">read\n%s\n" AtcG) stdout
+printf ">read\n%s\n" ATCG
+# >read
+# ATCG
+
+# simplify seq names
+faops filter -l 0 -s <(printf ">read.1\n%s\n" ANNG) stdout
+printf ">read\n%s\n" ANNG
+# >read
+# ANNG
+
+# fastq to fasta
+faops filter ~/test/test.seq stdout | wc -l
+# 6
+
+# minsize
+faops filter -a 10 ~/test/ufasta.fa stdout | grep '^>' | wc -l
+# 44
+
+# maxsize
+faops filter -a 1 -z 50 ~/test/ufasta.fa stdout | grep '^>'
+# >read20
+# >read30
+# >read31
+# >read36
+# >read42
+# >read43
+# >read46
+
+# minsize maxsize
+faops filter -a 10 -z 50 ~/test/ufasta.fa stdout | grep '^>'
+# >read20
+# >read30
+# >read31
+# >read42
+# >read43
+# >read46
+
+# uniq
+faops filter -u -a 1 <(cat ~/test/ufasta.fa ~/test/ufasta.fa) stdout | grep '^>' | wc -l
+# 45
 ```
-
 
 ### 08.faops split-name
 
 * faops split-name：splitting by sequence names(split an fa file into several files，using sequence names as file names).
-    * faops split-name [options] <in.fa> <outdir>  根据序列名称分割FA文件
+    * faops split-name [options] <in.fa> <outdir>  根据序列名称拆分FA文件
     * -l INT：sequence line length [80] (序列每行显示INT个碱基).
 
 ```bash
 # all sequences
-mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdirXXXXXX')
 faops split-name ~/test/ufasta.fa $mytmpdir \
-&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+&& find $mytmpdir -name '*.fa' | wc -l
 # 50
 rm -fr ${mytmpdir}
 ## echo ${mytmpdir}
 ## /tmp/tmp.**********
+## mktemp 指定前缀时需要有足够多的XXXXXX，以确保生成的文件名或目录名足够唯一
 
 # size restrict
-mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdirXXXXXX')
 faops filter -a 10 ~/test/ufasta.fa stdout \
 | faops split-name stdin $mytmpdir \
-&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+&& find $mytmpdir -name '*.fa' | wc -l
 # 44
 rm -fr ${mytmpdir}
 ```
-mytmpdir=$(mktemp -d -t 'mytmpdir')
+
 ### 09.faops split-about
 
 * faops split-about：splitting to chunks about specified size(Split an fa file into several files of about approx_size bytes each by record)
-    * faops split-about [options] <in.fa> <approx_size> <outdir>
-    * -e：sequences in one file should be EVEN
-    * -m INT：max parts
+    * faops split-about [options] <in.fa> <approx_size> <outdir>  根据字节大小拆分FA文件
+    * -e：sequences in one file should be EVEN(每个文件中的序列数是偶数，即成对的).
+    * -m INT：max parts().
     * -l INT：sequence line length [80] (序列每行显示INT个碱基).
 
 ```bash
 # 2000 bp
-mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdirXXXXXX')
 faops split-about ~/test/ufasta.fa 2000 $mytmpdir \
-&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+&& find $mytmpdir -name '*.fa' | wc -l
 # 5
 rm -fr ${mytmpdir}
 
 # max parts
-mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdirXXXXXX')
 faops split-about -m 2 ~/test/ufasta.fa 2000 $mytmpdir \
-&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+&& find $mytmpdir -name '*.fa' | wc -l
 # 2
 rm -fr ${mytmpdir}
 
 # 2000 bp and size restrict
-mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdirXXXXXX')
 faops filter -a 100 ~/test/ufasta.fa stdout \
 faops split-about stdin 2000 $mytmpdir \
-&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+&& find $mytmpdir -name '*.fa' | wc -l
 
 # 1 bp
-mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdirXXXXXX')
 faops split-about  ~/test/ufasta.fa 1 $mytmpdir \
-&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+&& find $mytmpdir -name '*.fa' | wc -l
 # 50
 rm -fr ${mytmpdir}
 
 # 1 bp even
-mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdirXXXXXX')
 faops split-about -e ~/test/ufasta.fa 1 $mytmpdir \
-&& find $mytmpdir -name '*.fa' | wc -l | xargs echo
+&& find $mytmpdir -name '*.fa' | wc -l
 # 26
 rm -fr ${mytmpdir}
 ```
@@ -331,16 +434,29 @@ rm -fr ${mytmpdir}
 ### 13.faops dazz
 
 * faops dazz：rename records for dazz_db.
+    * faops dazz [options] <in.fa> <out.fa>
+    * -p STR：prefix of names [read]
+    * -s INT：start index [1]
+    * -a：don't drop duplicated ids
+    * -l INT：sequence line length [80] (序列每行显示INT个碱基).
 
 ### 14.faops interleave
 
 * faops interleave：interleave two PE files.
+    * faops interleave [options] <R1.fa> [R2.fa]
+    * -q：write FQ. The inputs must be FQs
+    * -p STR：prefix of names [read]
+    * -s INT：start index [0]
 
 ### 15.faops region
 
 * faops region：extract regions from a FA file.
+    * faops region [options] <in.fa> <region.txt> <out.fa>
+    * -s：add strand '(+)' to headers
+    * -l INT：sequence line length [80] (序列每行显示INT个碱基).
 
 ### 16.faops masked
+
 * faops masked：masked (or gaps) regions in FA file(s).
     * faops masked [options] <in.fa> [more_files.fa] 
     * -g：only record regions of N/n().

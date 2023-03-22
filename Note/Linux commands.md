@@ -66,6 +66,12 @@ jobs：用于显示当前终端的后台的工作状态.
   * -r：restrict output to running jobs(仅列出运行中的进程).
   * -s：restrict output to stopped jobs(仅列出已停止的进程).
 
+### Linux mktemp
+mktemp：用于创建临时文件或目录，并打印文件名.
+* mktemp [OPTION] [TEMPLATE]
+  * -d/--directory：create a directory, not a file(创建一个临时目录，例如/tmp/tmp.WIZCU2vxne).
+  * -t：interpret TEMPLATE as a single file name component,relative to a directory: $TMPDIR, if set; else the directory specified via -p; else /tmp [deprecated] (指定临时目录或文件的前缀，例如mytempdirXXX).
+
 ### Linux nohup
 nohup(no hang up):用于不挂断地运行命令，退出终端不影响运行.
 * nohup COMMAND [ARG]
@@ -343,11 +349,6 @@ mv
 * mv [OPTION] SOURCE DIRECTORY
   * -t/--target-directory=DIRECTORY：move all SOURCE arguments into DIRECTORY.
 
-### Linux mktemp
-mktemp：用于创建临时文件或目录，并打印文件名.
-* mktemp [OPTION] [TEMPLATE]
-  * -d/--directory：create a directory, not a file(创建一个临时目录).
-  * -t：interpret TEMPLATE as a single file name component,relative to a directory: $TMPDIR, if set; else the directory specified via -p; else /tmp [deprecated](指定临时目录的前缀).
 
 
 
@@ -382,3 +383,4 @@ mktemp：用于创建临时文件或目录，并打印文件名.
 > wget -O
 
 awk
+anchor

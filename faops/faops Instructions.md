@@ -7,6 +7,13 @@
 brew install wang-q/tap/faops
 ```
 
+```shell
+# compiling 编译
+git clone https://github.com/wang-q/faops
+cd faops
+make
+```
+
 ## 使用 faops
 
 * faops：用于处理fasta格式的测序数据.
@@ -31,7 +38,7 @@ faops filter -l 0 <in.fq> <out.fa>
 ### 01.faops count
 
 * faops count：count base statistics in FA file(s).
-    * faops count <in.fa> [more_files.fa]  计算FA文件中每个reads的碱基数据(len、A、T、G、C、N)
+    * faops count <in.fa> [more_files.fa]  计算FA文件中每个reads的碱基组成(len、A、T、G、C、N)
 
 ```bash
 # read from file
@@ -365,9 +372,9 @@ rm -fr ${mytmpdir}
 ### 09.faops split-about
 
 * faops split-about：splitting to chunks about specified size(Split an fa file into several files of about approx_size bytes each by record)
-    * faops split-about [options] <in.fa> <approx_size> <outdir>  根据字节大小拆分FA文件
+    * faops split-about [options] <in.fa> <approx_size> <outdir>  根据序列大小拆分FA文件
     * -e：sequences in one file should be EVEN(每个文件中的序列数是偶数，即成对的).
-    * -m INT：max parts().
+    * -m INT：max parts(最多拆分INT个模块).
     * -l INT：sequence line length [80] (序列每行显示INT个碱基).
 
 ```bash
@@ -388,8 +395,10 @@ rm -fr ${mytmpdir}
 # 2000 bp and size restrict
 mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdirXXXXXX')
 faops filter -a 100 ~/test/ufasta.fa stdout \
-faops split-about stdin 2000 $mytmpdir \
+| faops split-about stdin 2000 $mytmpdir \
 && find $mytmpdir -name '*.fa' | wc -l
+# 4
+rm -fr ${mytmpdir}
 
 # 1 bp
 mytmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdirXXXXXX')
@@ -410,13 +419,64 @@ rm -fr ${mytmpdir}
 
 * faops n50：compute N50 and other statistics.
     * faops n50 [options] <in.fa> [more_files.fa] 计算n50和其他数据
-    * -H：do not display header(不显示标题-N50).
+    * -H：do not display header(不显示标题，即不显示N50等).
     * -N INT：compute Nx statistic [50] (计算N[INT]).
     * -S：compute sum of size of all entries(计算所有序列的总碱基数).
-    * -A：compute average length of all entries(计算序列的平均碱基数).
-    * -E：compute the E-size (from GAGE)
+    * -A：compute average length of all entries(计算所有序列的平均碱基数).
+    * -E：compute the E-size (from GAGE)(计算E-size).
     * -C：count entries(计算序列条数).
-    * -g INT：size of genome, instead of total size in files(基于组装的基因组大小进行N[INT]预测).
+    * -g INT：size of genome, instead of total size in files(基于INT大小的基因组，预测n50等).
+
+```bash
+# display header
+faops n50 ~/test/ufasta.fa
+# N50     314
+
+# don't display header
+faops n50 -H ~/test/ufasta.fa
+# 314
+
+# set genome size (NG50)
+faops n50 -H -g 10000 ~/test/ufasta.fa
+# 297
+
+# sum of size
+faops n50 -H -S ~/test/ufasta.fa
+# 314
+# 9317
+
+# sum and average of size
+faops n50 -H -S -A ~/test/ufasta.fa
+# 314
+# 9317
+# 186.34
+
+# E-size
+faops n50 -H -E ~/test/ufasta.fa
+# 314
+# 314.70
+
+# n10
+faops n50 -H -N 10 ~/test/ufasta.fa
+# 516
+
+# n90 with header
+faops n50 -N 90 ~/test/ufasta.fa
+# N90     112
+
+# only count of sequences
+faops n50 -N 0 -C ~/test/ufasta.fa
+# C       50
+
+# calculate N50 values for a two column file
+faops size ~/test/ufasta.fa | perl ~/test/n50.pl stdin
+# #       reading: stdin
+# #       contig count: 50, total size: 9317, one half size: 4658
+# # cumulative    N50 count       contig  contig size
+# 4417    10      read49  358
+# 4658 one half size
+# 4731    11      read39  314
+```
 
 ### 11.faops order
 
@@ -424,48 +484,274 @@ rm -fr ${mytmpdir}
     * faops order [options] <in.fa> <list.file> <out.fa> 按给定顺序提取多个序列  
     * -l INT：sequence line length [80] (序列每行显示INT个碱基).
 
+```bash
+# inline names
+faops order -l 0 ~/test/ufasta.fa <(echo read12) stdout
+faops filter -l 0 ~/test/ufasta.fa stdout | grep -A 1 '^>read12'
+# >read12
+# AGCgCcccaaaaGGaTgCGTGttagaCACTAAgTtCcAtGgctGTatccTtgTgtcACagcGTGaaCCCAaTAagatCaAgacTCCGCcCAcCTAttagccaGcCGtCtGcccCacCaGgGgcTtAtaAGAGgaGGCtttCtaGGTcCcACTtGgggTCaGCCcccaTGCgTGGtCtGTGTcCatgTCCtCCTCTaGCaCCCCTCgCAgctCCtAataCgAAGGaGCAtcaCAgGacgAgacgAcAtTcTcCaACcgtGGctCgGTCGGaCCcCGTAAcATTgCGgcAaAtGagCTaTtagGGATCGacTatgatCcGGCtGagtgAgaAtAtgGAcCtATcGtggGAgCACCtAtagTtcTaTAGGacgGgcAtcTCGCGcCaaggGcTggGaTTgTCTgtTACctCtagGTAGaGggcTaaatCca
+
+# correct orders
+faops order -l 0 ~/test/ufasta.fa <(echo read12 read5) stdout
+faops filter -l 0 ~/test/ufasta.fa stdout | grep -A 1 -e '^>read12'
+faops filter -l 0 ~/test/ufasta.fa stdout | grep -A 1 -e '^>read5'
+# >read12
+# AGCgCcccaaaaGGaTgCGTGttagaCACTAAgTtCcAtGgctGTatccTtgTgtcACagcGTGaaCCCAaTAagatCaAgacTCCGCcCAcCTAttagccaGcCGtCtGcccCacCaGgGgcTtAtaAGAGgaGGCtttCtaGGTcCcACTtGgggTCaGCCcccaTGCgTGGtCtGTGTcCatgTCCtCCTCTaGCaCCCCTCgCAgctCCtAataCgAAGGaGCAtcaCAgGacgAgacgAcAtTcTcCaACcgtGGctCgGTCGGaCCcCGTAAcATTgCGgcAaAtGagCTaTtagGGATCGacTatgatCcGGCtGagtgAgaAtAtgGAcCtATcGtggGAgCACCtAtagTtcTaTAGGacgGgcAtcTCGCGcCaaggGcTggGaTTgTCTgtTACctCtagGTAGaGggcTaaatCca
+# >read5
+# AatcccAgAttcttCcTaTAGgGTagTaAcgcggTgGAgCTGCagAGGTaAgccGtcgGaGGGgagGcAagtGCCggtTGcGAGtcCaTgCcTtCAGgccCtcGCgCTgAcCCtaCgtTtAAaTacAggGttggTccTcaAgcGtcTTCGAtGcTcTaggAGGgaGcCTGgcTAaCTGttCTtGatTGtCgATTtCgAaggAGattagcTTgccg
+
+# compare with some
+faops order ~/test/ufasta.fa <(faops size ~/test/ufasta.fa | sort -n -r -k2,2 | cut -f 1) stdout | grep '^>'
+faops some ~/test/ufasta.fa <(faops size ~/test/ufasta.fa | sort -n -r -k2,2 | cut -f 1) stdout | grep '^>'
+# >read28
+# >read13
+# >read18
+# >read41
+# >read14
+# ……
+```
+
 ### 12.faops replace
 
 * faops replace：replace headers from a FA file.
-    * faops replace [options] <in.fa> <replace.tsv> <out.fa>
-    * -s：only output sequences in the list, like `faops some`.
+    * faops replace [options] <in.fa> <replace.tsv> <out.fa>  替换FA文件的序列标题
+    * <replace.tsv>格式：original_name  replace_name
+    * -s：only output sequences in the list, like `faops some`(仅输出list中的序列).
     * -l INT：sequence line length [80] (序列每行显示INT个碱基).
+
+```bash
+## create replace.tsv
+faops size ~/test/ufasta.fa | perl -nl -e "/\s+0$/ or print" > ~/test/replace.tsv
+
+# inline names
+faops replace ~/test/ufasta.fa <(printf "%s\t%s\n" read12 428) stdout | grep '^>428'
+# >428
+
+# -s
+faops replace -s ~/test/ufasta.fa <(printf "%s\t%s\n" read12 428) stdout
+# >428
+# AGCgCcccaaaaGGaTgCGTGttagaCACTAAgTtCcAtGgctGTatccTtgTgtcACagcGTGaaCCCAaTAagatCaA
+# gacTCCGCcCAcCTAttagccaGcCGtCtGcccCacCaGgGgcTtAtaAGAGgaGGCtttCtaGGTcCcACTtGgggTCa
+# GCCcccaTGCgTGGtCtGTGTcCatgTCCtCCTCTaGCaCCCCTCgCAgctCCtAataCgAAGGaGCAtcaCAgGacgAg
+# acgAcAtTcTcCaACcgtGGctCgGTCGGaCCcCGTAAcATTgCGgcAaAtGagCTaTtagGGATCGacTatgatCcGGC
+# tGagtgAgaAtAtgGAcCtATcGtggGAgCACCtAtagTtcTaTAGGacgGgcAtcTCGCGcCaaggGcTggGaTTgTCT
+# gtTACctCtagGTAGaGggcTaaatCca
+
+# with replace.tsv
+faops replace ~/test/ufasta.fa ~/test/replace.tsv stdout | grep '^>' | grep -v 'read' | sed 's/>//'
+cat ~/test/replace.tsv | cut -f 2
+# 359
+# 106
+# 217
+# 73
+# 76
+# ……
+```
 
 ### 13.faops dazz
 
 * faops dazz：rename records for dazz_db.
-    * faops dazz [options] <in.fa> <out.fa>
-    * -p STR：prefix of names [read]
-    * -s INT：start index [1]
-    * -a：don't drop duplicated ids
+    * faops dazz [options] <in.fa> <out.fa>  重命名序列名称，标准化为>read/50/0_358
+    * -p STR：prefix of names [read] (指定前缀名称，默认为read，>STR/1/0_359).
+    * -s INT：start index [1] (指定开始的索引值，默认为1，>read/INT/0_359).
+    * -a：don't drop duplicated ids(保留重复id的序列).
     * -l INT：sequence line length [80] (序列每行显示INT个碱基).
+
+```bash
+# empty seqs count
+faops dazz -a ~/test/ufasta.fa stdout | grep "0_0" | wc -l
+faops size ~/test/ufasta.fa | grep "\s0" | wc -l
+# 5
+
+# deduplicate seqs
+gzip -dcf ~/test/ufasta.fa ~/test/ufasta.fa.gz | faops dazz stdin stdout | grep "0_0" | wc -l
+# 5
+faops size ~/test/ufasta.fa ~/test/ufasta.fa.gz | grep "\s0" | wc -l
+# 10
+
+# duplicated seqs
+gzip -dcf ~/test/ufasta.fa ~/test/ufasta.fa.gz | faops dazz -a stdin stdout | grep "0_0" | wc -l
+faops size ~/test/ufasta.fa ~/test/ufasta.fa.gz | grep "\s0" | wc -l
+# 10
+```
 
 ### 14.faops interleave
 
 * faops interleave：interleave two PE files.
-    * faops interleave [options] <R1.fa> [R2.fa]
-    * -q：write FQ. The inputs must be FQs
-    * -p STR：prefix of names [read]
-    * -s INT：start index [0]
+    * faops interleave [options] <R1.fa> [R2.fa]  合并两个测序文件
+    * -q：write FQ，the inputs must be FQs(输出fastq格式文件).
+    * -p STR：prefix of names [read] (指定前缀名称，默认为read，>STR1/2).
+    * -s INT：start index [0] (指定开始的索引值，默认为0，>readINT/1).
+
+```bash
+# empty seqs count
+faops interleave ~/test/ufasta.fa ~/test/ufasta.fa.gz | grep "^$" | wc -l
+# 10
+faops size ~/test/ufasta.fa | grep "\s0" | wc -l
+# 5
+## "^$" 表示匹配空行
+
+# empty seqs count (single)
+faops interleave ~/test/ufasta.fa | grep "^$" | wc -l
+faops size ~/test/ufasta.fa | grep "\s0" | wc -l
+# 5
+
+# fq
+faops interleave -q ~/test//R1.fq.gz ~/test//R2.fq.gz | grep '^!$' | wc -l
+# 0
+## "^$" 表示匹配"!"，FASTQ文件中，以"!"开头和结尾的行表示无效的质量分数记录
+
+# fq (single)
+faops interleave -q ~/test//R1.fq.gz | grep '^!$' | wc -l
+# 25
+```
 
 ### 15.faops region
 
 * faops region：extract regions from a FA file.
-    * faops region [options] <in.fa> <region.txt> <out.fa>
-    * -s：add strand '(+)' to headers
+    * faops region [options] <in.fa> <region.txt> <out.fa>  提取FA文件中序列的部分区域
+    * <region.txt>格式：seq_name:begin-end[,begin-end]
+    * -s：add strand '(+)' to headers(将链 '(+)' 添加到序列名称中).
     * -l INT：sequence line length [80] (序列每行显示INT个碱基).
+
+```bash
+# from file
+faops region -l 0 ~/test/ufasta.fa ~/test/region.txt stdout | wc -l
+# 4
+cat ~/test/region.txt | wc -l
+# 2
+
+# frag
+faops region -l 0 ~/test/ufasta.fa <(echo read0:1-10) stdout
+faops frag ~/test/ufasta.fa 1 10 stdout
+# >read0:1-10
+# tCGTTTAACC
+
+# 1 base
+faops region -l 0 ~/test/ufasta.fa <(echo read0:10) stdout
+faops frag ~/test/ufasta.fa 10 10 stdout
+# >read0:10
+# C
+
+# strand
+faops region -s -l 0 ~/test/ufasta.fa <(echo read0:10) stdout
+# >read0(+):10
+# C
+
+# regions
+faops region -l 0 ~/test/ufasta.fa <(echo read1:1-10,50-60) stdout
+# >read1:1-10
+# taGGCGcGGg
+# >read1:50-60
+# TacgtaACatc
+```
 
 ### 16.faops masked
 
 * faops masked：masked (or gaps) regions in FA file(s).
-    * faops masked [options] <in.fa> [more_files.fa] 
-    * -g：only record regions of N/n().
+    * faops masked [options] <in.fa> [more_files.fa] 屏蔽(或跳过)FA文件中的区域，即依次显示每条序列小写的区域
+    * -g：only record regions of N/n(仅保留N/n区域).
 
+```bash
+# masked
+faops masked ~/test/ufasta.fa | grep '^read46' | head -n 1
+# read46:3-4
 
+# masked
+faops masked ~/test/ufasta.fa | grep '^read0' | head -n 1
+# read0:1
+```
 
+### 17.faops help
 
+* faops masked：print this message.
 
+```bash
+# help
+faops help
+```
 
+```txt
+Usage:     faops <command> [options] <arguments>
+Version:   0.8.21
 
+Commands:
+    help          print this message
+    count         count base statistics in FA file(s)
+    size          count total bases in FA file(s)
+    masked        masked (or gaps) regions in FA file(s)
+    frag          extract sub-sequences from a FA file
+    rc            reverse complement a FA file
+    one           extract one fa record
+    some          extract some fa records
+    order         extract some fa records by the given order
+    replace       replace headers from a FA file
+    filter        filter fa records
+    split-name    splitting by sequence names
+    split-about   splitting to chunks about specified size
+    n50           compute N50 and other statistics
+    dazz          rename records for dazz_db
+    interleave    interleave two PE files
+    region        extract regions from a FA file
 
+Options:
+    There're no global options.
+    Type "faops command-name" for detailed options of each command.
+    Options *MUST* be placed just after command.
+```
 
+## Examples
+
+```bash
+# Reverse complement 反向互补
+faops rc ~/test/ufasta.fa out.fa       # prepend RC_ to names
+faops rc -n ~/test/ufasta.fa out.fa    # keep original names
+
+# Extract sequences with names in `list.file`, one name per line
+faops some ~/test/ufasta.fa list.file out.fa
+
+# Same as above, but from stdin and to stdout
+cat ~/test/ufasta.fa | faops some stdin list.file stdout
+
+# Sort by header strings
+faops order ~/test/ufasta.fa \
+    <(cat ~/test/ufasta.fa | grep '>' | sed 's/>//' | sort) \
+    out.fa
+
+# Sort by lengths
+faops order ~/test/ufasta.fa \
+    <(faops size ~/test/ufasta.fa | sort -n -r -k2,2 | cut -f 1) \
+    out2.fa
+
+# Tidy fasta file to 80 characters of sequence per line
+faops filter -l 80 ~/test/ufasta.fa out.fa
+
+# All content written on one line
+faops filter -l 0 ~/test/ufasta.fa out.fa
+
+# Convert fastq to fasta
+faops filter -l 0 in.fq out.fa
+
+# Compute N50, clean result
+faops n50 -H ~/test/ufasta.fa
+# 314
+
+# Compute N75
+faops n50 -N 75 ~/test/ufasta.fa
+# N75     172
+
+# Compute N90, sum and average of contigs with estimated genome size
+faops n50 -N 90 -S -A -g 10000 ~/test/ufasta.fa
+# N90     73
+# S       9317
+# A       186.34
+```
+
+## Tests
+
+* 使用[bats](https://github.com/bats-core/bats-core)完成测试，有用的文章：http://blog.spike.cx/post/60548255435/testing-bash-scripts-with-bats
+
+```shell
+brew install bats-core
+make test
+```

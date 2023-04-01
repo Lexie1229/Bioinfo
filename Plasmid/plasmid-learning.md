@@ -8,6 +8,7 @@ cd ~/biodata/plasmid
 # 下载数据
 rsync -avP ftp.ncbi.nlm.nih.gov::refseq/release/plasmid/ RefSeq/
 gzip -dcf RefSeq/*.genomic.gbff.gz > genomic.gbff  ##因内存问题，仅使用部分数据
+## FTP URL 格式：ftp://[user[:password]@]host[:port]/url-path
 
 # 提取genomic.gbff中每个序列的taxon(分类单元)ID和locus(位点)名称，并写入refseq_id_seq.csv
 perl ~/Scripts/withncbi/taxon/gb_taxon_locus.pl genomic.gbff > refseq_id_seq.csv
@@ -33,8 +34,8 @@ NOTE
     * \>NC_(chromosomes):表示该序列来自于NCBI的RefSeq数据库，提供一些可靠和经过认证的核酸和蛋白质序列记录,有固定的版本号，表示每个序列的特定版本。
     * \>NZ_:表示该序列来自于GenBank序列数据库的非RefSeq部分，这是一个由NCBI维护的公共数据库，包含大量未经认证的核酸和蛋白质序列记录，版本号不是固定的，因此同一条记录可能在不同的时间点有不同的版本号。
 * 文件格式：
-    * [gbff(GenBank Flat File) 格式](https://www.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/file-formats/about-ncbi-gbff/)：NCBI的GenBank数据库(核酸序列数据库）中的标准格式，表示核苷酸序列，包括元数据(metadata,主要是描述数据属性信息的数据）、注释和序列本身，以//表示结束。
-    * gpff(GenPept Flat File) 格式：NCBI的GenPept数据库(蛋白质序列数据库）中的标准格式，表示蛋白质序列及其注释信息。
+    * [gbff(GenBank Flat File) 格式](https://www.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/file-formats/about-ncbi-gbff/)：NCBI的GenBank数据库(核酸序列数据库)中的标准格式，表示核苷酸序列，包括元数据(metadata,主要是描述数据属性信息的数据)、注释和序列本身，以//表示结束。
+    * gpff(GenPept Flat File) 格式：NCBI的GenPept数据库(蛋白质序列数据库)中的标准格式，表示蛋白质序列及其注释信息。
     * fna:FASTA格式DNA和蛋白质序列比对文件,其存储可被分子生物学软件使用的DNA信息。   
     * faa：储存蛋白质序列的文本格式。
 
@@ -189,6 +190,7 @@ Mash(MinHash)
 mkdir ~/biodata/plasmid/grouping
 cd ~/biodata/plasmid/grouping
 
+# 构建 mash sketch 数据库
 cat ../nr/refseq.nr.fa |
     mash sketch -k 21 -s 1000 -i -p 8 - -o refseq.nr.k21s1000.msh
 
@@ -198,6 +200,7 @@ faops size ../nr/refseq.nr.fa |
     cut -f 1 |
     split -l 1000 -a 3 -d - job/
 
+# 序列分割后，构建 mash sketch 数据库
 find job -maxdepth 1 -type f -name "[0-9]??" | sort |
     parallel -j 8 --line-buffer '
         echo >&2 "==> {}"
@@ -205,6 +208,7 @@ find job -maxdepth 1 -type f -name "[0-9]??" | sort |
             mash sketch -k 21 -s 1000 -i -p 6 - -o {}.msh
     '
 
+# 估算遗传距离
 find job -maxdepth 1 -type f -name "[0-9]??" | sort |
     parallel -j 8 --line-buffer '
         echo >&2 "==> {}"

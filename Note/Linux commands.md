@@ -1,22 +1,79 @@
 # Commands
+## 目录
+* [Linux commands](#linux-commands)
+  * [Linux apt](#linux-apt)
+  * [Linux basename](#linux-basename)
+  * [Linux bc](#linux-bc)
+  * [Linux bg](#linux-bg)
+  * [Linux cut](#linux-cut)
+  * [Linux cp](#linux-cp)
+  * [Linux grep](#linux-grep)
+
+  * [Linux xargs](linux-xargs)
+
+* [Other commands](#other-commands)
+  * [aria2c](#aria2)
+  * [bismark](#bismark)
+  * [conda](#conda)
+  * [echo](#echo)
+  * [egaz](#egaz)
+  * [fastqc](#fastqc)
+  * [parallel](#parallel)
+  * [samtools](#samtools)
+  * [trim_galore](#trim_galore)
+  * [datamash](#datamash)
+
 ## Linux commands
 
-### Linux bc
+### [Linux apt](#linux-apt)
+apt：是一个在Debian和Ubuntu中的Shell前端软件包管理器.
+* apt [options] command
+  * most used commands:
+    * list：list packages based on package names(列出所有软件包).
+    * search：search in package descriptions(搜索指定的软件包).
+    * show：show package details(显示指定软件包的详细信息，包括依赖关系).
+    * install：install packages(安装指定的软件包).
+    * reinstall：reinstall packages(重新安装指定的软件包).
+    * remove：remove packages(删除指定的软件包).
+    * autoremove：Remove automatically all unused packages(自动删除所有未使用的包).
+    * update：update list of available packages(列出所有可更新的软件列表).
+    * upgrade：upgrade the system by installing/upgrading packages(升级系统).
+    * full-upgrade：upgrade the system by removing/installing/upgrading packages(全面升级系统).
+    * edit-sources：edit the source information file(编辑源信息文件).
+    * satisfy：satisfy dependency strings(满足依赖关系).
+  * -y：自动确认所有的提示和警告，避免安装过程中需要手动确认操作.
+
+### [Linux basename](#linux-basename)
+basename：用于返回路径中的文件名部分.
+* basename OPTION NAME [SUFFIX]
+  * -s/--suffix=SUFFIX：remove a trailing SUFFIX; implies -a(删除后缀).
+
+### [Linux bc](#linux-bc)
 bc(binary calculator)：用于任意精度的计算.
 * bc [options] [file]
   * -l/--mathlib：use the predefined math routines(定义使用的标准数学库).
 
-### Linux bg
+### [Linux bg](#linux-bg)
 bg(background)：用于将后台暂停的工作恢复到后台执行.
 * fg [job_spec]
 
-### Linux cut
-cut:剪切文件中选定的行写至标准输出.
+### [Linux cp](#linux-cp)
+cp(copy file)：用于复制文件或目录.
+* cp [OPTION] SOURCE DIRECTORY
+  * -S/--suffix=SUFFIX：override the usual backup suffix(覆盖通常使用的备份后缀，默认后缀为~).
+
+### [Linux cut](#linux-cut)
+cut：剪切文件中选定的行写至标准输出.
 * cut OPTION [FILE]
   * -f/--fields=LIST:select only these fields(以区域为单位进行分割，仅显示选定的区域).
   * -b/--bytes=LIST:select only these bytes(以字节为单位进行分割，仅显示选定的字节).
   * -c/--characters=LIST:select only these characters(以字符为单位进行分割，仅显示选定的字符).
   * -d/--delimiter=DELIM：use DELIM instead of TAB for field delimiter(指定分隔符).
+
+### Linux dirname
+dirname：用于返回路径中的目录部分.
+* dirname [OPTION] NAME
+  * -z/--zero：end each output line with NUL, not newline(每行以NUL结束).
 
 ### Linux fg
 fg(foreground)：用于将后台暂停的工作恢复到前台执行.
@@ -32,7 +89,7 @@ find：用于查找文件和目录.
   * -name PATTERN：按文件名搜索.
   * -size N[bcwkMG]：按文件大小搜索.
 
-### Linux grep
+### [Linux grep](#linux-grep)
 grep：用于查找文件里符合条件的字符串.
 * grep [OPTION] PATTERNS [FILE]
   * -i/--ignore-case:ignore case distinctions in patterns and data(忽略字符大小写的差别).
@@ -139,6 +196,7 @@ sed:用于利用脚本处理文本文件，对文本进行编辑和替换.
   * -f script-file/--file=script-file：add the contents of script-file to the commands to be executed(指定脚本文件处理输入的文本文件).
   * -i[SUFFIX]/--in-place[=SUFFIX]：edit files in place (makes backup if SUFFIX supplied)(直接修改读取数据的文件，如果使用SUFFIX，则备份；默认不会修改原始文件).
   * -n/--quiet/--silent：suppress automatic printing of pattern space(仅显示处理后的行,其他不显示).
+  * -E/-r/--regexp-extended：use extended regular expressions in the script(for portability use POSIX -E)(使用扩展的正则表达式).
 
 ### Linux shopt
 shopt(shell option)：用于显示或修改shell的选项设置.
@@ -178,14 +236,14 @@ tr(text replacer)：用于转换或删除文件中的字符.
   * [:blank:]：all horizontal whitespace(所有水平空格).
   * \n：new line(新行).
 
-### Linux uniq
+### [Linux uniq](linux-uniq)
 uniq：用于检查及删除文本文件中重复出现的行列.
 * uniq [OPTION] [INPUT [OUTPUT]]
   * -c/--count：prefix lines by the number of occurrences(在每行前面显示每个行出现的次数).
   * -d/--repeated：only print duplicate lines, one for each group(只显示重复的行).
   * -u/--unique：only print unique lines(只显示不重复的行).
 
-### Linux wc
+### [Linux wc](linux-wc)
 wc(word count):用于计算字数.
 * wc [OPTION] [FILE]
   * wc filename：print newline, word, and byte counts for each FILE(显示行数、字数和字节数).
@@ -194,22 +252,22 @@ wc(word count):用于计算字数.
   * -m/--chars：print the character counts(显示字符数).
   * -w/--words：print the word counts(显示字数).
 
-### Linux xargs
+### [Linux xargs](linux-xargs)
 * xargs(eXtended ARGuments):用于构建和执行命令行命令,从标准输入或文件中读取一系列参数，将其转换为命令行参数.
   * xargs [OPTION] COMMAND [INITIAL-ARGS]
   * -I R：same as --replace=R.
   * -i/--replace[=R]:replace R in INITIAL-ARGS with names read from standard input, split at newlines;if R is unspecified, assume {}(将INITIAL-ARGS中的R替换为从标准输入读取的名称，在换行符处拆分;如果未指定R，则假设{}).
 
 ---------------------------------------------------------------------
-## Other commands
+## [Other commands](#other-commands)
 
-### aria2c
+### [aria2c](#aria2)
 aria2c：用于从互联网下载文件，支持通过HTTP、HTTPS、FTP、SFTP、BitTorrent和Metalink协议下载文件.
 * aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]
   * -d/--dir=DIR：The directory to store the downloaded file(指定下载文件的保存路径).
   * -Z/--force-sequential[=true|false]：Fetch URIs in the command-line sequentially and download each URI in a separate session, like the usual command-line download utilities(按顺序在命令行中获取URI，并在单独的会话中下载每个URI).
 
-### bismark
+### [bismark](#bismark)
 bismark：用于高效分析亚硫酸氢盐测序的数据.
 * bismark [options] genome_folder {-1 mates1 -2 mates2 | singles}：用于将序列与指定的亚硫酸氢盐基因组比对.
   * -o/--output_dir dir：Write all output files into this directory. By default the output files will be written into the same folder as the input file(s)(指定输出目录).
@@ -232,7 +290,7 @@ bismark：用于高效分析亚硫酸氢盐测序的数据.
   * --genome_folder path：Enter the genome folder you wish to use to extract sequences from (full path only)(指定用于甲基化提取的基因组的路径，只能全路径).
   * -o/--output_dir DIR: Allows specification of a different output directory (absolute or relative path)(指定输出目录).
 
-### conda
+### [conda](#conda)
 conda:用于管理和部署应用程序、环境和软件包的工具.
 * conda [-h] [-V] command
   * conda config：Modify configuration values in .condarc(修改.condarc文件中的配置值).
@@ -241,13 +299,13 @@ conda:用于管理和部署应用程序、环境和软件包的工具.
     * -n ENVIRONMET (--name ENVIRONMENT)：Name of environment(设置环境名称).
   * conda info：Display information about current conda install(显示当前conda安装的信息).
 
-### echo
+### [echo](#echo)
 echo：用于输出字符串.
 * echo [-neE] [ARGUMENTS]
   * -e：启用转义字符的解释.
   * -n：不输出结尾的换行符.
 
-### egaz
+### [egaz](#egaz)
 egaz(Easy Genome Aligner)：用于处理基因组组装和注释数据.
 * egaz command [long options]
   * template: create executing bash files(创建正在执行的bash文件).
@@ -257,13 +315,13 @@ egaz(Easy Genome Aligner)：用于处理基因组组装和注释数据.
     * --order：multiple alignments with original order(using fake_tree.nwk)(按顺序组装输入文件中的序列).
     * -o/--outdir STR：Output directory(default value:.)(指定输出路径).
 
-### fastqc
+### [fastqc](#fastqc)
 fastqc：用于质量控制和评估高通量测序数据.
 * fastqc [-o output dir] [--(no)extract] [-f fastq|bam|sam] [-c contaminant file] seqfile1 .. seqfileN
   * -o/--outdir：Create all output files in the specified output directory(指定输出目录).
   * -t/--threads：Specifies the number of files which can be processed simultaneously(指定可以同时处理的文件数).
 
-### parallel
+### [parallel](#parallel)
 parallel:用于构建并行运行命令.
 * parallel [options] [command [arguments]] (::: arguments参数|:::: argfile(s)文件)
   * -j(--jobs) n：run n jobs in parallel(并行任务数).
@@ -290,7 +348,7 @@ parallel:用于构建并行运行命令.
     * {n/.}：Basename of argument from input source n or the n'th argument without extension.
     * {=perl expression=}：Replace with calculated perl expression.
 
-### samtools
+### [samtools](#samtools)
 samtools：用于操作SAM和BAM文件，包括二进制查看、格式转换、排序及合并等.
 * samtools command [options]
   * cat：concatenate BAMs(连接BAMs文件).
@@ -305,17 +363,68 @@ samtools：用于操作SAM和BAM文件，包括二进制查看、格式转换、
     * -b：Generate BAI-format index for BAM files[default](为BAM文件生成BAI格式索引).
     * -@ INT：Sets the number of threads [none](指定使用的线程数).
 
-### trim_galore
+### [trim_galore](#trim_galore)
 trim_galore：用于预处理高通量测序数据，包括质量控制、去除低质量序列、去除接头序列和寡聚核苷酸等.
 * trim_galore [options] filename(s)
   * -o/--output_dir DIR：If specified all output will be written to this directory instead of the current directory. If the directory doesn't exist it will be created for you(指定所有输出写入特定的目录而不是当前目录，如果指定的目录不存在，则自动新建).
   * --fastqc：Run FastQC in the default mode on the FastQ file once trimming is complete(修剪完成后，在FastQ文件的默认模式下运行FastQC).
 
+### [datamash](#datamash)
+datamash：用于对文本文件中的数据进行处理和统计分析.
+* datamash [OPTION] op [fld] [op fld]
+  * op：the operation to perform.
+    * Primary operations：基础操作
+      * groupby：根据指定列进行分组.
+      * crosstab：生成交叉表格.
+      * transpose：转置行和列.
+      * reverse：
+      * check：检查数据是否符合要求.
+    * Numeric Grouping operations：
+      * sum：sum(计算总和).
+      * min：minimum(找到最小值).
+      * max：maximum(找到最大值).
+      * absmin
+      * absmax
+      * range：range(计算值域).
+    * Line-Filtering operations：rmdup.
+    * Per-Line operations：
+      * base64, debase64, md5, sha1, sha224, sha256, sha384, sha512, bin, strbin, round, floor, ceil, trunc, frac, dirname, basename, barename, extname, getnum
+      * cut：提取指定的列.
+    * Textual/Numeric Grouping operations：
+      * count(计算行数), first, last, rand, unique,
+      * collapse：将一列多行数据合并成一行.
+      countunique.
+    * Statistical Grouping operations：统计分组操作
+      * mean：mean(计算平均值).
+      * geomean
+      * harmmean
+      * trimmean, median, q1, q3, iqr, perc, mode, antimode, pstdev, sstdev, pvar, svar, ms, rms,
+      * mad：mean absolute deviation(计算平均绝对离差).
+        madraw, pskew, sskew, pkurt, skurt, dpo, jarque, scov, pcov, spearson, ppearson.
+  * --header-in：first input line is column headers(输入首行是为列标题).
+  * --header-out：print column headers as first line(将列标题打印为首行).
+  * -H/--headers；same as '--header-in --header-out'.
 -----------------------------------------------------------------------
 ### rg
 rg(ripgrep)
   * -F/--fixed-strings：Treat the pattern as a literal string instead of a regular expression. When this flag is used, special regular expression meta characters such as .(){}*+ do not need to be escaped(使用字符串而不是正则表达式进行匹配,特殊正则表达式元字符不需要转义).
   * -l/--files-with-matches：Print the paths with at least one match and suppress match contents(只显示文件名而不显示匹配行).
+
+
+
+* [Other commands](#other-commands)
+  * [aria2c](#aria2)
+  * [bismark](#bismark)
+  * [conda](#conda)
+  * [echo](#echo)
+  * [egaz](#egaz)
+  * [fastqc](#fastqc)
+  * [parallel](#parallel)
+  * [samtools](#samtools)
+  * [trim_galore](#trim_galore)
+  * [datamash](#datamash)
+
+
 
 
 
@@ -327,8 +436,6 @@ mount:用于挂载
 
 ### sync
 * sync(synchronize):用于同步数据。
-
-
 
 
 ### Linux code
@@ -359,12 +466,10 @@ mv
 ### hista
 
 
-> alias
+
 > count
-> cp
 > chomd
 > ssh
-> cat(catenate)
 > tldr
 > jobs
 > as
@@ -381,6 +486,29 @@ mv
 > curl -fsSL
 > bash -c
 > wget -O
+
+Linux:   
+man
+ls
+cd
+pwd
+mkdir
+rmdir
+mv
+cp
+open
+touch
+find
+ln
+gzip
+gunzip
+tar
+alias
+cat(catenate)
+less
+
+
+
 
 awk
 anchor

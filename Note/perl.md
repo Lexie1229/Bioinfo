@@ -5,3 +5,43 @@ perl
 * -l[octnum]:enable line ending processing, specifies line terminator(在输出时自动添加一个换行符，以及在输入时自动剥离换行符。).
 * -a:autosplit mode with -n or -p (splits $_ into @F)(具有-n或-p选项，将输入行按指定分隔符分割成数组，赋值给@F数组变量).
 * -F/pattern/:split() pattern for -a switch (//'s are optional)(指定输入分隔符，用于-a选项，默认为使用空格作为分隔符).
+
+### [Path::Tiny](https://metacpan.org/pod/Path::Tiny)
+
+* Path::Tiny - File path utility
+
+```perl
+use Path::Tiny;
+ 
+# Creating Path::Tiny objects
+my $dir = path("/tmp");
+my $foo = path("foo.txt");
+ 
+my $subdir = $dir->child("foo");
+my $bar = $subdir->child("bar.txt");
+ 
+# Stringifies as cleaned up path
+ 
+my $file = path("./foo.txt");
+print $file; # "foo.txt"
+ 
+# Reading files
+my $guts = $file->slurp;
+   $guts = $file->slurp_utf8;
+ 
+my @lines = $file->lines;
+   @lines = $file->lines_utf8;
+ 
+my ($head) = $file->lines( {count => 1} );
+my ($tail) = $file->lines( {count => -1} );
+ 
+# Writing files
+$bar->spew( @data );
+$bar->spew_utf8( @data );
+ 
+# Reading directories
+for ( $dir->children ) { ... }
+ 
+my $iter = $dir->iterator;
+while ( my $next = $iter->() ) { ... }
+```

@@ -27,7 +27,7 @@ sudo mount -a
 ## 若没有报错和提示信息，则表示挂载成功。
 ```
 
-NOTE：    
+NOTE：      
 * /etc/fstab：File Systems Table，是存储文件系统信息的文件，指定了系统启动时需要挂载的文件系统以及如何挂载它们。每次系统启动时，系统都会自动读取/etc/fstab文件，并尝试按照文件中指定的设置挂载文件系统。
 * fstab 文件的每行都代表一个文件系统的挂载选项，由以下部分组成：<文件系统> <挂载点> <文件系统类型> <挂载选项> <备份频率> <是否需要检查>
     * 文件系统：需要挂载的设备或者分区的名称或者UUID。
@@ -43,8 +43,45 @@ NOTE：
     * /mnt/mountdir代表本设备要挂载到的路径；
     * yourusername为访问的用户名，yourpassword为访问用户的密码，如果设置是匿名访问则不需要username与password两项设置并改为guest。
 
+## Ubuntu 科学上网
 
+* 临时
 
+```shell
+# 获取主机IP，在/etc/resolv.conf文件中
+export hostip=$(cat /etc/resolv.conf | grep -oP '(?<=nameserver\ ).*')
 
+# 设置环境变量，注意修改端口
+## http 协议
+export https_proxy="http://${hostip}:7890"
+export http_proxy="http://${hostip}:7890"
+## socket5 协议
+export http_proxy="socks5://${hostip}:7890"
+export https_proxy="socks5://${hostip}:7890"
+## 若端口一致，则可以合并成一句话
+export all_proxy="http://${hostip}:7890"
+export all_proxy="socks5://${hostip}:7890"
 
+# 查看是否成功启用代理
+curl https://ipapi.co/json/
+```
+
+* 永久
+
+```shell
+vim ~/.bashrc
+
+# 写入环境变量
+export hostip=$(cat /etc/resolv.conf |grep -oP '(?<=nameserver\ ).*')
+# 自定义vpn命令开启代理，unvpn关闭代理
+alias vpn='export all_proxy="http://${hostip}:7890"'
+alias unvpn='unset all_proxy'
+
+source ~/.bashrc
+
+# 查看是否成功启用代理
+curl google.com
+```
+
+参考：https://solidspoon.xyz/2021/02/17/%E9%85%8D%E7%BD%AEWSL2%E4%BD%BF%E7%94%A8Windows%E4%BB%A3%E7%90%86%E4%B8%8A%E7%BD%91/
 

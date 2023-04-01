@@ -5,12 +5,31 @@
   * [Linux basename](#linux-basename)
   * [Linux bc](#linux-bc)
   * [Linux bg](#linux-bg)
-  * [Linux cut](#linux-cut)
   * [Linux cp](#linux-cp)
+  * [Linux cut](#linux-cut)
+  * [Linux dirname](#linux-dirname)
+  * [Linux fg](#linux-fg)
+  * [Linux find](#linxu-find)
   * [Linux grep](#linux-grep)
-
+  * [Linux gzip](#linux-gzip)
+  * [Linux head](#linux-head)
+  * [Linux jobs](#linux-jobs)
+  * [Linux mktemp](#linux-mktemp)
+  * [Linux nohup](#linxu-nohup)
+  * [Linux paste](#linux-paste)
+  * [Linux ps](#linux-ps)
+  * [Linux pwd](#linux-pwd)
+  * [Linux rm](#linux-rm)
+  * [Linux rsync](#linux-rsync)
+  * [Linux sed](#linux-sed)
+  * [Linux shopt](#linux-shopt)
+  * [Linux sort](#linux-sort)
+  * [Linux split](#linux-split)
+  * [Linux tar](#linux-tar)
+  * [Linux tr](#linux-tr)
+  * [Linux uniq](linux-uniq)
+  * [Linux wc](linux-wc)
   * [Linux xargs](linux-xargs)
-
 * [Other commands](#other-commands)
   * [aria2c](#aria2)
   * [bismark](#bismark)
@@ -70,16 +89,16 @@ cut：剪切文件中选定的行写至标准输出.
   * -c/--characters=LIST:select only these characters(以字符为单位进行分割，仅显示选定的字符).
   * -d/--delimiter=DELIM：use DELIM instead of TAB for field delimiter(指定分隔符).
 
-### Linux dirname
+### [Linux dirname](#linux-dirname)
 dirname：用于返回路径中的目录部分.
 * dirname [OPTION] NAME
   * -z/--zero：end each output line with NUL, not newline(每行以NUL结束).
 
-### Linux fg
+### [Linux fg](#linux-fg)
 fg(foreground)：用于将后台暂停的工作恢复到前台执行.
 * fg [job_spec]
 
-### Linux find
+### [Linux find](#linxu-find)
 find：用于查找文件和目录.
 * find [-H] [-L] [-P] [-Olevel] [-D debugopts] [path] [expression]
   * -maxdepth LEVELS：限制递归搜索深度，即指定搜索多少级子目录.
@@ -99,14 +118,14 @@ grep：用于查找文件里符合条件的字符串.
   * -r/--recursive：like --directories=recurse(递归查找子目录中的文件).
   * -A/--after-context=NUM：print NUM lines of trailing context(显示匹配行后的NUM行).
 
-### Linux gzip
+### [Linux gzip](#linux-gzip)
 gzip：用于压缩或解压文件,扩展名为.gz.
 * gzip [OPTION] [FILE]
   * -d/--decompress：decompress.
   * -c/--stdout:write on standard output, keep original files unchanged.
   * -f/--force:force overwrite of output file and compress links.
 
-### Linux head
+### [Linux head](#linux-head)
 head:用于查看文件开头部分的内容.
 * head [OPTION] [FILE]
   * -n/--lines=[-] NuM:print the first NUM lines instead of the first 10（显示前NUM行的内容）；with the leading '-', print all but the last NUM lines of each file(显示所有的内容，除后NUM行).
@@ -114,7 +133,7 @@ head:用于查看文件开头部分的内容.
   * -q/--quiet,--silent:never print headers giving file names(隐藏文件名).
   * -v/--verbose:always print headers giving file names(显示文件名).
 
-### Linux jobs
+### [Linux jobs](#linux-jobs)
 jobs：用于显示当前终端的后台的工作状态.
 * jobs [-lnprs] [jobspec] or jobs -x command [args]
   * -l：lists process IDs in addition to the normal information(显示进程的PID号).
@@ -123,13 +142,13 @@ jobs：用于显示当前终端的后台的工作状态.
   * -r：restrict output to running jobs(仅列出运行中的进程).
   * -s：restrict output to stopped jobs(仅列出已停止的进程).
 
-### Linux mktemp
+### [Linux mktemp](#linux-mktemp)
 mktemp：用于创建临时文件或目录，并打印文件名.
 * mktemp [OPTION] [TEMPLATE]
   * -d/--directory：create a directory, not a file(创建一个临时目录，例如/tmp/tmp.WIZCU2vxne).
   * -t：interpret TEMPLATE as a single file name component,relative to a directory: $TMPDIR, if set; else the directory specified via -p; else /tmp [deprecated] (指定临时目录或文件的前缀，例如mytempdirXXX).
 
-### Linux nohup
+### [Linux nohup](#linxu-nohup)
 nohup(no hang up):用于不挂断地运行命令，退出终端不影响运行.
 * nohup COMMAND [ARG]
 * 区别：
@@ -137,13 +156,13 @@ nohup(no hang up):用于不挂断地运行命令，退出终端不影响运行.
   * nohup：不挂断运行，关闭终端，任务继续，`Ctrl+C`，任务终止；关闭标准输入，重定向标准输出和标准错误到当前目录的nohup.out文件；忽略SIGHUP信号。
   * nohup &：永久在后台执行，接受标准输入，重定向标准输出和标准错误到当前目录的nohup.out文件。
 
-### Linux paste
+### [Linux paste](#linux-paste)
 paste：用于将多个文件以列对列的形式合并，行数保持不变.
 * paste [OPTION] [FILE]
   * -d/--delimiters=LIST：reuse characters from LIST instead of TABs(指定分隔符).
   * -s/--serial：paste one file at a time instead of in parallel(将所有输入文件合并成单个文件，并将所有行连接在一起).
 
-### Linux ps
+### [Linux ps](#linux-ps)
 ps(process status):用于显示当前进程的状态.
 * ps [options]
   * -A/-e：all processes(显示所有进程).
@@ -152,19 +171,19 @@ ps(process status):用于显示当前进程的状态.
   * u: user-oriented format(面向用户的格式).
   * x：processes without controlling ttys.
 
-### Linux pwd
+### [Linux pwd](#linux-pwd)
 pwd(print work directory):用于显示当前工作目录.
 * pwd [OPTION]
   * -P：print the physical directory, without any symbolic links(显示物理路径，而不带任何软链接).
 
-### Linux rm
+### [Linux rm](#linux-rm)
 rm(remove):用于删除一个文件或者目录.
 * rm [option] [file]
   * rm filename:删除指定文件.
   * -r/-R,--recursive,递归:remove directories and their contents recursively(删除当前目录下的所有文件及目录).
   * -f/--force: ignore nonexistent files and arguments, never prompt(忽略不存在的文件和参数，从不提示).
 
-### Linux rsync
+### [Linux rsync](#linux-rsync)
 rsync(remote sync):用于远程同步数据.
 * rsync [OPTION] SRC [SRC] DEST
   * -a/--archive:archive mode; equals -rlptgoD (no -H,-A,-X)(归档模式，包括递归复制、保留链接、保留文件权限、保留时间戳、保留所有者和组、保留设备文件).
@@ -182,7 +201,7 @@ rsync(remote sync):用于远程同步数据.
   * -P：same as --partial --progress.
   * -D：same as --devices --specials.
 
-### Linux sed
+### [Linux sed](#linux-sed)
 sed:用于利用脚本处理文本文件，对文本进行编辑和替换.
 * sed [OPTION] {script-only-if-no-other-script} [input-file]
   * -e script/--expression=script：add the script to the commands to be executed(指定脚本处理输入的文本文件).
@@ -198,13 +217,13 @@ sed:用于利用脚本处理文本文件，对文本进行编辑和替换.
   * -n/--quiet/--silent：suppress automatic printing of pattern space(仅显示处理后的行,其他不显示).
   * -E/-r/--regexp-extended：use extended regular expressions in the script(for portability use POSIX -E)(使用扩展的正则表达式).
 
-### Linux shopt
+### [Linux shopt](#linux-shopt)
 shopt(shell option)：用于显示或修改shell的选项设置.
 * shopt [-pqsu] [-o] [optname]
   * shopt：Without any option arguments, list each supplied OPTNAME, or all shell options if no OPTNAMEs are given, with an indication of whether or not each is set(显示所有可以设置的shell操作选项).
   * -s：enable (set) each OPTNAME(启用OPTNAME).
 
-### Linux sort
+### [Linux sort](#linux-sort)
 sort:用于对文本文件的内容排序.
 * sort [OPTION] [FILE]:读取文件内容，进行排序.
   * -n/--numeric-sort:compare according to string numerical value(根据字符串数值进行排序,从小到大).
@@ -214,14 +233,15 @@ sort:用于对文本文件的内容排序.
   * -t/--field-separator=SEP:use SEP instead of non-blank to blank transition(指定排序时所用的栏位分隔字符).
 * sort [OPTION]:读取标准输入，进行排序.
 
-### Linux split
+### [Linux split](#linux-split)
 split:用于分割文件。
 * split [OPTION] [FILE [PREFIX]]
   * -l/--lines=NUMBER：put NUMBER lines/records per output file(指定每个文件分割的行数).
   * -a/--suffix-length=N：generate suffixes of length N (default 2)(生成长度为N的后缀，默认值为2).
   * -d：use numeric suffixes starting at 0, not alphabetic(使用从0开始的数字后缀，而非字母).
 
-### Linux tar
+
+### [Linux tar](#linux-tar)
 tar(tape archive)：用于文件的打包压缩及解压.
 * tar [OPTION] [FILE]
   * -x/--extract/--get：extract files from an archive(解压缩归档文件，从备份文件/存档中还原文件)。
@@ -230,7 +250,7 @@ tar(tape archive)：用于文件的打包压缩及解压.
   * -f/--file=ARCHIVE：use archive file or device ARCHIVE(指定要操作的归档文件，指定备份文件)。
   * -j/--bzip2:filter the archive through bzip2(通过bzip2指令处理备份文件)。
 
-### Linux tr
+### [Linux tr](#linux-tr)
 tr(text replacer)：用于转换或删除文件中的字符.
 * tr [OPTION] SET1 [SET2]
   * [:blank:]：all horizontal whitespace(所有水平空格).
@@ -409,22 +429,6 @@ datamash：用于对文本文件中的数据进行处理和统计分析.
 rg(ripgrep)
   * -F/--fixed-strings：Treat the pattern as a literal string instead of a regular expression. When this flag is used, special regular expression meta characters such as .(){}*+ do not need to be escaped(使用字符串而不是正则表达式进行匹配,特殊正则表达式元字符不需要转义).
   * -l/--files-with-matches：Print the paths with at least one match and suppress match contents(只显示文件名而不显示匹配行).
-
-
-
-* [Other commands](#other-commands)
-  * [aria2c](#aria2)
-  * [bismark](#bismark)
-  * [conda](#conda)
-  * [echo](#echo)
-  * [egaz](#egaz)
-  * [fastqc](#fastqc)
-  * [parallel](#parallel)
-  * [samtools](#samtools)
-  * [trim_galore](#trim_galore)
-  * [datamash](#datamash)
-
-
 
 
 

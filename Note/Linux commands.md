@@ -34,13 +34,15 @@
   * [aria2c](#aria2)
   * [bismark](#bismark)
   * [conda](#conda)
+  * [datamash](#datamash)
   * [echo](#echo)
   * [egaz](#egaz)
   * [fastqc](#fastqc)
+  * [mash](#mash)
   * [parallel](#parallel)
   * [samtools](#samtools)
   * [trim_galore](#trim_galore)
-  * [datamash](#datamash)
+  * [tsv-utils](#tsv-utils)
 
 ## Linux commands
 
@@ -107,6 +109,9 @@ find：用于查找文件和目录.
     * d：表示目录.
   * -name PATTERN：按文件名搜索.
   * -size N[bcwkMG]：按文件大小搜索.
+  * -print：print the full file name on the standard output, followed by a newline.
+  * -print0：print the full file name on the standard output, followed  by  a  null  character
+(instead  of the newline character that -print uses).
 
 ### [Linux grep](#linux-grep)
 grep：用于查找文件里符合条件的字符串.
@@ -116,7 +121,9 @@ grep：用于查找文件里符合条件的字符串.
   * -v/--invert-match：select non-matching lines(反向查找，仅显示不匹配的行).
   * -x/--line-regexp：match only whole lines(精确匹配，匹配整行).
   * -r/--recursive：like --directories=recurse(递归查找子目录中的文件).
+  * -e/--regexp=PATTERNS：use PATTERNS for matching(匹配正则表达式).
   * -A/--after-context=NUM：print NUM lines of trailing context(显示匹配行后的NUM行).
+  * -B/--before-context=NUM：print NUM lines of leading context(显示匹配行前的NUM行).
 
 ### [Linux gzip](#linux-gzip)
 gzip：用于压缩或解压文件,扩展名为.gz.
@@ -318,6 +325,43 @@ conda:用于管理和部署应用程序、环境和软件包的工具.
   * conda create：Create a new conda environment from a list of specified packages(创建新的conda环境).
     * -n ENVIRONMET (--name ENVIRONMENT)：Name of environment(设置环境名称).
   * conda info：Display information about current conda install(显示当前conda安装的信息).
+  * conda init：Initialize conda for shell interaction(初始化conda，以进行shell交互).
+
+### [datamash](#datamash)
+datamash：用于对文本文件中的数据进行处理和统计分析.
+* datamash [OPTION] op [fld] [op fld]
+  * op：the operation to perform.
+    * Primary operations：基础操作
+      * groupby：根据指定列进行分组.
+      * crosstab：生成交叉表格.
+      * transpose：转置行和列.
+      * reverse：
+      * check：检查数据是否符合要求.
+    * Numeric Grouping operations：
+      * sum：sum(计算总和).
+      * min：minimum(找到最小值).
+      * max：maximum(找到最大值).
+      * absmin
+      * absmax
+      * range：range(计算值域).
+    * Line-Filtering operations：rmdup.
+    * Per-Line operations：
+      * base64, debase64, md5, sha1, sha224, sha256, sha384, sha512, bin, strbin, round, floor, ceil, trunc, frac, dirname, basename, barename, extname, getnum
+      * cut：提取指定的列.
+    * Textual/Numeric Grouping operations：
+      * count(计算行数), first, last, rand, unique,
+      * collapse：将一列多行数据合并成一行.
+      countunique.
+    * Statistical Grouping operations：统计分组操作
+      * mean：mean(计算平均值).
+      * geomean
+      * harmmean
+      * trimmean, median, q1, q3, iqr, perc, mode, antimode, pstdev, sstdev, pvar, svar, ms, rms,
+      * mad：mean absolute deviation(计算平均绝对离差).
+        madraw, pskew, sskew, pkurt, skurt, dpo, jarque, scov, pcov, spearson, ppearson.
+  * --header-in：first input line is column headers(输入首行是为列标题).
+  * --header-out：print column headers as first line(将列标题打印为首行).
+  * -H/--headers；same as '--header-in --header-out'.
 
 ### [echo](#echo)
 echo：用于输出字符串.
@@ -340,6 +384,28 @@ fastqc：用于质量控制和评估高通量测序数据.
 * fastqc [-o output dir] [--(no)extract] [-f fastq|bam|sam] [-c contaminant file] seqfile1 .. seqfileN
   * -o/--outdir：Create all output files in the specified output directory(指定输出目录).
   * -t/--threads：Specifies the number of files which can be processed simultaneously(指定可以同时处理的文件数).
+
+### [mash](#mash)
+Mash(MinHash)：用于评估基因组以及宏基因组距离。
+* mash command [options] [arguments]
+    * sketch：构建草图，用于快速进行遗传距离分析。
+        * mash sketch [options] [input]
+        * -k int：K-mer size. Hashes will be based on strings of this many nucleotides(K-mer大小，核苷酸的字符串大小).
+        * -s int：Seed to provide to the hash function(种子，用作随机数生成器或哈希函数的输入，以产生一系列随机或伪随机数，用于初始化哈希函数的内部状态).
+        * -i：Sketch individual sequences, rather than whole files, e.g. for multi-fastas of single-chromosome genomes or pair-wise gene comparisons(绘制单个序列).
+        * -p int：Parallelism. This many threads will be spawned for processing(并行性，使用int线程处理).
+        * -o path：Output prefix (first input file used if unspecified). The suffix '.msh' will be appended(输出前缀，附加后缀.msh). 
+    * dist：估算比对序列到参考序列的遗传距离。
+        * mash dist [options] [reference] [query]
+        * -p int：Parallelism. This many threads will be spawned for processing(并行性，使用int线程处理).
+    * info：显示草图文件的信息。
+        * mash info [options] sketch
+* Mash的原理:借用MinHash搜索引擎常用的判断重复文档的技术，并增加了计算两两之间突变距离和P值显著性检验。
+    * 将序列集合打碎成固定长度的短片段，称为k-mer；
+    * 在大多数真核生物基因组中，21-mer是一种适合于组装长序列的长度，同时可以最大化重叠区域，并提高组装的准确性；
+    * 将每个k-mer经哈希函数转换成哈希值，得到由哈希值组成的集合；
+    * 计算序列集相似度的问题，即转化成集合的运算。
+    * Jaccard距离：J(A,B) = |A ∩ B| / |A ∪ B|
 
 ### [parallel](#parallel)
 parallel:用于构建并行运行命令.
@@ -389,41 +455,24 @@ trim_galore：用于预处理高通量测序数据，包括质量控制、去除
   * -o/--output_dir DIR：If specified all output will be written to this directory instead of the current directory. If the directory doesn't exist it will be created for you(指定所有输出写入特定的目录而不是当前目录，如果指定的目录不存在，则自动新建).
   * --fastqc：Run FastQC in the default mode on the FastQ file once trimming is complete(修剪完成后，在FastQ文件的默认模式下运行FastQC).
 
-### [datamash](#datamash)
-datamash：用于对文本文件中的数据进行处理和统计分析.
-* datamash [OPTION] op [fld] [op fld]
-  * op：the operation to perform.
-    * Primary operations：基础操作
-      * groupby：根据指定列进行分组.
-      * crosstab：生成交叉表格.
-      * transpose：转置行和列.
-      * reverse：
-      * check：检查数据是否符合要求.
-    * Numeric Grouping operations：
-      * sum：sum(计算总和).
-      * min：minimum(找到最小值).
-      * max：maximum(找到最大值).
-      * absmin
-      * absmax
-      * range：range(计算值域).
-    * Line-Filtering operations：rmdup.
-    * Per-Line operations：
-      * base64, debase64, md5, sha1, sha224, sha256, sha384, sha512, bin, strbin, round, floor, ceil, trunc, frac, dirname, basename, barename, extname, getnum
-      * cut：提取指定的列.
-    * Textual/Numeric Grouping operations：
-      * count(计算行数), first, last, rand, unique,
-      * collapse：将一列多行数据合并成一行.
-      countunique.
-    * Statistical Grouping operations：统计分组操作
-      * mean：mean(计算平均值).
-      * geomean
-      * harmmean
-      * trimmean, median, q1, q3, iqr, perc, mode, antimode, pstdev, sstdev, pvar, svar, ms, rms,
-      * mad：mean absolute deviation(计算平均绝对离差).
-        madraw, pskew, sskew, pkurt, skurt, dpo, jarque, scov, pcov, spearson, ppearson.
-  * --header-in：first input line is column headers(输入首行是为列标题).
-  * --header-out：print column headers as first line(将列标题打印为首行).
-  * -H/--headers；same as '--header-in --header-out'.
+### [tsv-utils](#tsv-utils)
+tsv-utils(Tab Separated Values)：用于操作大型表格数据文件.
+* tsv-filter [options] [file] 过滤
+    * --le|gt|eq|ne|lt|ge FIELD:NUM：Compare a field to a number (integer or float)(FIELE列：数字≤|>|=|≠|<|≥NUM).
+    * --ff-eq|ff-ne|ff-lt|ff-le|ff-gt|ff-ge FIELD1:FIELD2:Field to field comparisons - Similar to field vs literal comparisons, but field vs field(字段与字段的数值的比较).
+    * --ff-str-eq|ff-str-ne|ff-istr-eq|ff-istr-ne  FIELD1:FIELD2:Field to field comparisons - Similar to field vs literal comparisons, but field vs field(字段与字段的字符串的比较).
+    * --regex|iregex|not-regex|not-iregex  FIELD:REGEX：Test if a field matches a regular expression(测试字段是否与正则表达式匹配).
+    * --d|delimiter CHR：Field delimiter. Default: TAB(指定字段分隔符).
+* tsv-select [options] [file] 选择
+    * -f/--fields field-list：Fields to retain. Fields are output in the order listed(保留字段,字段按列出的顺序输出).
+    * -H/--header：Treat the first line of each file as a header(指定输入文件是否包含标题行,若包含，则默认使用标题行中的列名来选择列).
+    * -e/--exclude field-list：Fields to exclude(排除字段).
+    * -r/--rest first|last：Output location for fields not included in '--f|fields'.
+* tsv-summarize [options] [file] 汇总
+    * -H/--header：Treat the first line of each file as a header(指定输入文件是否包含标题行,若包含，则默认使用标题行中的列名来选择列).
+    * -g/--group-by field-list：Fields to use as key(指定关键词所在的列).
+    * --count：Count occurrences of each unique key ('--g|group-by'), or the total number of records if no key field is specified(统计每个关键词的个数).
+
 -----------------------------------------------------------------------
 ### rg
 rg(ripgrep)
@@ -499,7 +548,8 @@ pwd
 mkdir
 rmdir
 mv
-cp
+cp：
+-R/-r/--recursive：copy directories recursively
 open
 touch
 find
@@ -510,9 +560,12 @@ tar
 alias
 cat(catenate)
 less
-
+tr
 
 
 
 awk
 anchor
+
+
+keep-header

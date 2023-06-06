@@ -1,6 +1,6 @@
 # [Setting-up scripts for Ubuntu 20.04](https://github.com/wang-q/ubuntu)
 
-The whole developing environment is based on [Linuxbrew](http:s//linuxbrew.sh/). Many of the
+The whole developing environment is based on [Linuxbrew](https://linuxbrew.sh/). Many of the
 following steps also work under macOS via [Homebrew](https://brew.sh/).
 
 Linux specific scripts were placed in [`prepare/`](prepare).

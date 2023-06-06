@@ -1,3 +1,6 @@
+# [dotfiles/perl/ensembl.sh](https://github.com/wang-q/dotfiles/blob/master/perl/ensembl.sh)
+
+```bash
 #!/usr/bin/env bash
 
 export ENSEMBL_VERSION='105'
@@ -6,8 +9,8 @@ cd /tmp
 
 if [ ! -e ensembl-${ENSEMBL_VERSION}.tar.gz ]; then
     echo "==> Get ensembl tarballs"
-    wget https://github.com/Ensembl/ensembl/archive/release/${ENSEMBL_VERSION}.tar.gz           -O ensembl-${ENSEMBL_VERSION}.tar.gz
-    wget https://github.com/Ensembl/ensembl-compara/archive/release/${ENSEMBL_VERSION}.tar.gz   -O ensembl-compara-${ENSEMBL_VERSION}.tar.gz
+    wget https://github.com/Ensembl/ensembl/archive/release/${ENSEMBL_VERSION}.tar.gz -O ensembl-${ENSEMBL_VERSION}.tar.gz
+    wget https://github.com/Ensembl/ensembl-compara/archive/release/${ENSEMBL_VERSION}.tar.gz -O ensembl-compara-${ENSEMBL_VERSION}.tar.gz
     wget https://github.com/Ensembl/ensembl-variation/archive/release/${ENSEMBL_VERSION}.tar.gz -O ensembl-variation-${ENSEMBL_VERSION}.tar.gz
 fi
 
@@ -31,3 +34,4 @@ cp -R ensembl-variation-release-${ENSEMBL_VERSION}/modules/Bio ${SITE_PERL}
 perl -MBio::EnsEMBL::ApiVersion -e 'print qq{If you see this, means ensembl installation successful.\n}'
 
 unset ENSEMBL_VERSION
+```

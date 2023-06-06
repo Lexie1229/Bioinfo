@@ -148,42 +148,7 @@ faops some refseq.fa <(cut -f 1 connected_components.tsv) stdout >> refseq.nr.fa
 
 rm -fr job
 ```
-
-NOTE    
-tsv(Tab Separated Values)  
-* tsv-filter [options] [file]
-    * --le|gt|eq|ne|lt|ge FIELD:NUM：Compare a field to a number (integer or float)(FIELE列：数字≤|>|=|≠|<|≥NUM).
-    * --ff-eq|ff-ne|ff-lt|ff-le|ff-gt|ff-ge FIELD1:FIELD2:Field to field comparisons - Similar to field vs literal comparisons, but field vs field(字段与字段的数值的比较).
-    * --ff-str-eq|ff-str-ne|ff-istr-eq|ff-istr-ne  FIELD1:FIELD2:Field to field comparisons - Similar to field vs literal comparisons, but field vs field(字段与字段的字符串的比较).
-    * --regex|iregex|not-regex|not-iregex  FIELD:REGEX：Test if a field matches a regular expression(测试字段是否与正则表达式匹配).
-    * --d|delimiter CHR：Field delimiter. Default: TAB(指定字段分隔符).
-* tsv-select [options] [file]
-    * -f/--fields field-list：Fields to retain. Fields are output in the order listed(保留字段,字段按列出的顺序输出).
-    * -H/--header：Treat the first line of each file as a header(指定输入文件是否包含标题行,若包含，则默认使用标题行中的列名来选择列).
-    * -e/--exclude field-list：Fields to exclude(排除字段).
-    * -r/--rest first|last：Output location for fields not included in '--f|fields'.
-
-Mash(MinHash)   
-* mash command [options] [arguments]
-    * sketch：构建草图，用于快速进行遗传距离分析。
-        * mash sketch [options] [input]
-        * -k int：K-mer size. Hashes will be based on strings of this many nucleotides(K-mer大小，核苷酸的字符串大小).
-        * -s int：Seed to provide to the hash function(种子，用作随机数生成器或哈希函数的输入，以产生一系列随机或伪随机数，用于初始化哈希函数的内部状态).
-        * -i：Sketch individual sequences, rather than whole files, e.g. for multi-fastas of single-chromosome genomes or pair-wise gene comparisons(绘制单个序列).
-        * -p int：Parallelism. This many threads will be spawned for processing(并行性，使用int线程处理).
-        * -o path：Output prefix (first input file used if unspecified). The suffix '.msh' will be appended(输出前缀，附加后缀.msh). 
-    * dist：估算比对序列到参考序列的遗传距离。
-        * mash dist [options] [reference] [query]
-        * -p int：Parallelism. This many threads will be spawned for processing(并行性，使用int线程处理).
-    * info：显示草图文件的信息。
-        * mash info [options] sketch
-* Mash的原理:借用MinHash搜索引擎常用的判断重复文档的技术，并增加了计算两两之间突变距离和P值显著性检验。
-    * 将序列集合打碎成固定长度的短片段，称为k-mer；
-    * 在大多数真核生物基因组中，21-mer是一种适合于组装长序列的长度，同时可以最大化重叠区域，并提高组装的准确性；
-    * 将每个k-mer经哈希函数转换成哈希值，得到由哈希值组成的集合；
-    * 计算序列集相似度的问题，即转化成集合的运算。
-    * Jaccard距离：J(A,B) = |A ∩ B| / |A ∪ B|
-    
+  
 ## 3 Grouping by MinHash（分组）
 
 ```bash

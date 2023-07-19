@@ -85,3 +85,23 @@ curl google.com
 
 参考：https://solidspoon.xyz/2021/02/17/%E9%85%8D%E7%BD%AEWSL2%E4%BD%BF%E7%94%A8Windows%E4%BB%A3%E7%90%86%E4%B8%8A%E7%BD%91/
 
+## WSL2增加可用内存和交换分区大小
+
+```bash
+# windows资源管理器搜索
+%UserProfile%
+
+# 该目录下新建一个文件.wslconfig
+.wslconfig
+
+# 写入.wslconfig的内容
+[wsl2]
+memory=10GB
+swap=4GB
+localhostForwarding=true
+
+# cmd执行命令
+wsl --shutdown
+```
+
+参考：https://blog.csdn.net/weixin_45579994/article/details/112386425

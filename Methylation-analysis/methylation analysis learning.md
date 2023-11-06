@@ -1,10 +1,11 @@
 # [甲基化分析](https://github.com/Jihong-Tang/methylation-analysis/tree/master/NBT_repeat)
-
 ## 0 介绍
-APOBEC偶联甲基化表观测序(ACE-seq)可以特异性检测5hmC（5-羟甲基胞嘧啶）。基于[NBT文章](https://www.nature.com/articles/nbt.4204)中的ACE-seq数据，学习在小鼠（mouse）样本中寻找5hmc DMLs（differentially methylated loci，差异甲基化位点）的生物信息流程，学习基于[`bismark`](https://github.com/FelixKrueger/Bismark)和[`DSS`](http://bioconductor.org/packages/release/bioc/html/DSS.html) 软件工具包的甲基化数据分析程序，熟悉基本的生物信息数据分析协议。
+
+* APOBEC偶联甲基化表观测序(ACE-seq)可以特异性检测5hmC（5-羟甲基胞嘧啶）。基于[NBT文章](https://www.nature.com/articles/nbt.4204)中的ACE-seq数据，学习在小鼠（mouse）样本中寻找5hmc DMLs（differentially methylated loci，差异甲基化位点）的生物信息流程，学习基于[`bismark`](https://github.com/FelixKrueger/Bismark)和[`DSS`](http://bioconductor.org/packages/release/bioc/html/DSS.html) 软件工具包的甲基化数据分析程序，熟悉基本的生物信息数据分析协议。
 
 ## 1 数据下载 
 ### 1.1 测序数据
+
 * 下载测序数据，进入[EBI-ENA search page](https://www.ebi.ac.uk/ena)，搜索GEO数据库编号[GSE116016](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE116016)，在[result page](https://www.ebi.ac.uk/ena/data/view/PRJNA476795)获取FTP地址，使用[`aria2`](https://aria2.github.io/)工具下载`.fastq.gz`文件。有关数据下载的详细信息参考[Blog](https://www.jianshu.com/u/3fcc93cd84c1)，测序数据参考[NBT文章](https://www.nature.com/articles/nbt.4204)。
 
 ```bash
@@ -19,6 +20,7 @@ aria2c -d ./TetTKO_mESC_rep1/ -Z ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR736/005/S
 ```
 
 ### 1.2 参考基因组数据
+
 * 从[Ensembl](https://www.ensembl.org/info/data/ftp/index.html)下载小鼠肌肉（Mus musculus）参考基因组数据，进入[ensembl download page](https://www.ensembl.org/info/data/ftp/index.html)，下载小鼠的DNA `.fasta` 文件，在[result page](https://ftp.ensembl.org/pub/release-108/fasta/mus_musculus/dna/)获取FTP地址，使用[`aria2`](https://aria2.github.io/)工具下载`.fastq.gz`文件。
 
 ```bash
@@ -37,7 +39,8 @@ sh $HOME/Scripts/methylation-analysis/Scripts/shell/genome_data_download.sh $HOM
 ```
 
 ## 2 质量控制和修剪
-对高通量测序进行质量控制，以直接判断数据集是否质量良好以及文库或测序本身是否存在基本问题。使用[FastQc](www.bioinformatics.babraham.ac.uk/projects/fastqc/)进行质量控制，并使用[Trim Galore](www.bioinformatics.babraham.ac.uk/projects/trim_galore/)修剪接头。
+
+* 对高通量测序进行质量控制，以直接判断数据集是否质量良好以及文库或测序本身是否存在基本问题。使用[FastQc](www.bioinformatics.babraham.ac.uk/projects/fastqc/)进行质量控制，并使用[Trim Galore](www.bioinformatics.babraham.ac.uk/projects/trim_galore/)修剪接头。
 
 ```bash
 cd $HOME/project/NBT_repeat/data/seq_data/
@@ -57,10 +60,12 @@ trim_galore -o ./TetTKO_mESC_rep1/trimmed_data/ --fastqc ./TetTKO_mESC_rep1/*.fa
 ```
 
 ## 3 甲基化分析
-质量控制和修剪后，遵循基于[Bismark](https://www.bioinformatics.babraham.ac.uk/projects/bismark/)的BS-seq数据分析协议对ACE-seq数据进行甲基化分析。
+
+* 质量控制和修剪后，遵循基于[Bismark](https://www.bioinformatics.babraham.ac.uk/projects/bismark/)的BS-seq数据分析协议对ACE-seq数据进行甲基化分析。
 
 ### 3.1 基因组索引
-序列比对前，基因组需要*in-silico*亚硫酸氢盐转化并索引。基于`Bismark`，可以同时使用`Bowtie`和`Bowtie2`完成索引。
+
+* 序列比对前，基因组需要*in-silico*亚硫酸氢盐转化并索引。基于`Bismark`，可以同时使用`Bowtie`和`Bowtie2`完成索引。
 
 ```bash
 # 安装bismark
@@ -82,7 +87,8 @@ bismark_genome_preparation --bowtie2 $HOME/project/NBT_repeat/data/genome_data/
 ```
 
 ### 3.2 序列比对
-甲基化数据分析的核心是将测序reads与参考基因组比对。
+
+* 甲基化数据分析的核心是将测序reads与参考基因组比对。
 
 ```bash
 genome_path="$HOME/project/NBT_repeat/data/genome_data/"
@@ -103,7 +109,8 @@ mv SRX4241790_trimmed_bismark_bt2.bam ./WT_mESC_rep1/bismark_result
 ```
 
 ### 3.3 去除比对的重复reads
-哺乳动物的基因组巨大，不太可能遇到一些真正独立且与相同基因组位置对齐的片段，而更可能是PCR扩增的结果。因此，对于大型基因组，删除duplicate reads是甲基化分析采取的有效途径，可以通过`deduplicate_bismark`脚本完成`deduplication`。
+
+* 哺乳动物的基因组巨大，不太可能遇到一些真正独立且与相同基因组位置对齐的片段，而更可能是PCR扩增的结果。因此，对于大型基因组，删除duplicate reads是甲基化分析采取的有效途径，可以通过`deduplicate_bismark`脚本完成`deduplication`。
 
 ```bash
 cd $HOME/project/NBT_repeat/data/seq_data/
@@ -118,7 +125,8 @@ deduplicate_bismark --bam --output_dir ./TetTKO_mESC_rep1/deduplicated_result/ .
 ```
 
 ### 3.4 甲基化信息提取
-`Bismark`包中的`bimark_methylation_extractor`脚本可以从比对结果的文件中提取甲基化信息。此外，甲基化信息可以容易地转换为其他格式，便于下游分析。
+
+* `Bismark`包中的`bimark_methylation_extractor`脚本可以从比对结果的文件中提取甲基化信息。此外，甲基化信息可以容易地转换为其他格式，便于下游分析。
 
 ```bash
 genome_path="$HOME/project/NBT_repeat/data/genome_data"
@@ -145,10 +153,12 @@ bismark_methylation_extractor --single-end --gzip --parallel 4 --bedGraph \
 ```
 
 ## 4 下游分析
-基于甲基化分析过程中获得的甲基化信息结果，可以进行一些基本的下游分析，包括寻找特定位点、检测差异甲基化位点或区域（DML/DMR，differential methylation loci/regions）。使用[`DSS`](http://bioconductor.org/packages/release/bioc/html/DSS.html)R包进行差异甲基化分析。
+
+* 基于甲基化分析过程中获得的甲基化信息结果，可以进行一些基本的下游分析，包括寻找特定位点、检测差异甲基化位点或区域（DML/DMR，differential methylation loci/regions）。使用[`DSS`](http://bioconductor.org/packages/release/bioc/html/DSS.html)R包进行差异甲基化分析。
 
 ### 4.1 输入数据准备
-`DSS` 需要将每个BS-seq样实验数据汇总为每个CG位点的以下信息：染色体数，基因组坐标，总reads数及显示甲基化的reads数。输入数据可以从bismarkd的结果`.cov`文件传输，因为count文件包含以下列：chr，start，end，methylation%，count methylated，count unmethylated。
+
+* `DSS` 需要将每个BS-seq样实验数据汇总为每个CG位点的以下信息：染色体数，基因组坐标，总reads数及显示甲基化的reads数。输入数据可以从bismarkd的结果`.cov`文件传输，因为count文件包含以下列：chr，start，end，methylation%，count methylated，count unmethylated。
 
 ```bash
 mkdir -p $HOME/project/NBT_repeat/R_analysis/WT_data
@@ -245,7 +255,8 @@ Rscript $HOME/Scrpits/methylation-analysis/Scripts/R/bismark_result_transfer.R .
 ```
 
 ### 4.2 检测 DML/DMR
-输入数据准备完成后，使用`DSS`包寻找DMLs或DMRs。
+
+* 输入数据准备完成后，使用`DSS`包寻找DMLs或DMRs。
 
 ```r
 library(tidyr)
@@ -301,7 +312,8 @@ Rscript $HOME/Scripts/methylation-analysis/Scripts/R/DSS_differ_analysis.R ./WT_
 ```
 
 ## 5 实际甲基化信息分析
-提出了一种简单的方法来利用从传统甲基化分析流程中的甲基化信息.
+
+* 提出了一种简单的方法来利用从传统甲基化分析流程中的甲基化信息.
 
 ## 6 参考
 * [Aria2 Manual](https://aria2.github.io/manual/en/html/index.html)

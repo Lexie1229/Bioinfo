@@ -29,7 +29,7 @@ faops n50 -S -C RefSeq/*.genomic.fna.gz
 gzip -dcf RefSeq/*.genomic.fna.gz > RefSeq/plasmid.fa
 ```
 
-NOTE
+* NOTE
 * RefSeq:NCBI Reference Sequence Databased
     * \>NC_(chromosomes):表示该序列来自于NCBI的RefSeq数据库，提供一些可靠和经过认证的核酸和蛋白质序列记录,有固定的版本号，表示每个序列的特定版本。
     * \>NZ_:表示该序列来自于GenBank序列数据库的非RefSeq部分，这是一个由NCBI维护的公共数据库，包含大量未经认证的核酸和蛋白质序列记录，版本号不是固定的，因此同一条记录可能在不同的时间点有不同的版本号。

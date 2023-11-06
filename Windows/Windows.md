@@ -1,6 +1,7 @@
 # Setting-up scripts for Windows 10
 ## Get ISO
-Some features of Windows 10 20H1/2004 are needed here.
+
+* Some features of Windows 10 20H1/2004 are needed here.
 * Build 19041.84 or later
 * English or Chinese Simplified
 * 64-bit
@@ -24,16 +25,19 @@ Some features of Windows 10 20H1/2004 are needed here.
 > * magnet:磁力链接,是对等网络中进行信息检索和下载文档的电脑程序,下载BT种子
 
 ## Install, active and update Windows
+
 * Enable Virtualization in BIOS or VM
 * Active Windows 10 via KMS, <http://kms.nju.edu.cn/>
 * Update Windows and then check system info
+
 ```powershell
 # simple
 winver
 # details
 systeminfo
 ```
-After Windows updating, the Windows version is 19042.804 as my current date.
+
+* After Windows updating, the Windows version is 19042.804 as my current date.
 
 > * BIOS(basic input output system):基本输入输出系统（华为开机或重启时长按F2进入BIOS设置界面，设置Virtualization Technology-Enable状态）  
 > * VMwave虚拟机  
@@ -42,8 +46,10 @@ After Windows updating, the Windows version is 19042.804 as my current date.
 > * Poweshell/CMD：输入命令（winver：windows version；systeminfo:系统信息）
 
 ## Enable some optional features of Windows 10
+
 * Mount Windows ISO to D: (or others)
 * Open PowerShell as an Administrator
+
 ```powershell
 # .Net 2.5 and 3
 DISM /Online /Enable-Feature /FeatureName:NetFx3 /All /LimitAccess /Source:D:\sources\sxs
@@ -71,8 +77,10 @@ DISM /Online /Enable-Feature /FeatureName:TelnetClient
 > * DISM /Online /Enable-Feature /FeatureName:NetFx3 /All 与 Enable-WindowsOptionalFeature -Online -FeatureName NetFx3 -All 的区别:前者是使用DISM配置、部署Windows可选功能;后者是从PowerShell管理Windows可选功能.
 
 ## WSL 2
+
 * Follow instructions of [this page](https://docs.microsoft.com/en-us/windows/wsl/wsl2-install)
 * Open PowerShell as an Administrator
+
 ```powershell
 # HyperV
 Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -NoRestart
@@ -80,8 +88,9 @@ Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All -NoRes
 # WSL
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -NoRestart
 ```
-Update the [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel) Linux kernel if necessarily.
-Restart then set WSL 2 as default.
+
+* Update the [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel) Linux kernel if necessarily. Restart then set WSL 2 as default.
+
 ```powershell
 wsl --set-default-version 2
 ```
@@ -92,7 +101,9 @@ wsl --set-default-version 2
 > * kernel(内核):Linux内核是Linux操作系统（OS）的主要组件，也是计算机硬件与其进程之间的核心接口.它负责两者之间的通信，还要尽可能高效地管理资源.
 
 ## Ubuntu 20.04
-Search `bash` in Microsoft Store or use the following command lines.
+
+* Search `bash` in Microsoft Store or use the following command lines.
+
 ```powershell
 if (!(Test-Path Ubuntu.appx -PathType Leaf))
 {
@@ -113,7 +124,9 @@ wsl -l -v
 > * leaf/tree
 
 ***Symlinks 软链接***
+
 * WSL: reduce the space occupied by virtual disks
+
 ```shell
 cd
 rm -fr Script data
@@ -122,6 +135,7 @@ ln -s /mnt/d/data/ ~/data
 ```
 * Windows: second disk
     * Open `cmd.exe` as an Administrator
+
 ```cmd
 cd c:\Users\19065\
 mklink /D c:\Users\wangq\data d:\data
@@ -137,6 +151,7 @@ mklink /D c:\Users\wangq\data d:\data
 > * -s 软链接
 
 ## Install `winget` and `Windows Terminal`
+
 ```powershell
 if (!(Test-Path Microsoft.WindowsTerminal.msixbundle -PathType Leaf))
 {
@@ -161,7 +176,9 @@ Open `Windows Terminal`
 > * Windows PowerShell 和 PowerShell 的 PowerShell 语言有一些不同。 最明显的差异在于 Windows 和非 Windows 平台上 PowerShell cmdlet 的可用性和行为以及因 .NET Framework 和 .NET Core 之间的差异所引起的变化。
 
 ## Optional: Adjusting Windows
-Works with Windows 10 or 11.
+
+* Works with Windows 10 or 11.
+
 ```powershell
 mkdir -p ~/Scripts
 cd ~/Scripts
@@ -175,14 +192,10 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass `
 
 ```
 
-Log in to the Microsoft Store and get updates from there.
-
-
-
-
-
+* Log in to the Microsoft Store and get updates from there.
 
 ## Optional: winget-pkgs
+
 ```powershell
 # programming
 # winget install -s winget -e --id AdoptOpenJDK.OpenJDK
@@ -236,7 +249,6 @@ winget install -s winget -e --id Zotero.Zotero
 winget install -s msstore mpv.net
 winget install -s msstore "iQIYI Windows client app"
 # winget install -e --id Adobe.AdobeAcrobatReaderDC
-
 ```
 
 > * winget-pkgs:Windows程序包管理器，WinGet命令行实用工具可从命令行安装应用程序和其他程序包。
@@ -259,7 +271,7 @@ winget - Windows 程序包管理器应用存储库。
 >> * Oracle.JDK.18
 >> * Microsoft.dotnet
 >> * StrawberryPerl.StrawberryPerl：Strawberry Perl是一个用于MS Windows的perl环境，包含所有需要运行和开发Perl的应用程序。
->> * Python.Python：
+>> * Python.Python
 >> * RProject.R
 >> * RProject.Rtools
 >> * OpenJS.NodeJS.LTS
@@ -267,7 +279,7 @@ winget - Windows 程序包管理器应用存储库。
 >> * Kitware.CMake
 
 > * development 开发
->> * GitHub.GitHubDesktop：
+>> * GitHub.GitHubDesktop
 >> * WinSCP.WinSCP
 >> * VisualStudioCode
 >> * ScooterSoftware.BeyondCompare4
@@ -275,14 +287,10 @@ winget - Windows 程序包管理器应用存储库。
 >> * Clement.bottom
 >> * WinFsp.WinFsp
 >> * SSHFS-Win.SSHFS-Win
-# \\sshfs\REMUSER@HOST[\PATH]
 
 >> * Docker.DockerDesktop
 >> * VMware.WorkstationPlayer
 >> * Canonical.Multipass
-
-
-
 
 > * utils 实用工具
 >> * voidtools.Everything:Everything 是一个文件搜索工具，可基于名称快速定位文件和文件夹。
@@ -308,25 +316,17 @@ winget - Windows 程序包管理器应用存储库。
 >> * Adobe.AdobeAcrobatReaderDC：PDF阅读器
 >> * "iQIYI Windows client app":爱奇艺windows客户端
 
-
-
-
-
-
-
-
-
-
-
 ## Optional: Windows 7 games
+
 <https://winaero.com/download.php?view.1836>
 
 ## Optional: Packages Managements
+
 * [`scoop.md`](setup/scoop.md)
 * [`msys2.md`](setup/msys2.md)
 
 > * scoop:软件（包）管理器
-> * msys2:
+> * msys2
 
 ## Optional: Rust and C/C++
 
@@ -394,10 +394,9 @@ curl.exe -fsSL https://api.github.com/repos/adyanth/QuickLook.Plugin.FolderViewe
     jq -r '.assets[0].browser_download_url'
 )
 curl.exe -LO $url
-
 ```
 
-Select the `qlplugin` file and press `Spacebar` to install the plugin.
+* Select the `qlplugin` file and press `Spacebar` to install the plugin.
 
 ## Directory Organization
 

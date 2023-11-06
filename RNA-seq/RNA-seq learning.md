@@ -11,7 +11,7 @@
 +   annotation:   |-gene1-|  |-gene2-|  |-gene3-|
 ```
 
-RNA-seq 的功能：① 获得差异表达基因(最为常见)；② 分析SNP、新颖的转录本、可变剪接、RNA编辑等。
+* RNA-seq 的功能：① 获得差异表达基因(最为常见)；② 分析SNP、新颖的转录本、可变剪接、RNA编辑等。
 
 * 分析流程的结构仿照[`Tom Battaglia`](https://github.com/twbattaglia)
 
@@ -50,7 +50,7 @@ RNA-seq 的功能：① 获得差异表达基因(最为常见)；② 分析SNP�
 
 ## 1 目录创建
 
-进行数据处理之前，先生成整体的目录结构，便于数据存放及查找文件，并且程序运行时能明确地填写文件路径。
+* 进行数据处理之前，先生成整体的目录结构，便于数据存放及查找文件，并且程序运行时能明确地填写文件路径。
 
 ```bash
 # 切换用户目录
@@ -77,7 +77,7 @@ mkdir annotation genome sequence output script
 | output     | 存放各种处理的输出文件        |
 | script     | 存放脚本的位置                |
 
-使用 `tree`命令查看设置的目录结构
+* 使用 `tree`命令查看设置的目录结构
 
 ```bash
 # 进入rat目录
@@ -101,7 +101,6 @@ tree
 ```
 
 ## 2 工具下载
-
 ### 2.0 生信管理工具
 
 * Linuxbrew
@@ -150,8 +149,8 @@ conda config --set auto_activate_base false
 conda create --name python36 python=3.6
 ```
 
-NOTE          
-conda:管理和部署应用程序、环境和软件包的工具。
+* NOTE          
+* conda:管理和部署应用程序、环境和软件包的工具。
 * conda command
   * config：修改.condarc文件中的配置值。
     * --add channels conda-canary：添加软件源，具有优先级。
@@ -161,7 +160,7 @@ conda:管理和部署应用程序、环境和软件包的工具。
 
 ### 2.1 sratoolkit
 
-SRA Toolkit：NCBI提供的用于下载数据(.sra)及转换数据格式（.fastq.gz)的工具，整合了prefetch、fastq-dump、sam-dump工具.
+* SRA Toolkit：NCBI提供的用于下载数据(.sra)及转换数据格式（.fastq.gz)的工具，整合了prefetch、fastq-dump、sam-dump工具.
 
 ```bash
 # 使用brew安装
@@ -174,7 +173,7 @@ brew install sratoolkit
 
 ### 2.2 fastqc
 
-FastQC：用于测序数据的质量控制。
+* FastQC：用于测序数据的质量控制。
 
 ```bash
 # 使用brew安装
@@ -189,7 +188,7 @@ brew install fastqc
 
 ### 2.3 multiqc
 
-MultiQC:将测序数据的fastqc统计结果整合成一个HTLM可视化文件，并可以导出pdf文件，便于查看测序数据的质控结果。
+* MultiQC:将测序数据的fastqc统计结果整合成一个HTLM可视化文件，并可以导出pdf文件，便于查看测序数据的质控结果。
 
 ```bash
 # 使用Python的安装器安装
@@ -203,7 +202,7 @@ pip install multiqc
 
 ### 2.4 cutadapt
 
-cutadapt：用于去除任意指定的接头和序列，同时可以用于质量过滤。
+* cutadapt：用于去除任意指定的接头和序列，同时可以用于质量过滤。
 
 ```bash
 # 使用Python的安装器安装
@@ -270,7 +269,7 @@ source ~/.bashrc
 
 ### 2.6 hisat2
 
-hisat2：取代bowtie2和tophat程序，能够将RNA-Seq的读取与基因组进行快速比对，在RNA-seq中使用较多。
+* hisat2：取代bowtie2和tophat程序，能够将RNA-Seq的读取与基因组进行快速比对，在RNA-seq中使用较多。
 
 * 安装
   * 浏览器进入 `hisat2`[官网](https://ccb.jhu.edu/software/hisat2/index.shtml)，根据系统版本选择对应的安装版本；
@@ -304,7 +303,7 @@ hisat2 -h
 
 ### sortmerna [选做]
 
-sortmerna：RNA测序中有很多是rRNA，sortmerna是将高通量的测序中的rRNA进行剔除的软件。
+* sortmerna：RNA测序中有很多是rRNA，sortmerna是将高通量的测序中的rRNA进行剔除的软件。
 
 ```bash
 # 下载
@@ -361,7 +360,7 @@ indexdb_rna --ref $data
 
 ### 2.7 samtools
 
-samtools：对比对后得到的文件（sam或bam文件）进行二进制查看、格式转换、排序、合并等操作的工具。
+* samtools：对比对后得到的文件（sam或bam文件）进行二进制查看、格式转换、排序、合并等操作的工具。
 
 ```bash
 # 使用brew安装
@@ -376,7 +375,7 @@ brew install samtools
 
 ### 2.8 HTseq
 
-HTseq：对比对后的文件进行reads计数。
+* HTseq：对比对后的文件进行reads计数。
 
 ```bash
 # 使用Python的安装器安装
@@ -385,10 +384,9 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple HTseq
 
 ### 2.9 R
 
-R语言集合了多种生物信息学的分析工具，其中RNA-seq分析的工具更是丰富，R语言最擅长统计学分析，用于后续的基因表达量分析、差异分析以及作图等。
+* R语言集合了多种生物信息学的分析工具，其中RNA-seq分析的工具更是丰富，R语言最擅长统计学分析，用于后续的基因表达量分析、差异分析以及作图等。
 
-* 安装
-  * 进入[R](https://www.r-project.org)官网，点击 `CRAN`，找到 `china`站点，点击[清华的站点](https://mirrors.tuna.tsinghua.edu.cn/CRAN/)，下载对应系统版本的安装包，然后双击安装包安装。
+* 安装：进入[R](https://www.r-project.org)官网，点击 `CRAN`，找到 `china`站点，点击[清华的站点](https://mirrors.tuna.tsinghua.edu.cn/CRAN/)，下载对应系统版本的安装包，然后双击安装包安装。
 
 ```bash
 # 使用brew安装
@@ -397,16 +395,15 @@ brew install r
 
 ### 2.10 Rstudio
 
-因为R自身的界面使用不方便、不美观，因此使用Rstudio提升R的显示效果以及发挥其他功能。
+* 因为R自身的界面使用不方便、不美观，因此使用Rstudio提升R的显示效果以及发挥其他功能。
 
-* 安装
-  * 进入[官网](https://www.rstudio.com/products/rstudio/download/),下载对应系统版本的安装包，然后双击安装包安装。
+* 安装：进入[官网](https://www.rstudio.com/products/rstudio/download/),下载对应系统版本的安装包，然后双击安装包安装。
 
 **Tips**：完成 `R`的安装后再安装 `Rstudio`
 
 ### 2.11 parallel
 
-parallel：进行多线程运行的工具，并行运行可以提升效率，节省时间.
+* parallel：进行多线程运行的工具，并行运行可以提升效率，节省时间.
 
 ```bash
 # 使用brew安装
@@ -415,7 +412,7 @@ brew install parallel
 
 ### StringTie[可选]
 
-Stringtie:能够应用流神经网络算法和可选的de novo组装进行转录本组装并预计表达水平，与Cufflinks等程序相比，StringTie实现了更完整、更准确的基因重建，并更好地预测了表达水平。
+* Stringtie:能够应用流神经网络算法和可选的de novo组装进行转录本组装并预计表达水平，与Cufflinks等程序相比，StringTie实现了更完整、更准确的基因重建，并更好地预测了表达水平。
 
 ```bash
 # 下载
@@ -446,7 +443,7 @@ stringtie --help
 
 ### Ballgown[可选]
 
-Ballgown:R语言中基因差异表达分析的工具，能利用RNA-Seq实验的数据(StringTie, RSEM, Cufflinks)的结果预测基因、转录本的差异表达。
+* Ballgown:R语言中基因差异表达分析的工具，能利用RNA-Seq实验的数据(StringTie, RSEM, Cufflinks)的结果预测基因、转录本的差异表达。
 
 ```R
 # R<3.5.0
@@ -460,15 +457,14 @@ BiocManager::install("ballgown")
 
 ## 3 数据下载
 
-使用大鼠的测序数据进行测试。大鼠又叫大白鼠（Rat，Rattus norvegicus），是非常重要的模式生物之一，因其与人类存在高度的同源性及其优良的品系资源，被广泛应用于毒理学、神经病学，细胞培养等研究。在 `ENSEMBL`和 `UCSC`中均有其基因组数据。
+* 使用大鼠的测序数据进行测试。大鼠又叫大白鼠（Rat，Rattus norvegicus），是非常重要的模式生物之一，因其与人类存在高度的同源性及其优良的品系资源，被广泛应用于毒理学、神经病学，细胞培养等研究。在 `ENSEMBL`和 `UCSC`中均有其基因组数据。
 
 ### 3.1 参考数据
 
-基于 `ENSEMBL`平台，下载参考基因组序列及基因组注释文件。
-
-* 进入[ENSEMBL](https://www.ensembl.org/index.html)网站，在 `All genomes`中选择物种 `Rat`；
-* 点击[Download DNA sequence (FASTA)](https://ftp.ensembl.org/pub/release-108/fasta/rattus_norvegicus/dna/)，进入基因组序列数据列表，下载[完整的基因组序列](https://ftp.ensembl.org/pub/release-108/fasta/rattus_norvegicus/dna/Rattus_norvegicus.mRatBN7.2.dna.toplevel.fa.gz)；
-* 点击[Download GTF](https://ftp.ensembl.org/pub/release-108/gtf/rattus_norvegicus/) files for genes, cDNAs, ncRNA, proteins，下载[基因组注释文件](https://ftp.ensembl.org/pub/release-108/gtf/rattus_norvegicus/Rattus_norvegicus.mRatBN7.2.108.gtf.gz)。
+* 基于 `ENSEMBL`平台，下载参考基因组序列及基因组注释文件。
+  * 进入[ENSEMBL](https://www.ensembl.org/index.html)网站，在 `All genomes`中选择物种 `Rat`；
+  * 点击[Download DNA sequence (FASTA)](https://ftp.ensembl.org/pub/release-108/fasta/rattus_norvegicus/dna/)，进入基因组序列数据列表，下载[完整的基因组序列](https://ftp.ensembl.org/pub/release-108/fasta/rattus_norvegicus/dna/Rattus_norvegicus.mRatBN7.2.dna.toplevel.fa.gz)；
+  * 点击[Download GTF](https://ftp.ensembl.org/pub/release-108/gtf/rattus_norvegicus/) files for genes, cDNAs, ncRNA, proteins，下载[基因组注释文件](https://ftp.ensembl.org/pub/release-108/gtf/rattus_norvegicus/Rattus_norvegicus.mRatBN7.2.108.gtf.gz)。
 
 ```bash
 # 下载参考基因组序列
@@ -595,9 +591,7 @@ head -7 annotatin.gtf
 # 后面每行表示描述信息，说明了在哪条染色体的什么位置是什么东西。例如，第6行表示1号染色体反义链的36112690-36122387位置存在基因编号为ENSRNOG00000066169的基因
 ```
 
-* 下载基因组索引文件 [**可选**]
-
-在[`hisat2`](http://daehwankimlab.github.io/hisat2/) 官网可以找到已经建立好索引的大鼠基因组文件，可以直接下载索引文件。
+* 下载基因组索引文件 [**可选**]：在[`hisat2`](http://daehwankimlab.github.io/hisat2/) 官网可以找到已经建立好索引的大鼠基因组文件，可以直接下载索引文件。
 
 ```bash
 cd ~/project/rat/genome
@@ -607,7 +601,7 @@ gzip -d rn6.tar.gz
 
 ### 3.2 实验数据
 
-下载NCBI的 `RNA-seq`数据，GEO数据库编号 `GSE72960`，SRP数据编号 `SRP063345`，文献来源：[肝硬化分子肝癌的器官转录组分析和溶血磷脂酸途径抑制 - 《Molecular Liver Cancer Prevention in Cirrhosis by Organ Transcriptome Analysis and Lysophosphatidic Acid Pathway Inhibition》](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5161110/)
+* 下载NCBI的 `RNA-seq`数据，GEO数据库编号 `GSE72960`，SRP数据编号 `SRP063345`，文献来源：[肝硬化分子肝癌的器官转录组分析和溶血磷脂酸途径抑制 - 《Molecular Liver Cancer Prevention in Cirrhosis by Organ Transcriptome Analysis and Lysophosphatidic Acid Pathway Inhibition》](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5161110/)
 
 * 数据下载流程：
   * 进入[NCBI-GEO](https://www.ncbi.nlm.nih.gov/geo)页面，`GEO accession`搜索框中输入 `GSE72960`，显示该基因表达数据集的描述信息。例如：`SPR SRP063345`表示测序文件的SRA编号；`PMID:27960085`表示PubMed标识码，链接文献。
@@ -649,26 +643,23 @@ ATGCTGGGGGCATTAGCATTGGGTACTGAATTATTTTCAGTAAGAGGGAAAGAATCCATCTCCNNNNNNNNNNNNNNNNN
 CCCFFFFFHHHHHJIJJJJJJJJDHHJJJIJJJJJIJJJJJJJJJJJJJJJJJJJJJJJJJHH#####################################
 ```
 
-NOTEprefetch：用于从NCBI下载SRA文件。
-
-* prefetch [options] [accessions(s)]
-  * -o(--output-file) `<file>`:write file to `<file>` when downloading
-    single file.
-  * -O(--output-directory) `<directory>`:save files to `<directory>`/.
-  * --option-file file：read more options and parameters from the file.
-  * -p(--progress):show progress.
-
-fastq-dump：
-
-* fastq-dump [options] [accessions(s)]
-  * --split-3:3-way splitting for mate-pairs.
-  * --gzip：compress output using gzip.
+* NOTE
+* prefetch：用于从NCBI下载SRA文件。
+  * prefetch [options] [accessions(s)]
+    * -o(--output-file) `<file>`:write file to `<file>` when downloading
+      single file.
+    * -O(--output-directory) `<directory>`:save files to `<directory>`/.
+    * --option-file file：read more options and parameters from the file.
+    * -p(--progress):show progress.
+* fastq-dump：
+  * fastq-dump [options] [accessions(s)]
+    * --split-3:3-way splitting for mate-pairs.
+    * --gzip：compress output using gzip.
 
 ## 4 质量控制
-
 ### 4.1 质量评估
 
-在序列比对之前需要查看测序数据的测序质量，因为不同来源的测序数据的测序质量不同，为保证后续分析的有效性和可靠性，需要进行质量评估，使用 `fastqc`进行质量评估。
+* 在序列比对之前需要查看测序数据的测序质量，因为不同来源的测序数据的测序质量不同，为保证后续分析的有效性和可靠性，需要进行质量评估，使用 `fastqc`进行质量评估。
 
 ```bash
 cd ~/project/rat/sequence
@@ -718,7 +709,7 @@ firefox multiqc_report.html
 
 ### 4.2 剔除接头以及测序质量差的碱基
 
-fastqc的接头情况显示部分reads有4个碱基与接头序列匹配，属于Illumina的通用接头，并且测序质量显示 `5'`端（10 bp之前）存在低质量的测序区域。因此，使用 `trimmomatic`去除两端的低质量区域。
+* fastqc的接头情况显示部分reads有4个碱基与接头序列匹配，属于Illumina的通用接头，并且测序质量显示 `5'`端（10 bp之前）存在低质量的测序区域。因此，使用 `trimmomatic`去除两端的低质量区域。
 
 ```bash
 cd ~/project/rat/sequence
@@ -770,7 +761,7 @@ multiqc .
 
 ## 5 去除rRNA序列[选做]
 
-在提取RNA的过程中没有对RNA进行筛选的情况下，得到的大部分为 `rRNA`，可能影响后续的分析，并且增加分析时间。
+* 在提取RNA的过程中没有对RNA进行筛选的情况下，得到的大部分为 `rRNA`，可能影响后续的分析，并且增加分析时间。
 
 **Tips**：使用 `sortmerna`时，需要**未压缩的测序文件**。
 
@@ -811,11 +802,11 @@ parallel -j 4 "
 
 ## 6 序列比对
 
-将reads定位到它在基因组所处的位置，通过比对reads所属的基因，对基因的表达进行定量。此外，RNA-seq的序列与基因组的序列有时可能不一致，因为存在内含子与外显子的差别，而RNA-seq测的是RNA序列，所以会出现跨区段的序列比对。
+* 将reads定位到它在基因组所处的位置，通过比对reads所属的基因，对基因的表达进行定量。此外，RNA-seq的序列与基因组的序列有时可能不一致，因为存在内含子与外显子的差别，而RNA-seq测的是RNA序列，所以会出现跨区段的序列比对。
 
 ### 6.1 建立索引
 
-使用 `hisat2`的 `hisat2-build`工具建立索引。
+* 使用 `hisat2`的 `hisat2-build`工具建立索引。
 
 ```bash
 cd ~/project/rat/genome
@@ -837,7 +828,7 @@ genome.chr1.8.ht2
 
 ### 6.2  序列比对
 
-使用 `hasat2`进行序列比对。
+* 使用 `hasat2`进行序列比对。
 
 ```bash
 cd ~/project/rat/output
@@ -906,8 +897,7 @@ do
 done
 ```
 
-* 格式转化与排序
-  SAM格式是目前用来存放大量核酸比对结果信息的通用格式，是能够“直接”阅读的格式类型，而BAM和CRAM是为了方便传输，降低存储压力而压缩SAM得到的格式形式。bam文件是sam文件的二进制格式，可以减小文件的存储。利用samtools将sam格式比对文件转换为bam格式并排序，并对其建立索引，生成.bai文件。
+* 格式转化与排序：SAM格式是目前用来存放大量核酸比对结果信息的通用格式，是能够“直接”阅读的格式类型，而BAM和CRAM是为了方便传输，降低存储压力而压缩SAM得到的格式形式。bam文件是sam文件的二进制格式，可以减小文件的存储。利用samtools将sam格式比对文件转换为bam格式并排序，并对其建立索引，生成.bai文件。
 
 ```bash
 cd ~/project/rat/output/align
@@ -922,7 +912,7 @@ ls
 
 ## 7. 表达量统计
 
-使用HTSEQ-count工具的union模型（HTSEQ-count提供了union，intersection_strict，intersection_nonempty 3 种模型）判断reads所属的基因，具体为给定一个包含比对信息的sam文件和一个包含基因组特征的gff文件，统计每个特征对应的reads数量。
+* 使用HTSEQ-count工具的union模型（HTSEQ-count提供了union，intersection_strict，intersection_nonempty 3 种模型）判断reads所属的基因，具体为给定一个包含比对信息的sam文件和一个包含基因组特征的gff文件，统计每个特征对应的reads数量。
 
 ```bash
 cd ~/project/rat/output
@@ -968,10 +958,9 @@ ENSRNOG00000000010      0
 ```
 
 ## 8 合并表达矩阵与标准化
-
 ### 8.1 合并
 
-将多个表合并为一个表，作为一个整体输入到后续分析的程序中。
+* 将多个表合并为一个表，作为一个整体输入到后续分析的程序中。
 
 ```bash
       样本1 |        样本2 |       样本3
@@ -1022,17 +1011,11 @@ write.csv(data_merge, "merge.csv", quote = FALSE, row.names = FALSE)
 ```
 
 ### 8.2 数据标准化
-
 #### 8.2.1 简介
 
-* 表达量
+* 表达量：一个细胞中某一基因表达得到的所有RNA为**绝对的数量**，即实际多少。但RNA-seq中，不确定用于测序的组织块含有的细胞个数，及提取RNA过程中损失的数量，则通过read count以及标准化后的数值并不表示真实的具体数量，而是**相对定量**，用于数据比较。
 
-一个细胞中某一基因表达得到的所有RNA为**绝对的数量**，即实际多少。但RNA-seq中，不确定用于测序的组织块含有的细胞个数，及提取RNA过程中损失的数量，则通过read count以及标准化后的数值并不表示真实的具体数量，而是**相对定量**，用于数据比较。
-
-* `read count`与相对表达量
-
-原始的read count数目并不能体现出基因与基因之间的相对的表达量的关系。经过HTseq-count得到的数值代表落在基因区域内的reads的数量，但不同基因的长度不同，则对应的reads比对的区域大小不同，因此需要进行样本内不同基因之间的标准化。
-但后续只分析基因的差异表达，所以对**测序深度标准化**后就可以直接比较不同样本同一个基因之间的read count数值，因为不涉及一个样本内不同基因的对比，属于**样本间标准化**，因为不同RNA-seq的测序深度可能存在差异。
+* `read count`与相对表达量：原始的read count数目并不能体现出基因与基因之间的相对的表达量的关系。经过HTseq-count得到的数值代表落在基因区域内的reads的数量，但不同基因的长度不同，则对应的reads比对的区域大小不同，因此需要进行样本内不同基因之间的标准化。但后续只分析基因的差异表达，所以对**测序深度标准化**后就可以直接比较不同样本同一个基因之间的read count数值，因为不涉及一个样本内不同基因的对比，属于**样本间标准化**，因为不同RNA-seq的测序深度可能存在差异。
 
 ```bash
           样本间相同基因的对比（TMM分位数标准化或深度标准化，或还是CPM、RPKM、FPKM、TPM标准化）
@@ -1048,12 +1031,9 @@ gene2       x             x            x
 gene3       x             x            x
 ```
 
-样本间的标准化会使用 `分位数标准化`或 `CPM(counts per million)`或者 `log-CPM`进行（`log-CPM`的计算为 `log2(CPM + 2*10^6/N)`，取对数避免对 `0`取对数的情况，取对数是因为使所有样本间的log倍数变化（log-fold-change）向0推移而减小低表达基因间微小计数变化带来的巨大的伪差异性，如果总reads数量有 `4千万`，那么 `0`的值就是 `log2(2 / 40) = -4.32`）。
-因为上述计算方法并不涉及基因长度，所以计算相对方便，如果研究的样本在可变剪接的使用上有较大差异，那么比较时不宜使用上述方法，而需要考虑长度因素。
-因为后续可能需要QPCR实验验证，此处将数据进行一个样本内的标准化计算，但这个数值不用于后续的差异分析，参考[RNA-Seq分析|RPKM, FPKM, TPM, 傻傻分不清楚？](http://www.360doc.com/content/18/0112/02/50153987_721216719.shtml)；[BBQ(生物信息基础问题35，36)：RNA-Seq 数据的定量之RPKM，FPKM和TPM](https://www.jianshu.com/p/30035cae4ee9)，因存在使用 `FPKM`还是 `TPM`的争议，此处使用两种方法计算。
+* 样本间的标准化会使用 `分位数标准化`或 `CPM(counts per million)`或者 `log-CPM`进行（`log-CPM`的计算为 `log2(CPM + 2*10^6/N)`，取对数避免对 `0`取对数的情况，取对数是因为使所有样本间的log倍数变化（log-fold-change）向0推移而减小低表达基因间微小计数变化带来的巨大的伪差异性，如果总reads数量有 `4千万`，那么 `0`的值就是 `log2(2 / 40) = -4.32`）。因为上述计算方法并不涉及基因长度，所以计算相对方便，如果研究的样本在可变剪接的使用上有较大差异，那么比较时不宜使用上述方法，而需要考虑长度因素。因为后续可能需要QPCR实验验证，此处将数据进行一个样本内的标准化计算，但这个数值不用于后续的差异分析，参考[RNA-Seq分析|RPKM, FPKM, TPM, 傻傻分不清楚？](http://www.360doc.com/content/18/0112/02/50153987_721216719.shtml)；[BBQ(生物信息基础问题35，36)：RNA-Seq 数据的定量之RPKM，FPKM和TPM](https://www.jianshu.com/p/30035cae4ee9)，因存在使用 `FPKM`还是 `TPM`的争议，此处使用两种方法计算。
 
 #### 8.2.2 cufflinks
-
 #### 8.2.3 手动计算
 
 * 计算相关基因的长度
@@ -1183,8 +1163,7 @@ count["TPM"] <- TPM
 write.table(count, "123.normalize.count", col.names = TRUE, row.names = TRUE, sep="\t", quote = FALSE)
 ```
 
-以上两种计算方法默认每个基因所有的外显子都会表达，但实际上并不如此，如果想要较为精确的值，则需 `bam`文件联合 `gff`注释文件得到真实的基因外显子长度。此过程对 `RPKM`的整体计算没有影响，但对 `TPM`可能存在微弱差异。
-因为，`RPKM`是单个基因的read count数为分子，分母均和总reads数相关，在一定程度上消除了测序建库大小的差异。但也会引起一定的问题，即不能保证不同的样本中总RNA的表达总量总是保持一致。假如肝细胞比红细胞的RNA总量高，但计算 `RPKM`的时候将 `nr/N`归一化到 `0-1`范围内（此时没有乘 `10^6/L`），即按照比例来说一样，但实际上RNA的表达量数值是不等的，只能说表达的占比相等。但是这个数值相等是否能评判不同组织中具体基因的表达量呢？
+* 以上两种计算方法默认每个基因所有的外显子都会表达，但实际上并不如此，如果想要较为精确的值，则需 `bam`文件联合 `gff`注释文件得到真实的基因外显子长度。此过程对 `RPKM`的整体计算没有影响，但对 `TPM`可能存在微弱差异。因为，`RPKM`是单个基因的read count数为分子，分母均和总reads数相关，在一定程度上消除了测序建库大小的差异。但也会引起一定的问题，即不能保证不同的样本中总RNA的表达总量总是保持一致。假如肝细胞比红细胞的RNA总量高，但计算 `RPKM`的时候将 `nr/N`归一化到 `0-1`范围内（此时没有乘 `10^6/L`），即按照比例来说一样，但实际上RNA的表达量数值是不等的，只能说表达的占比相等。但是这个数值相等是否能评判不同组织中具体基因的表达量呢？
 
 ```
 某基因表达量： 
@@ -1258,9 +1237,7 @@ countdata <- dataframe[-(1:5),]
 head(countdata)
 ```
 
-* 去除ID的版本号
-
-有时基因名后有 `.1`或 `.2`等标号，也需要去除。
+* 去除ID的版本号（有时基因名后有 `.1`或 `.2`等标号，也需要去除）
 
 ```R
 # 得到行的名
@@ -1272,9 +1249,7 @@ name_replace <- gsub("\\.\\w+","", row.names(countdata))
 row.names(countdata) <- name_replace
 ```
 
-* 去除低表达的基因
-
-在任何样本中都没有足够多的序列片段的基因应该从下游分析中过滤掉。因为：① 从生物学角度，在任何条件下的表达水平都不具有生物学意义的基因不值得关注，最好忽略；② 从统计学角度，去除低表达计数基因使数据中的均值-方差关系得到更精确的估计，并且减少观察差异表达的下游分析中需要进行的统计检验的数量。
+* 去除低表达的基因：在任何样本中都没有足够多的序列片段的基因应该从下游分析中过滤掉。因为：① 从生物学角度，在任何条件下的表达水平都不具有生物学意义的基因不值得关注，最好忽略；② 从统计学角度，去除低表达计数基因使数据中的均值-方差关系得到更精确的估计，并且减少观察差异表达的下游分析中需要进行的统计检验的数量。
 
 ```R
 countdata <- countdata[rowSums(countdata) > 0,]
@@ -1282,10 +1257,9 @@ countdata <- countdata[rowSums(countdata) > 0,]
 
 ### 9.2 差异分析
 
-使用 `DESeq2`包进行差异分析，需要输入原始的 `read count`，因此输入上述 `HTseq`的reads计数后的数据进行分析。`DESeq2`包与 `EdgeR`包类似，都是基于负二项分布模型。在转录组分析中有三个分析的水平 `基因水平(gene-level)`、`转录本水平(transcript-level)`、`外显子使用水平(exon-usage-level)`。但是原始的 `read count`数量并不能代表基因的表达量。
+* 使用 `DESeq2`包进行差异分析，需要输入原始的 `read count`，因此输入上述 `HTseq`的reads计数后的数据进行分析。`DESeq2`包与 `EdgeR`包类似，都是基于负二项分布模型。在转录组分析中有三个分析的水平 `基因水平(gene-level)`、`转录本水平(transcript-level)`、`外显子使用水平(exon-usage-level)`。但是原始的 `read count`数量并不能代表基因的表达量。
 
 > 表达差异分析只对比不同样本之间的同一个转录本，所以不需要考虑转录本长度，只考虑总读段数。一个**最简单思想**就是，样本测序得到的总读段数（实际上是可以比对到转录组的总读段数）越多，则每个基因分配到的读段越多。因此**最简单的标准化因子**就是总读段数，用总读段数作标准化的前提是大部分基因的表达是非显著变化的，这与基因芯片中的基本假设相同。**但是**实际工作中发现很多情况下总读段数主要是一小部分大量表达的基因贡献的。Bullard等（2010）在比较了几种标准化方法的基础上发现在每个泳道内使用非零计数分布的上四分位数（Q75%）作为标准化因子是一种更稳健的选择，总体表现是所研究方法中最优的。
->
 > Bioconductor的edgeR包和DESeq包分别提供了上四分位数和中位数来作为标准化因子，就是出于这个思想。[Bioconductor分析RNA-seq数据](https://www.jianshu.com/p/8f89284c16f8)
 
 * DESeq2的差异分析的步骤
@@ -1314,7 +1288,7 @@ library(clusterProfiler)
 
 #### 9.2.2 构建对象
 
-把数据导入R，生成对应的数据结构。
+* 把数据导入R，生成对应的数据结构。
 
 ```R
 # 语法
@@ -1338,11 +1312,11 @@ dds <- DESeqDataSetFromMatrix(countData = cts, colData = coldata, design= ~ batc
 | Experiment1 | treatment |
 | Experiment2 | treatment |
 
-treatment不一定指代样本经过什么处理，也可以是 `细胞类型`、`基因型`、`表现型`、`样本处理方式`、`批次`等信息，因为如果直接给样本信息程序是不知道究竟是怎样的分组的，而这些信息就是被用于区分样本的性质对样本分组，所以说是很重要的信息，如果分错那么数据比较的时候就会相应的发生变化，最后得到的结果就会发生变化。
+* treatment不一定指代样本经过什么处理，也可以是 `细胞类型`、`基因型`、`表现型`、`样本处理方式`、`批次`等信息，因为如果直接给样本信息程序是不知道究竟是怎样的分组的，而这些信息就是被用于区分样本的性质对样本分组，所以说是很重要的信息，如果分错那么数据比较的时候就会相应的发生变化，最后得到的结果就会发生变化。
 
 * `design（样本差异比较）`：就是指定样本依据什么分为实验组与对照组
 
-上面的 `表达矩阵`已经得到了，下面需要生成 `样本信息`，下面的表格直接从NCBI的 `Run selector`中得到。
+* 上面的 `表达矩阵`已经得到了，下面需要生成 `样本信息`，下面的表格直接从NCBI的 `Run selector`中得到。
 
 | Run                                                                | BioSample                                                        | Sample name                | Experiment                                             | LoadDate   | MBases | MBytes | health state    | treatment |
 | ------------------------------------------------------------------ | ---------------------------------------------------------------- | -------------------------- | ------------------------------------------------------ | ---------- | ------ | ------ | --------------- | --------- |
@@ -1351,9 +1325,7 @@ treatment不一定指代样本经过什么处理，也可以是 `细胞类型`�
 | [SRR2240187](https://www.ncbi.nlm.nih.gov/Traces/sra/?run=SRR2240187) | [SAMN03975631](https://www.ncbi.nlm.nih.gov/biosample/SAMN03975631) | PBS_1_2__PBS8_9_index13    | [SRX1182166](https://www.ncbi.nlm.nih.gov/sra/SRX1182166) | 2015-09-07 | 1,861  | 1,342  | Healthy control | PBS       |
 | [SRR2240228](https://www.ncbi.nlm.nih.gov/Traces/sra/?run=SRR2240228) | [SAMN03975632](https://www.ncbi.nlm.nih.gov/biosample/SAMN03975632) | PBS_3_5__PBS18_19_index14  | [SRX1182170](https://www.ncbi.nlm.nih.gov/sra/SRX1182170) | 2015-09-07 | 1,649  | 1,190  | Healthy control | PBS       |
 
-这个表格说明了样本 `ID`及其处理的情况，可以看到就是 `treatment`那一栏不一样，下面针对
-
-表达数据已经有了，下面是写一下实验组与对照组的信息，打开终端，`cd`到相应位置
+* 这个表格说明了样本 `ID`及其处理的情况，可以看到就是 `treatment`那一栏不一样，下面针对表达数据已经有了，下面是写一下实验组与对照组的信息，打开终端，`cd`到相应位置
 
 ```bash
 cat <<EOF >./phenotype/phenotype.csv
@@ -1365,7 +1337,7 @@ cat <<EOF >./phenotype/phenotype.csv
 EOF
 ```
 
-下面将这些数据导入到R中
+* 下面将这些数据导入到R中
 
 ```R
 # 刚才countdata已经得到
@@ -1400,11 +1372,11 @@ colData names(3): state condition treatment
 
 #### 9.2.3 样本相关性
 
-因为存在很多基因的差别等因素，在某些基因上可能样本间几乎没有差别，但是总体来看就会有较大差别了，这里对包含众多的基因这样的因素的情况下进行样本相关性进行评估，评估样本的重复组之间是否很相似或者是否实验组与对照组之间差别明显。
+* 因为存在很多基因的差别等因素，在某些基因上可能样本间几乎没有差别，但是总体来看就会有较大差别了，这里对包含众多的基因这样的因素的情况下进行样本相关性进行评估，评估样本的重复组之间是否很相似或者是否实验组与对照组之间差别明显。
 
 * PCA分析(principal components analysis)
 
-由于上面得到的是最原始的 `read count`，但是PCA分析需要对数据进行转化才能进行。一般取对数，但是最原始的数据中有些基因的计数为 `0`，这样在取 `log`值的时候意味着 `−∞`，这样是不行的，所以一般会加上一个常数再取 `log`，也就是 `log(count + N)`（其中 `N`是一个常数），但是也有较好的方法来进行校正，比如 `DEseq2`包自带的 `rlog`和 `vst`函数（全名为[`variance stabilizing transformation`](https://en.wikipedia.org/wiki/Variance-stabilizing_transformation)），它们消除了方差对均值的依赖，尤其是低均值时的高 `log counts`的变异。
+* 由于上面得到的是最原始的 `read count`，但是PCA分析需要对数据进行转化才能进行。一般取对数，但是最原始的数据中有些基因的计数为 `0`，这样在取 `log`值的时候意味着 `−∞`，这样是不行的，所以一般会加上一个常数再取 `log`，也就是 `log(count + N)`（其中 `N`是一个常数），但是也有较好的方法来进行校正，比如 `DEseq2`包自带的 `rlog`和 `vst`函数（全名为[`variance stabilizing transformation`](https://en.wikipedia.org/wiki/Variance-stabilizing_transformation)），它们消除了方差对均值的依赖，尤其是低均值时的高 `log counts`的变异。
 
 > 但是在DESeq2包中实际上已经有了归一化的方法，rlog和vst，在使用的需要根据样本量的多少来选择方法。样本量少于30的话，选择rlog，多于30的话，建议选择vst。
 
@@ -1417,31 +1389,22 @@ library(ggplot2)
 plotPCA(vsdata, intgroup="treatment") + ylim(-10, 10)
 ```
 
-距离越近相关性越大，否则越远，如果点单独的偏离，那么这个样本可能不好用。
+* 距离越近相关性越大，否则越远，如果点单独的偏离，那么这个样本可能不好用。
 
 > **NOTE: 有关主成分分析的意义** - [一文看懂PCA主成分分析](https://mp.weixin.qq.com/s?__biz=MzI5MTcwNjA4NQ==&mid=2247484036&idx=1&sn=22ee356d0c9680d56dada1b777985ed2&scene=21#wechat_redirect)
->
 > 1. **简化运算**
->
 > 在问题研究中，为了全面系统地分析问题，我们通常会收集众多的影响因素也就是众多的变量。这样会使得研究更丰富，通常也会带来较多的冗余数据和复杂的计算量。
->
 > 比如我们我们测序了100种样品的基因表达谱借以通过分子表达水平的差异对这100种样品进行分类。在这个问题中，研究的变量就是不同的基因。每个基因的表达都可以在一定程度上反应样品之间的差异，但某些基因之间却有着调控、协同或拮抗的关系，表现为它们的表达值存在一些相关性，这就造成了统计数据所反映的信息存在一定程度的冗余。另外假如某些基因如持家基因在所有样本中表达都一样，它们对于解释样本的差异也没有意义。这么多的变量在后续统计分析中会增大运算量和计算复杂度，应用PCA就可以在尽量多的保持变量所包含的信息又能维持尽量少的变量数目，帮助简化运算和结果解释。
->
 > 2. **去除数据噪音**
->
 > 比如说我们在样品的制备过程中，由于不完全一致的操作，导致样品的状态有细微的改变，从而造成一些持家基因也发生了相应的变化，但变化幅度远小于核心基因 (一般认为噪音的方差小于信息的方差）。而PCA在降维的过程中滤去了这些变化幅度较小的噪音变化，增大了数据的信噪比。
->
 > 3. **利用散点图实现多维数据可视化**
->
 > 在上面的表达谱分析中，假如我们有1个基因，可以在线性层面对样本进行分类；如果我们有2个基因，可以在一个平面对样本进行分类；如果我们有3个基因，可以在一个立体空间对样本进行分类；如果有更多的基因，比如说n个，那么每个样品就是n维空间的一个点，则很难在图形上展示样品的分类关系。利用PCA分析，我们可以选取贡献最大的2个或3个主成分作为数据代表用以可视化。这比直接选取三个表达变化最大的基因更能反映样品之间的差异。（利用Pearson相关系数对样品进行聚类在样品数目比较少时是一个解决办法）
->
 > 4. **发现隐性相关变量**
->
 > 我们在合并冗余原始变量得到主成分过程中，会发现某些原始变量对同一主成分有着相似的贡献，也就是说这些变量之间存在着某种相关性，为相关变量。同时也可以获得这些变量对主成分的贡献程度。对基因表达数据可以理解为发现了存在协同或拮抗关系的基因。
 
 + sample-to-sample distances热图
 
-上述的转换数据还可以做样本聚类热图，用 `dist`函数来获得sample-to-sample距离，距离矩阵热图中可以清楚看到samples之间的相似与否
+* 上述的转换数据还可以做样本聚类热图，用 `dist`函数来获得sample-to-sample距离，距离矩阵热图中可以清楚看到samples之间的相似与否
 
 ```R
 # 颜色管理包（不是必须）
@@ -1465,9 +1428,8 @@ pheatmap(sampleDistMatrix,
          col=colors)
 ```
 
-可以看到样本与样本之间的距离，颜色越深，距离越近。
-
-> 如果实验组与对照组之间差别不明显，那么后续的分析结果就需要考虑一下。另外如果重复之间差异较大，那么在后续分析的时候就需要谨慎考虑了偏离的组别是否能被用于后续分析了
+* 可以看到样本与样本之间的距离，颜色越深，距离越近。
+* 如果实验组与对照组之间差别不明显，那么后续的分析结果就需要考虑一下。另外如果重复之间差异较大，那么在后续分析的时候就需要谨慎考虑了偏离的组别是否能被用于后续分析了
 
 #### 9.2.4 差异基因
 
@@ -1481,13 +1443,13 @@ dds$treatment <- factor(as.vector(dds$treatment), levels = c("control","treatmen
 dds <- DESeq(dds)
 ```
 
-输出，下面的输出的说明了分析的过程
+* 输出，下面的输出的说明了分析的过程
 
 > 1. 估计样本大小（消除测序深度的影响）
 > 2. 对每一个基因的表达量的离散度做计算
 > 3. 拟合广义的线性模型（generalized linear model）
 
-使用的 `Wald test`
+* 使用的 `Wald test`
 
 ```
 estimating size factors
@@ -1507,7 +1469,7 @@ result <- results(dds, pAdjustMethod = "fdr", alpha = 0.05)
 head(result)
 ```
 
-```
+```text
 log2 fold change (MLE): treatment treatment vs control 
 Wald test p-value: treatment treatment vs control 
 DataFrame with 6 rows and 6 columns
@@ -1565,7 +1527,7 @@ ENSRNOG00000018371 705.943312960284  4.65111741552834  0.41021741987017  11.3381
 
 **NOTE**
 
-这里的 `log2 fold change (MLE): treatment treatment vs control`行很重要，因为高低表达是相对的，这里你知道是谁与谁进行的比较，这里就是 `treatment`与 `control`进行比较。
+* 这里的 `log2 fold change (MLE): treatment treatment vs control`行很重要，因为高低表达是相对的，这里你知道是谁与谁进行的比较，这里就是 `treatment`与 `control`进行比较。
 
 + 总结基因上下调情况
 
@@ -1605,12 +1567,9 @@ write.csv(result, file="./DESeq2/results.csv", quote = F)
 ```
 
 ## 10. 提取差异表达基因与注释
-
 ### 10.1 名词解释
 
 + `Log2FC ` FC就是 `Fold Change`就是倍数差异，就是将对照组与实验组的基因表达量的差别，一般将 `Fold Change`等于2作为是否差异的临界点，那么对应的 `Log2FC`就是 `1`。
-
-将上述的数据
 
 ```R
 # padj 小于 0.05 并且 Log2FC 大于 1 或者小于 -1
@@ -1659,7 +1618,7 @@ ensembl_id_transform <- function(ENSEMBL_ID){
 ensembl_id_transform(ensembl_gene_id)
 ```
 
-使用 `ClusterProfiler`包进行转化似乎有部分没有映射到，换 `biomaRt`包试一下
+* 使用 `ClusterProfiler`包进行转化似乎有部分没有映射到，换 `biomaRt`包试一下
 
 ### 10.3 使用 `biomaRt`进行注释
 
@@ -1711,7 +1670,7 @@ do
 done
 ```
 
-使用 `R`绘图
+* 使用 `R`绘图
 
 ```R
 library(ggplot2)
@@ -1760,7 +1719,7 @@ diff_gene_ensembl_id <- rat_symbols$ensembl_gene_id
 | biological process (BP) | 生物过程 |
 | cellular component (CC) | 细胞组成 |
 
-在 `clusterProfiler`包中有 `enrichGO`方法就是用来进行GO富集的
+* 在 `clusterProfiler`包中有 `enrichGO`方法就是用来进行GO富集的
 
 ```react
 enrichGO     GO Enrichment Analysis of a gene set. Given a vector of genes, this
@@ -1794,7 +1753,7 @@ Arguments:
 | pvalueCutoff  | 对应的阈值                                                                                  |
 | qvalueCutoff  | 对应的阈值                                                                                  |
 
-参数需要指定正确，特别是 `OrgDb`。
+* 参数需要指定正确，特别是 `OrgDb`。
 
 + 开始GO分析
 
@@ -1825,11 +1784,8 @@ kk <- enrichKEGG(gene = gene,
 
 ### 12.3 GSEA分析
 
-这个富集方式与上面的相似，它就是以KEGG数据库（或其他基因注释数据库，例如GO）为背景，根据所选样品所有的基因表达量来做富集分析，得到的结果是所有表达的基因在各个代谢通路中的富集情况。
-
-但是与上面的两个富集分析不同，它的输入文件不是一个基因列表，而是除了基因之外还有它的表达量（目前样本中所有的非 `0`的基因的倍数的改变的数值）。
-
-另外就是GSEA针对**所有基因**，KEGG针对**差异基因**富集的通路，现在一般结合两者的结果来做推断。
+* 这个富集方式与上面的相似，它就是以KEGG数据库（或其他基因注释数据库，例如GO）为背景，根据所选样品所有的基因表达量来做富集分析，得到的结果是所有表达的基因在各个代谢通路中的富集情况。但是与上面的两个富集分析不同，它的输入文件不是一个基因列表，而是除了基因之外还有它的表达量（目前样本中所有的非 `0`的基因的倍数的改变的数值）。
+* 另外就是GSEA针对**所有基因**，KEGG针对**差异基因**富集的通路，现在一般结合两者的结果来做推断。
 
 + 制作genelist
 + GSEA分析
@@ -1837,7 +1793,7 @@ kk <- enrichKEGG(gene = gene,
 
 ### 12.4 DO（Disease Ontology）分析
 
-这个是疾病相关的本体分析
+* 疾病相关的本体分析
 
 ### 12.5 ReactomePA
 
@@ -1849,15 +1805,13 @@ kk <- enrichKEGG(gene = gene,
 
 ## ========================================
 
-`StringTie` + `Ballgown`是较新的RNA-seq的分析方法。但是其中出现部分一定会出现的情况不知如何解决。这个过程没有走完，有待解决（在用 `StringTie`合并第一步的转录本的gff之后，后面了 `MSTRG`等基因名称。这种名称是在 `stringtie`合并样本 `gff`文件的时候产生的，后续差异分析之后不知道如何对应回去？）
+* `StringTie` + `Ballgown`是较新的RNA-seq的分析方法。但是其中出现部分一定会出现的情况不知如何解决。这个过程没有走完，有待解决（在用 `StringTie`合并第一步的转录本的gff之后，后面了 `MSTRG`等基因名称。这种名称是在 `stringtie`合并样本 `gff`文件的时候产生的，后续差异分析之后不知道如何对应回去？）
 
 ## ========================================
 
 ## 5. 表达量分析
 
-StringTie
-
-![](./pic/DE_pipeline.png)
+* StringTie
 
 ```bash
 $ cd ~/project/rat/output
@@ -1877,7 +1831,7 @@ cd ~/project/rat/output/assembly
 cat SRR2190795.gtf | head -n 4
 ```
 
-可以看到使用StringTie处理后的注释文件与之前不一样了，在第九列里面出现了更多的描述信息，包括比对上的样本名，每个碱基的覆盖深度的平均数 `cov`，表达量的标准化数值 `TPM`和 `FPKM`等等。
+* 可以看到使用StringTie处理后的注释文件与之前不一样了，在第九列里面出现了更多的描述信息，包括比对上的样本名，每个碱基的覆盖深度的平均数 `cov`，表达量的标准化数值 `TPM`和 `FPKM`等等。
 
 ```bash
 # stringtie -p 4 -G ../../annotation/rn6.gff -l SRR2190795 SRR2190795.sort.bam -o ../assembly/SRR2190795.gtf
@@ -1903,9 +1857,8 @@ ls *.gtf > mergelist.txt
 stringtie --merge -p 8 -G ../../annotation/rn6.gff -o merged.gtf mergelist.txt 
 ```
 
-参数--merge 为转录本合并模式。 在合并模式下，stringtie将所有样品的GTF/GFF文件列表作为输入，并将这些转录本合并/组装成非冗余的转录本集合。这种模式被用于新的差异分析流程中，用以生成一个**跨多个RNA-Seq样品的全局的、统一的转录本**。
-
-接下来，重新组装转录本并估算基因表达丰度。
+* 参数--merge 为转录本合并模式。 在合并模式下，stringtie将所有样品的GTF/GFF文件列表作为输入，并将这些转录本合并/组装成非冗余的转录本集合。这种模式被用于新的差异分析流程中，用以生成一个**跨多个RNA-Seq样品的全局的、统一的转录本**。
+* 接下来，重新组装转录本并估算基因表达丰度。
 
 + 估计转录本的丰度
 
@@ -1929,7 +1882,7 @@ $ gffcompare
 
 + 转化为表达量的矩阵
 
-这里不用下游的 `ballgown`进行分析，下载一个转换脚本，这个 `python`脚本可以把之前生成的 `.gtf`文件转换为表达量矩阵，这个脚本的下载方式是：
+* 这里不用下游的 `ballgown`进行分析，下载一个转换脚本，这个 `python`脚本可以把之前生成的 `.gtf`文件转换为表达量矩阵，这个脚本的下载方式是：
 
 ```bash
 cd ~/project/rat/script
@@ -1950,7 +1903,7 @@ python2 ~/project/rat/script/prepDE.py \
    -l 100
 ```
 
-到这里理一下文件夹，使用 `tree`命令查看我们的目录结构
+* 到这里理一下文件夹，使用 `tree`命令查看我们的目录结构
 
 ```bash
 cd ~/project/rat
@@ -1990,11 +1943,9 @@ tree -d
 
 ## 6. 表达量分析
 
-在生物体中，不同部位、时间、不同处境下的基因表达情况是不一样的，这样在提取RNA并测序的时候，不同的RNA的存在量是不一样的，这个差异就导致了测序得到的read数量不同，基因表达越多，那么在组织中的存在越多，那么提取得到的量也就越多，最后测序测得的量也多。通过对RNA-seq的测序深度进行一个统计，就可以比较出基因的表达量，通过与特定的管家基因的表达量进行比较，就可以得出相对量从而判断上调还是下调。
+* 在生物体中，不同部位、时间、不同处境下的基因表达情况是不一样的，这样在提取RNA并测序的时候，不同的RNA的存在量是不一样的，这个差异就导致了测序得到的read数量不同，基因表达越多，那么在组织中的存在越多，那么提取得到的量也就越多，最后测序测得的量也多。通过对RNA-seq的测序深度进行一个统计，就可以比较出基因的表达量，通过与特定的管家基因的表达量进行比较，就可以得出相对量从而判断上调还是下调。
 
-![](./pic/read_map_and_count.png)
-
-在分析之前需要新建一个表型(phenotype)文件，这个文件是用来对样本记性描述的，下面是一个样例
+* 在分析之前需要新建一个表型(phenotype)文件，这个文件是用来对样本记性描述的，下面是一个样例
 
 ```bash
 "ids","sex","population"
@@ -2012,7 +1963,7 @@ tree -d
 "ERR204916","female","YRI"
 ```
 
-这里我们创建一个类似的文件，在NCBI的 `Run selector`中的表格
+* 这里我们创建一个类似的文件，在NCBI的 `Run selector`中的表格
 
 | Run                                                                | BioSample                                                        | Sample name                 | Experiment                                             | LoadDate   | MBases | MBytes | health state    | treatment   |
 | ------------------------------------------------------------------ | ---------------------------------------------------------------- | --------------------------- | ------------------------------------------------------ | ---------- | ------ | ------ | --------------- | ----------- |
@@ -2025,7 +1976,7 @@ tree -d
 | [SRR2240187](https://www.ncbi.nlm.nih.gov/Traces/sra/?run=SRR2240187) | [SAMN03975631](https://www.ncbi.nlm.nih.gov/biosample/SAMN03975631) | PBS_1_2__PBS8_9_index13     | [SRX1182166](https://www.ncbi.nlm.nih.gov/sra/SRX1182166) | 2015-09-07 | 1,861  | 1,342  | Healthy control | PBS         |
 | [SRR2240228](https://www.ncbi.nlm.nih.gov/Traces/sra/?run=SRR2240228) | [SAMN03975632](https://www.ncbi.nlm.nih.gov/biosample/SAMN03975632) | PBS_3_5__PBS18_19_index14   | [SRX1182170](https://www.ncbi.nlm.nih.gov/sra/SRX1182170) | 2015-09-07 | 1,649  | 1,190  | Healthy control | PBS         |
 
-样本除了健康状态与给药情况不同，其他均相同
+* 样本除了健康状态与给药情况不同，其他均相同
 
 ```
 cd ~/project/rat/output
@@ -2045,7 +1996,7 @@ cat <<EOF >./phenotype/phenodata.csv
 EOF
 ```
 
-接下来就可以用R语言进行后续的分析了，打开 `Rstudio`
+* 接下来就可以用R语言进行后续的分析了，打开 `Rstudio`
 
 ```R
 # 使用biocLite("ballgown")进行包的安装
@@ -2060,12 +2011,11 @@ biocLite("genefilter")
 biocLite("dplyr")
 
 # 读取表型文件
-
 ```
 
 ## 7. 差异表达分析
 
-在这里发现了差异基因出现了 `MSTRG`等名称。这个名称是在 `stringtie`合并样本 `gff`文件的时候产生的，后续差异分析之后不知道如何对应回去？
+* 在这里发现了差异基因出现了 `MSTRG`等名称。这个名称是在 `stringtie`合并样本 `gff`文件的时候产生的，后续差异分析之后不知道如何对应回去？
 
 ## 作者
 

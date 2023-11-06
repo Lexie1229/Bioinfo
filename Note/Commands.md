@@ -1,5 +1,6 @@
 # Commands
-## 目录
+## Content
+
 * [Linux commands](#linux-commands)
   * [Linux apt](#linux-apt)
   * [Linux basename](#linux-basename)
@@ -40,12 +41,12 @@
   * [fastqc](#fastqc)
   * [mash](#mash)
   * [parallel](#parallel)
+  * [rg](#rg)
   * [samtools](#samtools)
   * [trim_galore](#trim_galore)
   * [tsv-utils](#tsv-utils)
 
 ## Linux commands
-
 ### [Linux apt](#linux-apt)
 apt：是一个在Debian和Ubuntu中的Shell前端软件包管理器.
 * apt [options] command
@@ -149,6 +150,12 @@ jobs：用于显示当前终端的后台的工作状态.
   * -r：restrict output to running jobs(仅列出运行中的进程).
   * -s：restrict output to stopped jobs(仅列出已停止的进程).
 
+### [Linux ls](#linux-ls)
+ls(list files):用于显示指定工作目录下的内容.
+* ls [OPTION] [FILE]
+  * -l：use a long listing format(使用长格式显示当前目录中的文件和子目录).
+  * -a/--all：do not ignore entries starting with . (显示当前目录中的所有文件和子目录，包括隐藏文件).
+
 ### [Linux mktemp](#linux-mktemp)
 mktemp：用于创建临时文件或目录，并打印文件名.
 * mktemp [OPTION] [TEMPLATE]
@@ -247,7 +254,6 @@ split:用于分割文件。
   * -a/--suffix-length=N：generate suffixes of length N (default 2)(生成长度为N的后缀，默认值为2).
   * -d：use numeric suffixes starting at 0, not alphabetic(使用从0开始的数字后缀，而非字母).
 
-
 ### [Linux tar](#linux-tar)
 tar(tape archive)：用于文件的打包压缩及解压.
 * tar [OPTION] [FILE]
@@ -285,9 +291,7 @@ wc(word count):用于计算字数.
   * -I R：same as --replace=R.
   * -i/--replace[=R]:replace R in INITIAL-ARGS with names read from standard input, split at newlines;if R is unspecified, assume {}(将INITIAL-ARGS中的R替换为从标准输入读取的名称，在换行符处拆分;如果未指定R，则假设{}).
 
----------------------------------------------------------------------
 ## [Other commands](#other-commands)
-
 ### [aria2c](#aria2)
 aria2c：用于从互联网下载文件，支持通过HTTP、HTTPS、FTP、SFTP、BitTorrent和Metalink协议下载文件.
 * aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]
@@ -434,6 +438,11 @@ parallel:用于构建并行运行命令.
     * {n/.}：Basename of argument from input source n or the n'th argument without extension.
     * {=perl expression=}：Replace with calculated perl expression.
 
+### [rg](#rg)
+rg(ripgrep)：用于递归正则表达式模式匹配.
+  * -F/--fixed-strings：Treat the pattern as a literal string instead of a regular expression. When this flag is used, special regular expression meta characters such as .(){}*+ do not need to be escaped(使用字符串而不是正则表达式进行匹配,特殊正则表达式元字符不需要转义).
+  * -l/--files-with-matches：Print the paths with at least one match and suppress match contents(只显示文件名而不显示匹配行).
+
 ### [samtools](#samtools)
 samtools：用于操作SAM和BAM文件，包括二进制查看、格式转换、排序及合并等.
 * samtools command [options]
@@ -472,100 +481,3 @@ tsv-utils(Tab Separated Values)：用于操作大型表格数据文件.
     * -H/--header：Treat the first line of each file as a header(指定输入文件是否包含标题行,若包含，则默认使用标题行中的列名来选择列).
     * -g/--group-by field-list：Fields to use as key(指定关键词所在的列).
     * --count：Count occurrences of each unique key ('--g|group-by'), or the total number of records if no key field is specified(统计每个关键词的个数).
-
------------------------------------------------------------------------
-### rg
-rg(ripgrep)
-  * -F/--fixed-strings：Treat the pattern as a literal string instead of a regular expression. When this flag is used, special regular expression meta characters such as .(){}*+ do not need to be escaped(使用字符串而不是正则表达式进行匹配,特殊正则表达式元字符不需要转义).
-  * -l/--files-with-matches：Print the paths with at least one match and suppress match contents(只显示文件名而不显示匹配行).
-
-
-
-### Linux mount
-mount:用于挂载
-* mount [options] source directory
-  * -a/--all:mount all filesystems mentioned in fstab(将/etc/fstab)
-  * -o
-
-### sync
-* sync(synchronize):用于同步数据。
-
-
-### Linux code
-code:
-* code.exe [options][paths]
-
-
-### ls
-ls(list files):用于显示指定工作目录下的内容.
-* ls [OPTION] [FILE]
-  * -l：use a long listing format(使用长格式显示当前目录中的文件和子目录).
-  * -a/--all：do not ignore entries starting with . (显示当前目录中的所有文件和子目录，包括隐藏文件).
-  * -h/--human-readable：with -l and -s, print sizes like 1K 234M 2G etc.
-  * -F/--classify：append indicator (one of */=>@|) to entries.
-
-### mv
-mv
-* mv [OPTION] SOURCE DIRECTORY
-  * -t/--target-directory=DIRECTORY：move all SOURCE arguments into DIRECTORY.
-
-
-
-
-
-
-### bowtie
-
-### hista
-
-
-
-> count
-> chomd
-> ssh
-> tldr
-> jobs
-> as
-> dos2unix
-> kill
-> mkdir
-> pigz
-> ln
-> set
-> tail
-> sh
-> gunzip -d
-> test -d
-> curl -fsSL
-> bash -c
-> wget -O
-
-Linux:   
-man
-ls
-cd
-pwd
-mkdir
-rmdir
-mv
-cp：
--R/-r/--recursive：copy directories recursively
-open
-touch
-find
-ln
-gzip
-gunzip
-tar
-alias
-cat(catenate)
-less
-tr
-
-
-
-awk
-anchor
-
-
-keep-header

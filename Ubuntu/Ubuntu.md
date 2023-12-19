@@ -34,19 +34,19 @@ echo "==> When some packages went wrong, check http://mirrors.ustc.edu.cn/ubuntu
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/1-apt.sh)"
 ```
 
-> * curl:下载工具
->> * -f, --fail          Fail silently (no output at all) on HTTP errors 连接失败不显示http错误
->> * -L, --location      Follow redirects 让HTTP 请求跟随服务器的重定向
->> * -S, --show-error    Show error even when -s is used 只输出错误信息
->> * -s, --silent        Silent mode 不输出错误和进度信息
->> * -o, --output <file> Write to file instead of stdout 将服务器的回应保存成文件
->> * -O, --remote-name   Write output to a file named as the remote file 将服务器回应保存成文件，并将 URL 的最后部分当作文件名
-> * bash：
->> * -c:从字符串中读入命令
->> * -x:输出执行过程
->> * -n:检测脚本语法是否正确 
-> * $():``(反引号），命令替换，用来重组命令行，先完成引号里的命令行，然后将其结果替换出来，再重组成新的命令行。
-> * ${}:变量替换。
+* curl:下载工具
+    * -f, --fail          Fail silently (no output at all) on HTTP errors 连接失败不显示http错误
+    * -L, --location      Follow redirects 让HTTP 请求跟随服务器的重定向
+    * -S, --show-error    Show error even when -s is used 只输出错误信息
+    * -s, --silent        Silent mode 不输出错误和进度信息
+    * -o, --output <file> Write to file instead of stdout 将服务器的回应保存成文件
+    * -O, --remote-name   Write output to a file named as the remote file 将服务器回应保存成文件，并将 URL 的最后部分当作文件名
+* bash：
+    * -c:从字符串中读入命令
+    * -x:输出执行过程
+    * -n:检测脚本语法是否正确 
+* $():``(反引号），命令替换，用来重组命令行，先完成引号里的命令行，然后将其结果替换出来，再重组成新的命令行。
+* ${}:变量替换。
 
 ## 3.Optional: adjusting Desktop
 

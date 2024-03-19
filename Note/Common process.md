@@ -9,6 +9,20 @@ mklink /D c:\Users\zhouj\Desktop\targetdirectory(“快捷方式”) d:\sourcedi
 ln -s /mnt/c/biosoft/ ~/biosoft(“快捷方式”)
 ```
 
+## 登录超算
+
+```bash
+# 自定义命令，用于登录超算
+alias wangq='sshpass -p password ssh username@202.119.37.251'
+# URL 202.119.37.251
+# username wangq
+# password xxxx
+
+# 配置客户端，避免ssh空闲自动断开
+sudo vim /ect/ssh/ssh_config
+# ssh_config文件中最后添加`ServerAliveInterval 120`
+```
+
 ## Linux 自动挂载 NAS
 
 ```bash
